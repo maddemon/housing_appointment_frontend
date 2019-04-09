@@ -12,9 +12,9 @@ export default class Header extends Component {
 
     handleMenuClick = menu => {
         this.setState({ current: [menu.key] });
+        console.log('【menu】',menu.key)
         if (menu.key === 'user_logout') {
             this.props.stores.userStore.logout();
-            console.log(this.props.stores.userStore.current)
         }
     }
 
@@ -24,7 +24,7 @@ export default class Header extends Component {
             case 1:
                 result = [
                     <Menu.Item key="user_quotas" >
-                        <Link to="/user/quotas/">
+                        <Link to="/user/quotas">
                             <Icon type="ordered-list" />我的指标
                         </Link>
                     </Menu.Item>,

@@ -45,7 +45,6 @@ const api = {
             return $.get('quota/list', { pageIndex, pageSize })
         },
         listOfCustomer: () => {
-            console.log('listOfCustomer')
             return $.get('quota/listOfCustomer')
         },
     },

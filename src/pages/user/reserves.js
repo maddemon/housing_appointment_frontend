@@ -10,7 +10,7 @@ export default class UserReservePage extends Component {
     render() {
         return (
             <div>
-                预约管理
+                我的预约
             </div>
         )
     }

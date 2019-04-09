@@ -12,6 +12,16 @@ export default class UserQuotaPage extends Component {
 
         this.props.stores.quotaStore.setMyList();
     }
+    
+    componentWillReceiveProps(nextProps) {
+        console.log(nextProps)
+    }
+    
+    
+    componentWillUpdate(nextProps, nextState) {
+        console.log(nextProps)
+    }
+    
 
     handleItemClick = (item) => {
 
