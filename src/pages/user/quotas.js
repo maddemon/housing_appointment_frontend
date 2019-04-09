@@ -4,10 +4,12 @@ import { Layout, Row, Button, Empty, Tag } from 'antd'
 
 @inject('stores')
 @observer
-export default class MyQuotas extends Component {
+export default class UserQuotaPage extends Component {
 
     componentWillMount() {
         console.log('MyQuotas')
+        this.props.stores.globalStore.setTitle('我的指标');
+
         this.props.stores.quotaStore.setMyList();
     }
 
@@ -25,13 +27,13 @@ export default class MyQuotas extends Component {
 
     render() {
 
-        const list = this.props.stores.quota.myList;
+        const list = this.props.stores.quotaStore.myList || [];
 
         return (
             <Layout>
                 <h1>我的指标</h1>
                 <Row>
-                    {list.length === 0 ? <Empty></Empty> : list.filter(e => e.quotaStatus === 0).map(v => this.quotaItemRender(v))}
+                    {list.length === 0 ? <Empty>暂无指标</Empty> : list.filter(e => e.quotaStatus === 0).map(v => this.quotaItemRender(v))}
                 </Row>
             </Layout>
         )

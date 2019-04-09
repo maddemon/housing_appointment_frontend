@@ -10,7 +10,7 @@ class QuotaStore {
     }
 
     async setMyList() {
-        this.myList = await api.quota.listOfCustomer()
+        this.myList =  await api.quota.listOfCustomer()
     }
 
     async save(data) {

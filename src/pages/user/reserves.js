@@ -1,16 +1,16 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Button } from 'antd'
+
 @inject('stores')
 @observer
-export default class MyReservesPage extends Component {
+export default class UserReservePage extends Component {
     componentWillMount() {
-        console.log('MyReservesPage')
+        console.log('UserReservePage')
     }
     render() {
         return (
             <div>
-                <Button>我的预约</Button>
+                预约管理
             </div>
         )
     }

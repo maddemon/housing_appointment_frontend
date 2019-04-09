@@ -1,14 +1,19 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Redirect, Switch } from "react-router-dom";
 import { Provider, inject, observer } from 'mobx-react';
 import DocumentTitle from 'react-document-title';
-import { Layout } from 'antd'
-import stores from './stores/index';
+import { Layout, Col, Row } from 'antd'
+import stores from './stores';
 import Header from './pages/shared/_header';
 import UserLoginPage from './pages/user/login';
-import UserIndexPage from './pages/user/index';
-import MyQuotasPage from './pages/my/quotas';
-import MyReservesPage from './pages/my/reserves';
+import UserIndexPage from './pages/user';
+import BatchIndexPage from './pages/batch';
+import QuotaIndexPage from './pages/quota';
+import ReserveIndexPage from './pages/reserve';
+import UserQuotasPage from './pages/user/quotas';
+import UserReservesPage from './pages/user/reserves';
+import UserEditPasswordPage from './pages/user/edit_password'
+import HomePage from './pages/home';
 
 @observer
 export default class App extends Component {
@@ -25,20 +30,60 @@ export default class App extends Component {
 @observer
 class PageRouter extends Component {
     render() {
-        const user = this.props.stores.userStore.current;
         return (
             <Router>
                 <DocumentTitle title={this.props.stores.globalStore.title}>
                     <Layout>
-                        <Header />
-                        <Route exact path="/" component={MyQuotasPage} />
-                        <Route exact path="/user/login" componment={UserLoginPage} />
-                        <Route exact path="/my/quotas" componment={MyQuotasPage} />
-                        <Route exact path="/my/reserves" componment={MyReservesPage} />
-                        <Route exact path="/user/index" component={UserIndexPage} />
+                    <Row>
+                        <Col xxl={4} xl={2} lg={0} md={0} sm={0} xs={0}> </Col>
+                        <Col xxl={16} xl={20}>
+                            <Header />
+                            <Switch>
+
+                                <PrivateRoute exact path="/" component={HomePage} />
+                                <PrivateRoute path="/batch/index" component={BatchIndexPage} />
+                                <PrivateRoute path="/quota/index" component={QuotaIndexPage} />
+                                <PrivateRoute path="/reserve/index" componment={ReserveIndexPage} />
+                                <PrivateRoute path="/user/index" component={UserIndexPage} />
+
+                                <PrivateRoute path="/user/editpassword" component={UserEditPasswordPage} />
+                                <PrivateRoute path="/user/quotas" componment={UserEditPasswordPage} />
+                                <PrivateRoute path="/user/reserves" componment={UserReservesPage} />
+
+                                <Route path="/user/login" component={UserLoginPage} />
+                                <Route component={NoMatch} />
+                            </Switch>
+                        </Col>
+                        <Col xxl={4} xl={2} lg={0} md={0} sm={0} xs={0}> </Col>
+                    </Row>
                     </Layout>
                 </DocumentTitle>
-            </Router>
+            </Router >
         );
     }
+}
+
+@inject('stores')
+@observer
+class PrivateRoute extends Component {
+    render() {
+        const user = this.props.stores.userStore.current;
+        if (!user) {
+            return <Redirect to="/user/login" />
+        }
+        return (
+            <Route {...this.props}></Route>
+        )
+    }
+}
+
+function NoMatch({ location }) {
+    return (
+        <div>
+            <h1>404</h1>
+            <h3>
+                未能找到路径 <code>{location.pathname}</code>
+            </h3>
+        </div>
+    );
 }

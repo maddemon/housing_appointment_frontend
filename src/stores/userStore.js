@@ -26,7 +26,6 @@ class UserStore {
 
     logout() {
         window.localStorage.removeItem("user");
-        console.log(this.current)
         this.current = null;
     }
 
