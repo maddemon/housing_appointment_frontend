@@ -10,7 +10,13 @@ class QuotaStore {
     }
 
     async setMyList() {
-        this.myList =  await api.quota.listOfCustomer()
+        //const data =  await api.quota.listOfCustomer()
+        const data = {
+            "status": "200",
+            "message": "操作成功",
+            "data": "[{\"createTime\":1553218997000,\"quotaStatus\":1,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"}]"
+        };
+        this.myList = JSON.parse(data.data);
     }
 
     async save(data) {

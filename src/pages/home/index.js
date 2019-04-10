@@ -1,15 +1,19 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
 import { Link } from 'react-router-dom'
+import UserQuotasPage from '../user/quotas'
 
 @inject('stores')
 @observer
 export default class HomePage extends Component {
     componentWillMount() {
-        console.log('homepage')
         this.props.stores.globalStore.setTitle('首页');
     }
     render() {
+        const user = this.props.stores.userStore.current;
+        if (user && user.roleId === 1) {
+            return <UserQuotasPage {...this.props} />
+        }
         return (
             <div>
                 <Link to="/user/login">用户登录</Link><br />

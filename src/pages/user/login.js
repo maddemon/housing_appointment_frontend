@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import Config from '../../common/config.js'
 import { Form, Icon, Input, Button, Row, Col } from 'antd'
 import { inject, observer } from 'mobx-react';
 
@@ -30,14 +29,13 @@ class UserLoginPage extends Component {
         return (
             <Row className="login">
                 <Col xs={24} sm={24} md={8} lg={{ span: 6, offset: 9 }}>
-                    <img src="/images/logo.png" alt="logo" />
                     <h1>
-                        {Config.SystemName}
+                    用户登录
                     </h1>
                     <Form onSubmit={this.handleSubmit}>
                         <Form.Item>
                             {getFieldDecorator('username', { rules: [{ required: true, message: '请输入账户名！', }], })(
-                                <Input size="large" prefix={<Icon type="user" />} placeholder="用户名" />
+                                <Input size="large" prefix={<Icon type="user" />} placeholder="请输入身份证或手机号" />
                             )}
                         </Form.Item>
                         <Form.Item>
@@ -48,7 +46,7 @@ class UserLoginPage extends Component {
 
                         <Form.Item className="additional">
                             <Button size="large" loading={this.state.loading} type="primary" htmlType="submit">
-                                登录
+                                <Icon type="login" />登录
                             </Button>
                         </Form.Item>
                     </Form>

@@ -1,38 +1,27 @@
 import React, { Component } from 'react'
-import { inject, observer } from 'mobx-react';
-import { Layout, Row, Button, Empty, Tag } from 'antd'
+import { inject, observer } from 'mobx-react'
+import { Layout, Row, Col, Button, Empty, Tag, PageHeader } from 'antd'
 
 @inject('stores')
 @observer
-export default class UserQuotaPage extends Component {
+class UserQuotaPage extends Component {
 
     componentWillMount() {
-        console.log('MyQuotas')
         this.props.stores.globalStore.setTitle('我的指标');
-
         this.props.stores.quotaStore.setMyList();
     }
-    
-    componentWillReceiveProps(nextProps) {
-        console.log(nextProps)
-    }
-    
-    
-    componentWillUpdate(nextProps, nextState) {
-        console.log(nextProps)
-    }
-    
 
     handleItemClick = (item) => {
-
+        this.props.history.push('/reserve/step1?quotaUuid=' + item.uuid)
     }
 
     quotaItemRender = (item) => {
-        return <Button onClick={() => this.handleItemClick(item)}>
-            <h3>指标{item.uuid}</h3>
-            <p>日期：{item.createTime}</p>
-            <p>{item.quotaStatus ? <Tag color="green">已使用</Tag> : <Tag color="gray">待预约</Tag>}</p>
-        </Button>
+        return <Col xxl={12} xl={12} lg={12} key={item.uuid + Math.random()}>
+            <Button onClick={() => this.handleItemClick(item)} style={{ width: '98%', height: '100px', margin: '10px' }} disabled={item.quotaStatus === 1}>
+                <h3>指标{item.uuid}</h3>
+                <small>{item.quotaStatus ? <Tag color="green">已使用</Tag> : <Tag color="gray">待预约</Tag>}</small>
+            </Button>
+        </Col>
     }
 
     render() {
@@ -40,12 +29,17 @@ export default class UserQuotaPage extends Component {
         const list = this.props.stores.quotaStore.myList || [];
 
         return (
-            <Layout>
-                <h1>我的指标</h1>
+            <>
+
+                <PageHeader
+                    title="我的指标"
+                    subTitle="点击指标进行预约"
+                />
                 <Row>
-                    {list.length === 0 ? <Empty>暂无指标</Empty> : list.filter(e => e.quotaStatus === 0).map(v => this.quotaItemRender(v))}
+                    {list.length === 0 ? <Empty>暂无指标</Empty> : list.map(v => this.quotaItemRender(v))}
                 </Row>
-            </Layout>
+            </>
         )
     }
 }
+export default UserQuotaPage

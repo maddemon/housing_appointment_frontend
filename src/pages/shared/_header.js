@@ -1,30 +1,34 @@
 import React, { Component } from 'react'
+import { withRouter } from 'react-router-dom'
 import { inject, observer } from 'mobx-react'
-import { Layout, Row, Col, Menu, Icon } from 'antd'
+import { Row, Col, Menu, Icon } from 'antd'
 import Config from '../../common/config';
 import { Link } from 'react-router-dom'
 
 @inject('stores')
 @observer
-export default class Header extends Component {
+class TopNavbar extends Component {
 
     state = { current: ['/'] }
 
     handleMenuClick = menu => {
         this.setState({ current: [menu.key] });
-        console.log('【menu】',menu.key)
         if (menu.key === 'user_logout') {
             this.props.stores.userStore.logout();
+            this.props.history.push('/user/login');
         }
     }
 
     getMenuItems = (identity) => {
         let result = [];
-        switch (identity.role) {
+        if (!identity) {
+            return null;
+        }
+        switch (identity.roleId) {
             case 1:
                 result = [
-                    <Menu.Item key="user_quotas" >
-                        <Link to="/user/quotas">
+                    <Menu.Item key="/" >
+                        <Link to="/">
                             <Icon type="ordered-list" />我的指标
                         </Link>
                     </Menu.Item>,
@@ -73,22 +77,19 @@ export default class Header extends Component {
 
     render() {
         const identity = this.props.stores.userStore.current;
-        if (!identity) {
-            return null;
-        }
         return (
-            <Layout>
-                <Row>
-                    <Col xs={24} sm={24} md={5} lg={5} xl={5} xxl={4}>
-                        <Link to="/" className="logo"><h1>{Config.SystemName}</h1></Link>
-                    </Col>
-                    <Col xs={0} sm={0} md={19} log={19} xl={19} xxl={20}>
-                        <Menu onClick={this.handleMenuClick} mode="horizontal" selectedKeys={this.state.current}>
-                            {this.getMenuItems(identity)}
-                        </Menu>
-                    </Col>
-                </Row >
-            </Layout>
+            <Row>
+                <Col xs={24} sm={24} md={5} lg={5} xl={5} xxl={4} className="logo"  >
+                    <h1 style={{ lineHeight: '64px', color: "#fff" }}>{Config.SystemName}</h1>
+                </Col>
+                <Col xs={0} sm={0} md={19} log={19} xl={19} xxl={20}>
+                    <Menu onClick={this.handleMenuClick} mode="horizontal" selectedKeys={this.state.current} theme="dark" style={{ lineHeight: '64px' }}>
+                        {this.getMenuItems(identity)}
+                    </Menu>
+                </Col>
+            </Row>
         )
     }
 }
+
+export default withRouter(TopNavbar)

@@ -19,7 +19,7 @@ class UserStore {
 
     async login(username, password) {
         //let user = await api.user.login(username, password);
-        let user = { name: 'Tester', role: 1 };
+        let user = { name: 'Tester', roleId: 1 };
         this.current = user;
         await window.localStorage.setItem("user", JSON.stringify(user));
     }
