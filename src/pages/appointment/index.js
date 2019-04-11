@@ -3,9 +3,9 @@ import { inject, observer } from 'mobx-react'
 
 @inject('stores')
 @observer
-export default class ReserveIndexPage extends Component {
+export default class AppointmentIndexPage extends Component {
     componentWillMount() {
-        console.log('ReserveIndexPage')
+        console.log('AppointmentIndexPage')
     }
     render() {
         return (

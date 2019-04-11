@@ -2,14 +2,15 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Redirect, Switch, } from "react-router-dom";
 import { inject, observer } from 'mobx-react';
 import DocumentTitle from 'react-document-title';
-import { Layout, Col, Row } from 'antd';
+import { Layout, Breadcrumb } from 'antd';
 import TopNavbar from '../shared/_header';
 import UserLoginPage from '../user/login';
 import UserIndexPage from '../user';
 import BatchIndexPage from '../batch';
 import QuotaIndexPage from '../quota';
-import ReserveIndexPage from '../reserve';
-import UserReservesPage from '../user/reserves';
+import AppointmentIndexPage from '../appointment';
+import UserAppointmentsPage from '../user/appointments';
+import MakeAppointmentPage from '../user/make_appointment';
 import UserEditPasswordPage from '../user/edit_password';
 import HomePage from '../home';
 const { Header, Content, Footer } = Layout;
@@ -26,13 +27,17 @@ export default class PrimaryLayout extends Component {
                             <TopNavbar />
                         </Header>
                         <Content style={{ padding: '0 50px', marginTop: 64 }}>
+                            <Breadcrumb style={{ margin: '16px 0' }}>
+                                {(this.props.stores.globalStore.breadcrumb || []).map((name, i) => <Breadcrumb.Item key={i}>{name}</Breadcrumb.Item>)}
+                            </Breadcrumb>
                             <div style={{ background: '#fff', padding: 24, minHeight: 380 }}>
                                 <Switch>
                                     <PrivateRoute exact path="/" component={HomePage} />
-                                    <PrivateRoute path="/user/reserves" component={UserReservesPage} />
+                                    <PrivateRoute path="/user/appointments" component={UserAppointmentsPage} />
+                                    <PrivateRoute path="/appointment/make" component={MakeAppointmentPage} />
                                     <PrivateRoute path="/batch/index" component={BatchIndexPage} />
                                     <PrivateRoute path="/quota/index" component={QuotaIndexPage} />
-                                    <PrivateRoute path="/reserve/index" component={ReserveIndexPage} />
+                                    <PrivateRoute path="/appointment/index" component={AppointmentIndexPage} />
                                     <PrivateRoute path="/user/index" component={UserIndexPage} />
                                     <PrivateRoute path="/user/editpassword" component={UserEditPasswordPage} />
                                     <Route path="/user/login" component={UserLoginPage} />

@@ -5,7 +5,7 @@ import { inject, observer } from 'mobx-react'
 @observer
 export default class UserReservePage extends Component {
     componentWillMount() {
-        console.log('UserReservePage')
+        this.props.stores.globalStore.setTitle('我的预约');
     }
     render() {
         return (

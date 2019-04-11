@@ -5,16 +5,15 @@ class ReserveStore {
     @observable list = [];
     @observable myList = [];
 
-    async list(page, rows) {
+    async setList(page, rows) {
         this.list = await api.quota.list(page, rows)
     }
 
     async setMyList() {
-        this.myList = await api.reserve.list()
     }
 
-    async save(data) {
-        await api.quota.add(data);
+    async make(batchUuid, quotaUuid) {
+        await api.reserve.reserve(batchUuid, quotaUuid)
     }
 
     async delete(quotaUuid) {

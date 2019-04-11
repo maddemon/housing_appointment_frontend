@@ -33,7 +33,7 @@ class TopNavbar extends Component {
                         </Link>
                     </Menu.Item>,
                     <Menu.Item key="user_appointments" >
-                        <Link to="/user/reserves">
+                        <Link to="/user/appointments">
                             <Icon type="calendar" />我的预约
                         </Link>
                     </Menu.Item>

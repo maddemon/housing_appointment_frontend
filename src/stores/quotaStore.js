@@ -4,6 +4,7 @@ class QuotaStore {
 
     @observable list = [];
     @observable myList = [];
+    @observable selected = null;
 
     async setList(page, rows) {
         this.list = await api.quota.list(page, rows)
@@ -17,6 +18,10 @@ class QuotaStore {
             "data": "[{\"createTime\":1553218997000,\"quotaStatus\":1,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"}]"
         };
         this.myList = JSON.parse(data.data);
+    }
+
+    setSelected(model) {
+        this.selected = model;
     }
 
     async save(data) {

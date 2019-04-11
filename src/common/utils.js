@@ -1,4 +1,5 @@
 import Config from '../common/config'
+import { message } from 'antd'
 // function queryStringToJson(str) {
 //     let json = {}
 //     str.split('&').map(kv => {
@@ -18,8 +19,15 @@ function jsonToQueryString(json) {
         .map(key => encodeURIComponent(key) + '=' + encodeURIComponent((json[key] === null || json[key] === undefined) ? '' : json[key]))
         .join('&');
 }
+
 function throwException(res) {
-    alert(res.message);
+    //alert(res.message);
+    try {
+        message.warn(res.message)
+    }
+    catch (ex) {
+        message.warn('未知错误')
+    }
 }
 
 async function request(path, query, data, httpMethod) {
