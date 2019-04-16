@@ -17,7 +17,7 @@ const api = {
             return $.get('user/reset', { userUuid })
         },
         editPassword: (oldPassword, newPassword) => {
-            return $.get('user/editpassword', { oldPassword, newPassword })
+            return $.get('user/changepasswrod', { oldPassword, newPassword })
         }
     },
     batch: {
@@ -49,8 +49,8 @@ const api = {
         },
     },
     reserve: {
-        history: (batchUuid, pageIndex, pageSize) => {
-            return $.post('reserve/history', { batchUuid, pageIndex, pageSize })
+        history: (userUuid, pageIndex, pageSize) => {
+            return $.post('reserve/history', { userUuid, pageIndex, pageSize })
         },
         reserve: (batchUuid, quotaUuid) => {
             return $.post('reserve/reserve', { batchUuid, quotaUuid })
@@ -58,6 +58,9 @@ const api = {
         list: (batchUuid, pageIndex, pageSize) => {
             return $.post('reserve/reserveList', { batchUuid, pageIndex, pageSize })
         },
+        import: (batchUuid, file) => {
+            return $.post('reserve/reserveExcel', { batchUuid }, file)
+        }
     }
 }
 export {

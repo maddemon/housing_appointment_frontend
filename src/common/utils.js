@@ -1,23 +1,26 @@
 import Config from '../common/config'
 import { message } from 'antd'
-// function queryStringToJson(str) {
-//     let json = {}
-//     str.split('&').map(kv => {
-//         let arr = kv.split('=')
-//         if (arr.length === 2) {
-//             json[arr[0]] = decodeURIComponent(arr[1])
-//         }
-//         return json
-//     })
-//     return json;
-// }
-function jsonToQueryString(json) {
-    if (!json)
-        return '';
-    return Object
-        .keys(json)
-        .map(key => encodeURIComponent(key) + '=' + encodeURIComponent((json[key] === null || json[key] === undefined) ? '' : json[key]))
-        .join('&');
+
+const QueryString = {
+    parseJSON: (str) => {
+        let json = {}
+        str.split('&').map(kv => {
+            let arr = kv.split('=')
+            if (arr.length === 2) {
+                json[arr[0]] = decodeURIComponent(arr[1])
+            }
+            return json
+        })
+        return json;
+    },
+    stringify: (json) => {
+        if (!json)
+            return '';
+        return Object
+            .keys(json)
+            .map(key => encodeURIComponent(key) + '=' + encodeURIComponent((json[key] === null || json[key] === undefined) ? '' : json[key]))
+            .join('&');
+    }
 }
 
 function throwException(res) {
@@ -37,9 +40,9 @@ async function request(path, query, data, httpMethod) {
     }
     if (query) {
         if (url.indexOf('?') > -1) {
-            url += jsonToQueryString(query)
+            url += QueryString.stringify(query)
         } else {
-            url += '?' + jsonToQueryString(query)
+            url += '?' + QueryString.stringify(query)
         }
     }
     let options = {
@@ -84,6 +87,7 @@ async function request(path, query, data, httpMethod) {
 }
 
 
+
 const $ = {
     get: (path, query) => {
         return request(path, query, null, 'GET');
@@ -96,6 +100,6 @@ const $ = {
     },
     delete: (path, query) => {
         return request(path, query, null, 'DELETE');
-    },
+    }
 }
-export { $ as default }
+export { $ as default, QueryString }

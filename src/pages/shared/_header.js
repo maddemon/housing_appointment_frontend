@@ -42,8 +42,8 @@ class TopNavbar extends Component {
             case 2:
             case 3:
                 result = [
-                    <Menu.Item key="manager_user_index" >
-                        <Link to="/user/index">
+                    <Menu.Item key="/" >
+                        <Link to="/">
                             <Icon type="usergroup-add" />用户管理
                         </Link>
                     </Menu.Item>,
