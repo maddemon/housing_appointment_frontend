@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Row, PageHeader, Icon, Button, Table, Modal, message } from 'antd'
+import { Row, PageHeader, Icon, Button, Table, Modal, message, Upload } from 'antd'
 import { QueryString } from '../../common/utils'
 import EditModal from './edit'
 
@@ -51,6 +51,19 @@ export default class UserIndexPage extends Component {
         return buttons;
     }
 
+    handleBeforeUpload = (file) => {
+        this.setState({ file, uploading: true });
+        return false;
+    }
+
+    handleUpload = async () => {
+        const formData = new FormData();
+        formData.append('file', this.state.file);
+        await this.props.stores.userStore.import(formData)
+
+        this.setState({ uploading: false });
+    }
+
     render() {
         const list = this.props.stores.userStore.list || []
         const page = this.props.stores.userStore.page || {}
@@ -58,15 +71,23 @@ export default class UserIndexPage extends Component {
             <Row>
                 <PageHeader title="用户管理" />
                 <div className="toolbar">
-                    <EditModal trigger={<Button><Icon type="plus" /> 添加用户</Button>} />
+                    <EditModal trigger={<Button type="primary"><Icon type="plus" /> 添加用户</Button>} />
+                    <Upload
+                        showUploadList={false}
+                        beforeUpload={this.handleBeforeUpload}
+                        customRequest={this.handleUpload}
+                    >
+                        <Button type="success"><Icon type="import" /> 导入用户</Button>
+                    </Upload>
                 </div>
                 <Table
+                    rowKey="uuid"
                     columns={[
                         { dataIndex: "name", title: "姓名", width: 150 },
                         { dataIndex: "cardType", title: "证件类型", width: 120 },
-                        { dataIndex: "cardnumber", title: "证件号码" },
-                        { dataIndex: "phone", title: "手机号" },
-                        { title: "操作", render: this.operateColumnRender },
+                        { dataIndex: "cardnumber", title: "证件号码", width: 200 },
+                        { dataIndex: "phone", title: "手机号", width: 200 },
+                        { title: "操作", render: this.operateColumnRender, width: 200 },
                     ]}
                     dataSource={list}
                     pagination={{ ...page, size: 5, onChange: this.handlePageChange, }}

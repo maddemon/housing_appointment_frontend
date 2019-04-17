@@ -1,50 +1,65 @@
-import { observable } from 'mobx'
-import api from '../common/api'
+import { observable, action } from 'mobx';
+import cookie from 'react-cookies';
+import api from '../common/api';
+
+const CookieName = "authtoken"
+
 class UserStore {
-
-    @observable current = null;
-
     @observable list = [];
     @observable page = {};
 
     constructor() {
-        this.initUserFromLocalStorage();
+        console.log(document.cookie)
     }
 
-    initUserFromLocalStorage() {
-        const json = window.localStorage.getItem("user");
+    current() {
+        const sessionId = this.authenticated()
+        const json = window.localStorage.getItem(sessionId);
         if (json) {
-            this.current = JSON.parse(json);
+            return JSON.parse(json);
+        }
+        return null;
+    }
+
+    authenticated() {
+        console.log(cookie.loadAll())
+        const sessionId = cookie.load(CookieName)
+        console.log('sessionId', sessionId)
+        return sessionId
+    }
+
+    @action async login(username, password) {
+        const data = await api.user.login(username, password);
+        if (data && data.status === '200') {
+            const user = data.data;
+            cookie.save(CookieName, user.sessionId, { path: '/' })
+            window.localStorage.clear();
+            await window.localStorage.setItem(user.sessionId, JSON.stringify(user))
         }
     }
 
-    async login(username, password) {
-        //let user = await api.user.login(username, password);
-        let user = { name: 'Tester', roleId: 2 };
-        this.current = user;
-        await window.localStorage.setItem("user", JSON.stringify(user));
-    }
-
     logout() {
-        window.localStorage.removeItem("user");
-        this.current = null;
+        const sessionId = cookie.remove(CookieName)
+        window.localStorage.removeItem(sessionId)
+        cookie.remove(CookieName)
     }
 
     async setList(pageIndex, pageSize) {
         const response = await api.user.list(pageIndex, pageSize);
+        console.log(response)
         if (!response) return;
         this.page = {
             pageSize: pageSize,
             pageIndex: pageIndex,
             total: response.data.total
         };
-        this.list = response.data.data.list
+        this.list = response.data.list
     }
 
-    async saveUser(user) {
+    async save(user) {
         return await api.user.edit(user)
     }
-    async deleteUser(uuid) {
+    async delete(uuid) {
         await api.user.delete(uuid);
     }
     async editPassword(oldPassword, newPassword) {
@@ -53,6 +68,10 @@ class UserStore {
 
     async resetPassword(uuid) {
         await api.user.resetPassword(uuid)
+    }
+
+    async import(data) {
+        await api.user.import(data)
     }
 }
 

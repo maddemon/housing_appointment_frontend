@@ -15,15 +15,15 @@ class EditPasswordPage extends Component {
     handleSubmit = (e) => {
         this.setState({ loading: true });
         e.preventDefault();
-        this.props.form.validateFields((err, values) => {
+        this.props.form.validateFields(async (err, values) => {
             if (!err) {
                 if (values.newpassword !== values.repassword) {
                     message.warn("两次输入密码不相同");
                     this.setState({ loading: false })
                     return false;
                 }
-                this.props.stores.userStore.editPassword(values.oldpassword, values.newpassword)
-                this.props.history.push('/')
+                await this.props.stores.userStore.editPassword(values.oldpassword, values.newpassword)
+                message.success("修改完成")
             } else {
                 this.setState({ loading: false });
             }

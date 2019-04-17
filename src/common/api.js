@@ -1,8 +1,8 @@
 import $ from './utils'
 const api = {
     user: {
-        login: (username, password) => {
-            return $.get('user/login', { username, password })
+        login: async (account, password) => {
+            return await $.post('user/login', null, { account, password })
         },
         add: (user) => {
             return $.post('user/add', null, user)
@@ -18,6 +18,10 @@ const api = {
         },
         editPassword: (oldPassword, newPassword) => {
             return $.get('user/changepasswrod', { oldPassword, newPassword })
+        },
+        import: (formData) => {
+            console.log(formData)
+            return $.post('user/addByExcel', null, formData)
         }
     },
     batch: {

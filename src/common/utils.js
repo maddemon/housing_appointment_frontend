@@ -4,6 +4,7 @@ import { message } from 'antd'
 const QueryString = {
     parseJSON: (str) => {
         let json = {}
+        if (!str) return json
         str.split('&').map(kv => {
             let arr = kv.split('=')
             if (arr.length === 2) {
@@ -36,7 +37,7 @@ function throwException(res) {
 async function request(path, query, data, httpMethod) {
     let url = path
     if (path.indexOf('http') !== 0) {
-        url = Config.Host + Config.ApiPath + path
+        url = Config.ApiPath + path
     }
     if (query) {
         if (url.indexOf('?') > -1) {
@@ -45,42 +46,37 @@ async function request(path, query, data, httpMethod) {
             url += '?' + QueryString.stringify(query)
         }
     }
-    let options = {
+    const options = {
         'method': httpMethod,
+        'credentials': 'include',
+        'mode': 'cors',
         'headers': {
-            //'token': userStore.token || '',
             'Content-Type': 'application/json',
         }
     }
     try {
-        console.debug(url)
-        let result = undefined;
+        let response = undefined;
         switch (httpMethod) {
             case 'GET':
             case 'DELETE':
-                result = await fetch(url, options)
+                response = await fetch(url, options)
                 break;
             case 'POST':
                 options.body = JSON.stringify(data)
-                result = await fetch(url, options)
+                response = await fetch(url, options)
                 break;
             default:
                 break;
         }
-        console.debug('result._bodyText', result._bodyText)
-        let response = result._bodyText
-        if (response) {
-            try {
-                response = JSON.parse(response)
-            }
-            catch (ex) {
-            }
+        if (response.status === 404) {
+            
         }
-        if (result.status === 200 || result.status === 204) {
-            return response
-        } else {
-            throwException(response)
+        const responseJson = await response.json();
+        if (responseJson.status !== '200') {
+            throwException(responseJson);
         }
+        console.log(responseJson)
+        return responseJson;
     } catch (err) {
         throwException(err)
     }

@@ -1,23 +1,26 @@
 import React, { Component } from 'react'
 import { Form, Icon, Input, Button, Row, Col } from 'antd'
 import { inject, observer } from 'mobx-react';
+import { QueryString } from '../../common/utils'
 
 @inject('stores')
 @observer
 class UserLoginPage extends Component {
-    state = { loading: false }
+    state = {
+        loading: false,
+    }
     componentWillMount() {
-        console.log('login')
         this.props.stores.globalStore.setTitle('用户登录');
     }
 
     handleSubmit = (e) => {
         this.setState({ loading: true });
         e.preventDefault();
-        this.props.form.validateFields((err, values) => {
+        this.props.form.validateFields(async (err, values) => {
             if (!err) {
-                this.props.stores.userStore.login(values.username, values.password)
-                this.props.history.push('/')
+                await this.props.stores.userStore.login(values.username, values.password)
+                const query = QueryString.parseJSON(this.props.location.seach)
+                this.props.history.push(query.returnUrl || '/')
             } else {
                 this.setState({ loading: false });
             }
@@ -30,7 +33,7 @@ class UserLoginPage extends Component {
             <Row className="login">
                 <Col xs={24} sm={24} md={8} lg={{ span: 6, offset: 9 }}>
                     <h1>
-                    用户登录
+                        用户登录
                     </h1>
                     <Form onSubmit={this.handleSubmit}>
                         <Form.Item>

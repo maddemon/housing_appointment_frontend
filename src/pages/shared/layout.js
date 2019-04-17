@@ -13,6 +13,7 @@ import UserAppointmentsPage from '../user/appointments';
 import MakeAppointmentPage from '../user/make_appointment';
 import UserEditPasswordPage from '../user/edit_password';
 import HomePage from '../home';
+import TestPage from '../home/test'
 const { Header, Content, Footer } = Layout;
 
 @inject('stores')
@@ -33,6 +34,7 @@ export default class PrimaryLayout extends Component {
                             <div style={{ background: '#fff', padding: 24, minHeight: 380 }}>
                                 <Switch>
                                     <PrivateRoute exact path="/" component={HomePage} />
+                                    <Route path="/house/user/login" component={TestPage} />
                                     <PrivateRoute path="/user/appointments" component={UserAppointmentsPage} />
                                     <PrivateRoute path="/appointment/make" component={MakeAppointmentPage} />
                                     <PrivateRoute path="/batch/index" component={BatchIndexPage} />
@@ -57,9 +59,11 @@ export default class PrimaryLayout extends Component {
 @observer
 class PrivateRoute extends Component {
     render() {
-        const user = this.props.stores.userStore.current;
-        if (!user) {
-            return <Redirect to="/user/login" />
+        const authenticated = this.props.stores.userStore.authenticated();
+        console.log('authenticated', authenticated)
+        if (!authenticated) {
+            const returnUrl = `${this.props.location.pathname}${this.props.location.search}`
+            return <Redirect to={`/user/login?returnUrl=${returnUrl}`} />
         }
         console.log(this.props)
 

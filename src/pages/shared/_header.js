@@ -9,11 +9,11 @@ import { Link } from 'react-router-dom'
 @observer
 class TopNavbar extends Component {
 
-    state = { current: ['/'] }
+    state = { current: [this.props.location.pathname] }
 
     handleMenuClick = menu => {
         this.setState({ current: [menu.key] });
-        if (menu.key === 'user_logout') {
+        if (menu.key === '/user/logout') {
             this.props.stores.userStore.logout();
             this.props.history.push('/user/login');
         }
@@ -24,35 +24,34 @@ class TopNavbar extends Component {
         if (!identity) {
             return null;
         }
-        switch (identity.roleId) {
-            case 1:
+        switch (identity.role) {
+            case 'user':
                 result = [
                     <Menu.Item key="/" >
                         <Link to="/">
                             <Icon type="ordered-list" />我的指标
                         </Link>
                     </Menu.Item>,
-                    <Menu.Item key="user_appointments" >
+                    <Menu.Item key="/user/appointments" >
                         <Link to="/user/appointments">
                             <Icon type="calendar" />我的预约
                         </Link>
                     </Menu.Item>
                 ];
                 break;
-            case 2:
-            case 3:
+            case 'admin':
                 result = [
                     <Menu.Item key="/" >
                         <Link to="/">
                             <Icon type="usergroup-add" />用户管理
                         </Link>
                     </Menu.Item>,
-                    <Menu.Item key="manager_batch_index" >
+                    <Menu.Item key="/batch/index" >
                         <Link to="/batch/index">
                             <Icon type="import" />批次管理
                         </Link>
                     </Menu.Item>,
-                    <Menu.Item key="manager_quota_index" >
+                    <Menu.Item key="/quota/index" >
                         <Link to="/quota/index">
                             <Icon type="switcher" />指标管理
                         </Link>
@@ -63,12 +62,12 @@ class TopNavbar extends Component {
                 break;
         }
         result = result.concat([
-            <Menu.Item key="user_editpassword">
+            <Menu.Item key="/user/editpassword">
                 <Link to="/user/editpassword">
                     <Icon type="key" />修改密码
                 </Link>
             </Menu.Item>,
-            <Menu.Item key="user_logout">
+            <Menu.Item key="/user/logout">
                 <Icon type="poweroff" />退出
             </Menu.Item>
         ])
@@ -76,7 +75,7 @@ class TopNavbar extends Component {
     }
 
     render() {
-        const identity = this.props.stores.userStore.current;
+        const identity = this.props.stores.userStore.current();
         return (
             <Row>
                 <Col xs={24} sm={24} md={5} lg={5} xl={5} xxl={4} className="logo"  >
