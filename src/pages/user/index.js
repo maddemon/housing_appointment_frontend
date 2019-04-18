@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Row, PageHeader, Icon, Button, Table, Modal, message, Upload } from 'antd'
+import { Row, PageHeader, Icon, Button, Table, Modal, message } from 'antd'
 import { QueryString } from '../../common/utils'
 import EditModal from './edit'
 import ImportButton from '../shared/import_button'

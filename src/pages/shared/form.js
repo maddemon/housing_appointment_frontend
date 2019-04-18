@@ -25,6 +25,7 @@ class SharedForm extends Component {
                     item.render = <Input type="hidden" />
                     break;
                 default:
+                case "number":
                 case "text":
                     item.render = <Input type={item.type} placeholder={item.placeholder} />
                     break;
