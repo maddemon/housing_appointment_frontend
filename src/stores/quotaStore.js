@@ -3,21 +3,28 @@ import api from '../common/api'
 class QuotaStore {
 
     @observable list = [];
+    @observable page = {};
     @observable myList = [];
     @observable selected = null;
 
-    async setList(page, rows) {
-        this.list = await api.quota.list(page, rows)
+    async setList(pageIndex, pageSize) {
+        const response = await api.quota.list(pageIndex, pageSize);
+        if (!response) return;
+        this.page = {
+            pageSize: pageSize,
+            pageIndex: pageIndex,
+            total: response.data.total
+        };
+        this.list = response.data.list
     }
 
     async setMyList() {
-        //const data =  await api.quota.listOfCustomer()
-        const data = {
-            "status": "200",
-            "message": "操作成功",
-            "data": "[{\"createTime\":1553218997000,\"quotaStatus\":1,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"},{\"createTime\":1553218997000,\"quotaStatus\":0,\"userUuid\":\"1\",\"uuid\":\"1\"}]"
-        };
+        const data = await api.quota.listOfCustomer()
         this.myList = JSON.parse(data.data);
+    }
+
+    get importUrl() {
+        return api.quota.getImportUrl();
     }
 
     setSelected(model) {

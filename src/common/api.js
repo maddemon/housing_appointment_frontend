@@ -43,9 +43,6 @@ const api = {
         },
     },
     quota: {
-        add: (data) => {
-            return $.post('quota/add', null, data)
-        },
         delete: (quotaUuid) => {
             return $.get('quota/delete', { quotaUuid })
         },
@@ -55,6 +52,9 @@ const api = {
         listOfCustomer: () => {
             return $.get('quota/listOfCustomer')
         },
+        getImportUrl: () => {
+            return '/house/quota/add';
+        }
     },
     reserve: {
         history: (userUuid, pageIndex, pageSize) => {

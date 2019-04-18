@@ -32,7 +32,6 @@ export default class UserIndexPage extends Component {
                 this.props.stores.userStore.delete(uuid)
             },
         })
-        this.props.stores.userStore.delete(uuid);
     }
 
     handleResetPassword = async (uuid) => {
