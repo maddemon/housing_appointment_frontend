@@ -14,10 +14,10 @@ export default class UserEditModal extends Component {
     getFormItems = () => {
         const model = this.props.model || {}
         return [
-            { name: 'ID', defaultValue: model.ID, type: "hidden" },
+            { name: 'uuid', defaultValue: model.uuid, type: "hidden" },
             {
                 title: '证件类型',
-                name: 'CardType',
+                name: 'cardType',
                 defaultValue: model.cardType,
                 type: 'select',
                 props: {
@@ -28,9 +28,10 @@ export default class UserEditModal extends Component {
                     ]
                 }
             },
-            { title: '证件号码', name: 'CardNumber', defaultValue: model.cardNumber, },
-            { title: '姓名', name: 'Name', defaultValue: model.name, },
-            { title: '手机', name: 'phone', defaultValue: model.phone, }
+            { title: '证件号码', name: 'idcard', defaultValue: model.idcard, },
+            { title: '姓名', name: 'name', defaultValue: model.name, },
+            { title: '手机', name: 'phone', defaultValue: model.phone, },
+            { title: '优先级', name: 'priority', defaultValue: model.priority, },
         ];
     }
 

@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react'
 import { Row, PageHeader, Icon, Button, Table, Modal, message, Upload } from 'antd'
 import { QueryString } from '../../common/utils'
 import EditModal from './edit'
+import ImportButton from '../shared/import_button'
 
 @inject('stores')
 @observer
@@ -45,23 +46,16 @@ export default class UserIndexPage extends Component {
 
     operateColumnRender = (text, item) => {
         let buttons = [
-            <Button onClick={() => this.handleResetPassword(item.uuid)}>重置密码</Button>,
-            <EditModal model={item} trigger={<Button><Icon type="edit" />修改</Button>} />,
+            <Button key="btnreset" onClick={() => this.handleResetPassword(item.uuid)}>重置密码</Button>,
+            <EditModal key="btnedit" model={item} trigger={<Button><Icon type="edit" />修改</Button>} />,
         ];
         return buttons;
     }
 
-    handleBeforeUpload = (file) => {
-        this.setState({ file, uploading: true });
-        return false;
-    }
-
-    handleUpload = async () => {
-        const formData = new FormData();
-        formData.append('file', this.state.file);
-        await this.props.stores.userStore.import(formData)
-
-        this.setState({ uploading: false });
+    handleUpload = (response) => {
+        if (response.status === '200') {
+            this.props.stores.userStore.setList(this.state.pageIndex, this.state.pageSize)
+        }
     }
 
     render() {
@@ -72,13 +66,11 @@ export default class UserIndexPage extends Component {
                 <PageHeader title="用户管理" />
                 <div className="toolbar">
                     <EditModal trigger={<Button type="primary"><Icon type="plus" /> 添加用户</Button>} />
-                    <Upload
-                        showUploadList={false}
-                        beforeUpload={this.handleBeforeUpload}
-                        customRequest={this.handleUpload}
-                    >
-                        <Button type="success"><Icon type="import" /> 导入用户</Button>
-                    </Upload>
+                    <ImportButton
+                        text="导入用户"
+                        action={this.props.stores.userStore.importUrl}
+                        onChange={this.handleUpload}
+                    />
                 </div>
                 <Table
                     rowKey="uuid"

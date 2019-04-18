@@ -19,8 +19,12 @@ const api = {
         editPassword: (oldPassword, newPassword) => {
             return $.get('user/changepasswrod', { oldPassword, newPassword })
         },
-        import: (formData) => {
-            console.log(formData)
+        getImportUrl: () => {
+            return '/house/user/addByExcel'
+        },
+        import: (file) => {
+            let formData = new FormData();
+            formData.append('file', file);
             return $.post('user/addByExcel', null, formData)
         }
     },

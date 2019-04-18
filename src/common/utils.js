@@ -34,7 +34,7 @@ function throwException(res) {
     }
 }
 
-async function request(path, query, data, httpMethod) {
+function getRequestUrl(path, query) {
     let url = path
     if (path.indexOf('http') !== 0) {
         url = Config.ApiPath + path
@@ -46,11 +46,18 @@ async function request(path, query, data, httpMethod) {
             url += '?' + QueryString.stringify(query)
         }
     }
-    const options = {
+    return url;
+}
+
+async function request(path, query, data, httpMethod) {
+    let url = getRequestUrl(path, query);
+    let options = {
         'method': httpMethod,
         'credentials': 'include',
         'mode': 'cors',
-        'headers': {
+    }
+    if (data === null || (typeof data === 'object' && Object.keys(data).length > 0)) {
+        options.headers = {
             'Content-Type': 'application/json',
         }
     }
@@ -69,7 +76,7 @@ async function request(path, query, data, httpMethod) {
                 break;
         }
         if (response.status === 404) {
-            
+
         }
         const responseJson = await response.json();
         if (responseJson.status !== '200') {

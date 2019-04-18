@@ -8,10 +8,6 @@ class UserStore {
     @observable list = [];
     @observable page = {};
 
-    constructor() {
-        console.log(document.cookie)
-    }
-
     current() {
         const sessionId = this.authenticated()
         const json = window.localStorage.getItem(sessionId);
@@ -22,9 +18,7 @@ class UserStore {
     }
 
     authenticated() {
-        console.log(cookie.loadAll())
         const sessionId = cookie.load(CookieName)
-        console.log('sessionId', sessionId)
         return sessionId
     }
 
@@ -46,7 +40,6 @@ class UserStore {
 
     async setList(pageIndex, pageSize) {
         const response = await api.user.list(pageIndex, pageSize);
-        console.log(response)
         if (!response) return;
         this.page = {
             pageSize: pageSize,
@@ -57,7 +50,12 @@ class UserStore {
     }
 
     async save(user) {
-        return await api.user.edit(user)
+        if (user.uuid) {
+            await api.user.edit(user)
+        }
+        else {
+            await api.user.add(user)
+        }
     }
     async delete(uuid) {
         await api.user.delete(uuid);
@@ -70,8 +68,8 @@ class UserStore {
         await api.user.resetPassword(uuid)
     }
 
-    async import(data) {
-        await api.user.import(data)
+    get importUrl() {
+        return api.user.getImportUrl()
     }
 }
 
