@@ -86,8 +86,14 @@ class BatchItemControl extends Component {
                 <p>当前日期：{new Date().toLocaleDateString()}</p>
             </div>,
             onOk: async () => {
-                this.props.stores.appointmentStore.make(batch, quota)
-                this.props.handleClick(batch);
+                const result = await this.props.stores.appointmentStore.make(batch.uuid, quota.uuid)
+                if (result === '200') {
+                    message.success("预约成功");
+                    this.props.handleClick(batch);
+                }
+                else {
+                    //message.error("预约失败：" + result.message)
+                }
             }
         })
     }

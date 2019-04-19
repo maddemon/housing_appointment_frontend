@@ -8,8 +8,8 @@ class UserStore {
     @observable list = [];
     @observable page = {};
 
-    current() {
-        const sessionId = this.authenticated()
+    get current() {
+        const sessionId = this.authenticated
         const json = window.localStorage.getItem(sessionId);
         if (json) {
             return JSON.parse(json);
@@ -17,7 +17,7 @@ class UserStore {
         return null;
     }
 
-    authenticated() {
+    get authenticated() {
         const sessionId = cookie.load(CookieName)
         return sessionId
     }
@@ -33,7 +33,7 @@ class UserStore {
     }
 
     logout() {
-        const sessionId = cookie.remove(CookieName)
+        const sessionId = this.authenticated;
         window.localStorage.removeItem(sessionId)
         cookie.remove(CookieName)
     }

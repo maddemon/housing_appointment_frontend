@@ -75,7 +75,7 @@ class TopNavbar extends Component {
     }
 
     render() {
-        const identity = this.props.stores.userStore.current();
+        const identity = this.props.stores.userStore.current;
         return (
             <Row>
                 <Col xs={24} sm={24} md={5} lg={5} xl={5} xxl={4} className="logo"  >

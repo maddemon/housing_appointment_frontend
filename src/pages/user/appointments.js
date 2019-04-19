@@ -7,6 +7,7 @@ import { PageHeader, Card } from 'antd'
 export default class UserAppointmentsPage extends Component {
     componentWillMount() {
         this.props.stores.globalStore.setTitle('我的预约');
+        this.props.stores.appointmentStore.setMyList(this.props.stores.userStore.current.uuid);
     }
     render() {
         const list = this.props.stores.appointmentStore.myList;

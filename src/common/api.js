@@ -58,13 +58,13 @@ const api = {
     },
     reserve: {
         history: (userUuid, pageIndex, pageSize) => {
-            return $.post('reserve/history', { userUuid, pageIndex, pageSize })
+            return $.get('reserve/history', { userUuid, pageIndex, pageSize })
         },
         reserve: (batchUuid, quotaUuid) => {
             return $.post('reserve/reserve', { batchUuid, quotaUuid })
         },
         list: (batchUuid, pageIndex, pageSize) => {
-            return $.post('reserve/reserveList', { batchUuid, pageIndex, pageSize })
+            return $.get('reserve/reserveList', { batchUuid, pageIndex, pageSize })
         },
         import: (batchUuid, file) => {
             return $.post('reserve/reserveExcel', { batchUuid }, file)

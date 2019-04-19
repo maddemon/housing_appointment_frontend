@@ -10,7 +10,7 @@ export default class HomePage extends Component {
     }
     render() {
         const user = this.props.stores.userStore.current;
-        if (user && user.roleId === 1) {
+        if (user && user.role === 'user') {
             return <UserQuotasPage {...this.props} />
         }
         return <UserIndexPage {...this.props} />

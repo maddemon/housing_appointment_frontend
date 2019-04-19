@@ -59,7 +59,7 @@ export default class PrimaryLayout extends Component {
 @observer
 class PrivateRoute extends Component {
     render() {
-        const authenticated = this.props.stores.userStore.authenticated();
+        const authenticated = this.props.stores.userStore.authenticated;
         console.log('authenticated', authenticated)
         if (!authenticated) {
             const returnUrl = `${this.props.location.pathname}${this.props.location.search}`

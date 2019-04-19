@@ -5,15 +5,20 @@ class ReserveStore {
     @observable list = [];
     @observable myList = [];
 
-    async setList(page, rows) {
-        this.list = await api.quota.list(page, rows)
+    async setList(batchUuid, pageIndex, pageSize) {
+        const response = await api.reserve.list(batchUuid, pageIndex, pageSize);
+        if (!response) return;
+        this.list = response.list;
     }
 
-    async setMyList() {
+    async setMyList(userUuid) {
+        const response = await api.reserve.history(userUuid, 1, 1000);
+        if (!response) return;
+        this.myList = response.list || []
     }
 
     async make(batchUuid, quotaUuid) {
-        await api.reserve.reserve(batchUuid, quotaUuid)
+        return await api.reserve.reserve(batchUuid, quotaUuid)
     }
 
     async delete(quotaUuid) {
