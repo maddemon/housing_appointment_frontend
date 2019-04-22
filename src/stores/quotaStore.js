@@ -36,7 +36,7 @@ class QuotaStore {
     }
 
     async delete(quotaUuid) {
-        await api.quota.delete(quotaUuid)
+        return await api.quota.delete(quotaUuid)
     }
 
 }

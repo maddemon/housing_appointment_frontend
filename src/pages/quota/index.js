@@ -28,8 +28,10 @@ export default class QuotaIndexPage extends Component {
             title: "确认",
             content: "你确定要删除该指标吗？",
             onOk: async () => {
-                await this.props.stores.quotaStore.delete(uuid)
-                await this.props.stores.quotaStore.setList(this.state.pageIndex, this.state.pageSize)
+                const data = await this.props.stores.quotaStore.delete(uuid)
+                if (data.status === '200') {
+                    await this.props.stores.quotaStore.setList(this.state.pageIndex, this.state.pageSize)
+                }
             },
         })
     }

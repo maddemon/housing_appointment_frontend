@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, Redirect, Switch, } from "react-router-dom";
+import { HashRouter as Router, Route, Redirect, Switch, } from "react-router-dom";
 import { inject, observer } from 'mobx-react';
 import DocumentTitle from 'react-document-title';
 import { Layout, Breadcrumb } from 'antd';
@@ -34,15 +34,15 @@ export default class PrimaryLayout extends Component {
                             <div style={{ background: '#fff', padding: 24, minHeight: 380 }}>
                                 <Switch>
                                     <PrivateRoute exact path="/" component={HomePage} />
-                                    <Route path="/house/user/login" component={TestPage} />
-                                    <PrivateRoute path="/user/appointments" component={UserAppointmentsPage} />
-                                    <PrivateRoute path="/appointment/make" component={MakeAppointmentPage} />
-                                    <PrivateRoute path="/batch/index" component={BatchIndexPage} />
-                                    <PrivateRoute path="/quota/index" component={QuotaIndexPage} />
-                                    <PrivateRoute path="/appointment/index" component={AppointmentIndexPage} />
-                                    <PrivateRoute path="/user/index" component={UserIndexPage} />
-                                    <PrivateRoute path="/user/editpassword" component={UserEditPasswordPage} />
-                                    <Route path="/user/login" component={UserLoginPage} />
+                                    <Route exact path="/house/user/login" component={TestPage} />
+                                    <PrivateRoute exact path="/user/appointments" component={UserAppointmentsPage} />
+                                    <PrivateRoute exact path="/appointment/make" component={MakeAppointmentPage} />
+                                    <PrivateRoute exact path="/batch/index" component={BatchIndexPage} />
+                                    <PrivateRoute exact path="/quota/index" component={QuotaIndexPage} />
+                                    <PrivateRoute exact path="/appointment/index" component={AppointmentIndexPage} />
+                                    <PrivateRoute exact path="/user/index" component={UserIndexPage} />
+                                    <PrivateRoute exact path="/user/editpassword" component={UserEditPasswordPage} />
+                                    <Route exact path="/user/login" component={UserLoginPage} />
                                     <Route component={NoMatch} />
                                 </Switch>
                             </div>

@@ -16,8 +16,8 @@ const api = {
         resetPassword: (userUuid) => {
             return $.get('user/reset', { userUuid })
         },
-        editPassword: (oldPassword, newPassword) => {
-            return $.get('user/changepasswrod', { oldPassword, newPassword })
+        editPassword: (passwordOld, passwordNew) => {
+            return $.post('user/changePassword', null, { passwordOld, passwordNew })
         },
         getImportUrl: () => {
             return '/house/user/addByExcel'

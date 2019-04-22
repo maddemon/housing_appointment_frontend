@@ -40,12 +40,12 @@ class SharedModal extends Component {
 export default class FormModal extends SharedModal {
     form = null;
     handleSubmit = () => {
-        this.form.validateFields((err, values) => {
+        this.form.validateFields(async (err, values) => {
             if (err) {
                 return false;
             }
             else {
-                if (this.props.onSubmit(values) !== false) {
+                if (await this.props.onSubmit(values) !== false) {
                     this.hideModal();
                     this.form.resetFields();
                 }

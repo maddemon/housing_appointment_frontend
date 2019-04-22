@@ -18,10 +18,10 @@ class BatchStore {
 
     @action async save(data) {
         if (data.uuid) {
-            await api.batch.edit(data)
+            return await api.batch.edit(data)
         }
         else {
-            await api.batch.add(data)
+            return await api.batch.add(data)
         }
     }
 }

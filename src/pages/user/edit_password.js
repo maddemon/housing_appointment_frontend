@@ -22,8 +22,12 @@ class EditPasswordPage extends Component {
                     this.setState({ loading: false })
                     return false;
                 }
-                await this.props.stores.userStore.editPassword(values.oldpassword, values.newpassword)
-                message.success("修改完成")
+                const result = await this.props.stores.userStore.editPassword(values.oldpassword, values.newpassword)
+                if (result === '200') {
+                    message.success("修改完成")
+                } else {
+                    this.setState({ loading: false });
+                }
             } else {
                 this.setState({ loading: false });
             }

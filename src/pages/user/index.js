@@ -28,8 +28,12 @@ export default class UserIndexPage extends Component {
         Modal.confirm({
             title: "确认",
             content: "你确定要删除该用户吗？",
-            onOk: () => {
-                this.props.stores.userStore.delete(uuid)
+            onOk: async () => {
+                const result = await this.props.stores.userStore.delete(uuid)
+                if (result && result.status === '200') {
+                    message.success("删除完成");
+                    await this.props.stores.userStore.setList(this.state.pageIndex, this.state.pageSize)
+                }
             },
         })
     }
@@ -58,18 +62,20 @@ export default class UserIndexPage extends Component {
     }
 
     render() {
-        const list = this.props.stores.userStore.list || []
-        const page = this.props.stores.userStore.page || {}
+        const { list, page, importUrl, templateUrl } = this.props.stores.userStore
         return (
             <Row>
                 <PageHeader title="用户管理" />
                 <div className="toolbar">
-                    <EditModal trigger={<Button type="primary"><Icon type="plus" /> 添加用户</Button>} />
+                    <Button.Group>
+                    <EditModal title="添加用户" trigger={<Button type="primary"><Icon type="plus" /> 添加用户</Button>} />
                     <ImportButton
                         text="导入用户"
-                        action={this.props.stores.userStore.importUrl}
+                        action={importUrl}
                         onChange={this.handleUpload}
                     />
+                    <a href={templateUrl}><Icon type="download" />下载导入模板</a>
+                    </Button.Group>
                 </div>
                 <Table
                     rowKey="uuid"

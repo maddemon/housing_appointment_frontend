@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button } from 'antd'
+import { Button, message } from 'antd'
 import Modal from '../shared/modal'
 import { inject, observer } from 'mobx-react'
 
@@ -8,7 +8,13 @@ import { inject, observer } from 'mobx-react'
 export default class UserEditModal extends Component {
 
     handleSubmit = async (data) => {
-        return await this.props.stores.userStore.save(data);
+        const result = await this.props.stores.userStore.save(data);
+        if (!result) return false;
+        if (result.status === '200') {
+            message.success(this.props.title + '完成')
+            return true;
+        }
+        return false;
     }
 
     getFormItems = () => {

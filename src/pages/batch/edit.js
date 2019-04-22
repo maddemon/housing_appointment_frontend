@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button } from 'antd'
+import { Button, message } from 'antd'
 import Modal from '../shared/modal'
 import { inject, observer } from 'mobx-react'
 import moment from 'moment'
@@ -9,7 +9,12 @@ import moment from 'moment'
 export default class BatchEditModal extends Component {
 
     handleSubmit = async (data) => {
-        return await this.props.stores.batchStore.save(data);
+        const result = await this.props.stores.batchStore.save(data);
+        if (result.status === '200') {
+            message.success(this.props.title + '完成');
+            return true;
+        }
+        return false;
     }
 
     getFormItems = () => {
