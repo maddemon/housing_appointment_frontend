@@ -54,19 +54,19 @@ export default class QuotaIndexPage extends Component {
     }
 
     render() {
-        const list = this.props.stores.quotaStore.list || []
-        const page = this.props.stores.quotaStore.page || {}
+        const { list, page, loading, importUrl } = this.props.stores.quotaStore
         return (
             <Row>
                 <PageHeader title="指标管理" />
                 <div className="toolbar">
                     <ImportButton
                         text="导入指标"
-                        action={this.props.stores.quotaStore.importUrl}
+                        action={importUrl}
                         onChange={this.handleUpload}
                     />
                 </div>
                 <Table
+                    loading={loading}
                     rowKey="uuid"
                     columns={[
                         { dataIndex: "priority", title: "优先级", },

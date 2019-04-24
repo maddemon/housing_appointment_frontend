@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Form, Tooltip, Icon, Row, Col, Input, Upload, Button, DatePicker, Select, Radio, Checkbox, AutoComplete } from 'antd'
+import { Spin, Form, Tooltip, Icon, Row, Col, Input, Upload, Button, DatePicker, Select, Radio, Checkbox, AutoComplete } from 'antd'
 
 class SharedForm extends Component {
     handleSubmit = (e) => {
@@ -82,33 +82,36 @@ class SharedForm extends Component {
 
 
         return (
-            <Form layout={layout} onSubmit={this.handleSubmit} style={style}>
-                {items.map((item, key) =>
-                    item.title ?
-                        <Form.Item
-                            key={item.name || key}
-                            label={this.labelRender(item)}
-                            extra={item.extra}
-                            {...(item.layout ? item.layout : formItemLayout)}
-                        >
-                            {item.before}
-                            {this.controlRender(item)}
-                            {item.after}
-                        </Form.Item>
-                        : <span key={item.name || key}>{item.before} {this.controlRender(item)} {item.after}</span>
-                )}
-                <Row>
-                    <Col span={formItemLayout.labelCol.span}></Col>
-                    <Col span={formItemLayout.wrapperCol.span}>
-                        {buttons.map((item, key) => <span key={key}> {item} </span>)}
-                    </Col>
-                </Row>
-            </Form>
+            <Spin spinning={this.props.loading}>
+                <Form layout={layout} onSubmit={this.handleSubmit} style={style}>
+                    {items.map((item, key) =>
+                        item.title ?
+                            <Form.Item
+                                key={item.name || key}
+                                label={this.labelRender(item)}
+                                extra={item.extra}
+                                {...(item.layout ? item.layout : formItemLayout)}
+                            >
+                                {item.before}
+                                {this.controlRender(item)}
+                                {item.after}
+                            </Form.Item>
+                            : <span key={item.name || key}>{item.before} {this.controlRender(item)} {item.after}</span>
+                    )}
+                    <Row>
+                        <Col span={formItemLayout.labelCol.span}></Col>
+                        <Col span={formItemLayout.wrapperCol.span}>
+                            {buttons.map((item, key) => <span key={key}> {item} </span>)}
+                        </Col>
+                    </Row>
+                </Form>
+            </Spin>
         )
     }
 }
 SharedForm.propTypes = {
     items: PropTypes.array.isRequired,
     onSubmit: PropTypes.func,
+    loading: PropTypes.bool
 }
 export default Form.create()(SharedForm);

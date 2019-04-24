@@ -70,7 +70,7 @@ export default class FormModal extends SharedModal {
                     okText="确定"
                     cancelText="取消"
                 >
-                    <Form items={this.props.items || []} ref={frm => this.form = frm} />
+                    <Form items={this.props.items || []} ref={frm => this.form = frm} loading={this.props.loading} />
                 </Modal>
             </>
         )
@@ -79,5 +79,6 @@ export default class FormModal extends SharedModal {
 FormModal.propTypes = {
     trigger: PropTypes.element.isRequired,
     items: PropTypes.array.isRequired,
-    onSubmit: PropTypes.func.isRequired
+    onSubmit: PropTypes.func.isRequired,
+    loading: PropTypes.bool
 }

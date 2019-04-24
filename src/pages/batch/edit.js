@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, message } from 'antd'
+import { Button } from 'antd'
 import Modal from '../shared/modal'
 import { inject, observer } from 'mobx-react'
 import moment from 'moment'
@@ -9,12 +9,14 @@ import moment from 'moment'
 export default class BatchEditModal extends Component {
 
     handleSubmit = async (data) => {
+        data.appointmentTimeStart = data.appointmentTimeStart.format('YYYY-MM-DD HH:mm:ss')
+        data.appointmentTimeEnd = data.appointmentTimeEnd.format('YYYY-MM-DD HH:mm:ss')
+        data.chooseTime = data.chooseTime.format('YYYY-MM-DD')
         const result = await this.props.stores.batchStore.save(data);
-        if (result.status === '200') {
-            message.success(this.props.title + '完成');
-            return true;
+        if (this.props.onSubmit) {
+            this.props.onSubmit(result)
         }
-        return false;
+        return result.status === '200';
     }
 
     getFormItems = () => {
@@ -37,6 +39,7 @@ export default class BatchEditModal extends Component {
                 onSubmit={this.handleSubmit}
                 trigger={this.props.trigger || <Button>修改</Button>}
                 items={this.getFormItems()}
+                loading={this.props.stores.batchStore.loading}
             >
             </Modal>
         )

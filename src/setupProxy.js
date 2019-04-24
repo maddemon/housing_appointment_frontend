@@ -2,7 +2,7 @@ const proxy = require('http-proxy-middleware');
 
 module.exports = function (app) {
     app.use(proxy('/house', {
-        target: 'http://lljxk.qianjingji.cn/',
+        target: 'http://thomson.natapp1.cc/',
         changeOrigin: true
     }));
 };

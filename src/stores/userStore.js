@@ -7,6 +7,7 @@ const CookieName = "authtoken"
 class UserStore {
     @observable list = [];
     @observable page = {};
+    @observable loading = false;
 
     get current() {
         const sessionId = this.authenticated
@@ -23,6 +24,7 @@ class UserStore {
     }
 
     @action async login(username, password) {
+        this.loading = true;
         const data = await api.user.login(username, password);
         if (data && data.status === '200') {
             const user = data.data;
@@ -30,6 +32,7 @@ class UserStore {
             window.localStorage.clear();
             await window.localStorage.setItem(user.sessionId, JSON.stringify(user))
         }
+        this.loading = false;
     }
 
     logout() {
@@ -39,6 +42,7 @@ class UserStore {
     }
 
     async setList(pageIndex, pageSize) {
+        this.loading = true;
         const response = await api.user.list(pageIndex, pageSize);
         if (!response) return;
         this.page = {
@@ -47,21 +51,28 @@ class UserStore {
             total: response.data.total
         };
         this.list = response.data.list
+        this.loading = false;
     }
 
     async save(user) {
+        this.loading = true;
+        let result = null;
         if (user.uuid) {
-            await api.user.edit(user)
+            result = await api.user.edit(user)
         }
         else {
-            await api.user.add(user)
+            result = await api.user.add(user)
         }
+        this.loading = false;
+        return result;
     }
     async delete(uuid) {
         await api.user.delete(uuid);
     }
     async editPassword(oldPassword, newPassword) {
+        this.loading = true;
         await api.user.editPassword(oldPassword, newPassword)
+        this.loading = false;
     }
 
     async resetPassword(uuid) {

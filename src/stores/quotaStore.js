@@ -6,8 +6,10 @@ class QuotaStore {
     @observable page = {};
     @observable myList = [];
     @observable selected = null;
+    @observable loading = false;
 
     async setList(pageIndex, pageSize) {
+        this.loading = true;
         const response = await api.quota.list(pageIndex, pageSize);
         if (!response) return;
         this.page = {
@@ -15,12 +17,15 @@ class QuotaStore {
             pageIndex: pageIndex,
             total: response.data.total
         };
-        this.list = response.data.list
+        this.list = response.data.list;
+        this.loading = false;
     }
 
     async setMyList() {
+        this.loading = true;
         const data = await api.quota.listOfCustomer()
         this.myList = JSON.parse(data.data);
+        this.loading = false;
     }
 
     get importUrl() {
@@ -32,7 +37,10 @@ class QuotaStore {
     }
 
     async save(data) {
-        await api.quota.add(data);
+        this.loading = true;
+        const result = await api.quota.add(data);
+        this.loading = false;
+        return result;
     }
 
     async delete(quotaUuid) {

@@ -10,11 +10,11 @@ export default class UserEditModal extends Component {
     handleSubmit = async (data) => {
         const result = await this.props.stores.userStore.save(data);
         if (!result) return false;
-        if (result.status === '200') {
-            message.success(this.props.title + '完成')
-            return true;
+
+        if (this.props.onSubmit) {
+            this.props.onSubmit(result)
         }
-        return false;
+        return result.status === '200';
     }
 
     getFormItems = () => {
@@ -34,7 +34,7 @@ export default class UserEditModal extends Component {
                     ]
                 }
             },
-            { title: '证件号码', name: 'idcard', defaultValue: model.idcard, },
+            { title: '证件号码', name: 'cardNumber', defaultValue: model.cardNumber, },
             { title: '姓名', name: 'name', defaultValue: model.name, },
             { title: '手机', name: 'phone', defaultValue: model.phone, },
             { title: '优先级', name: 'priority', defaultValue: model.priority, },
@@ -48,6 +48,7 @@ export default class UserEditModal extends Component {
                 onSubmit={this.handleSubmit}
                 trigger={this.props.trigger || <Button>修改</Button>}
                 items={this.getFormItems()}
+                loading={this.props.stores.userStore.loading}
             >
             </Modal>
         )
