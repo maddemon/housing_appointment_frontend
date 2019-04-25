@@ -38,7 +38,7 @@ class UserLoginPage extends Component {
                     <Form onSubmit={this.handleSubmit}>
                         <Form.Item>
                             {getFieldDecorator('username', { rules: [{ required: true, message: '请输入账户名！', }], })(
-                                <Input size="large" prefix={<Icon type="user" />} placeholder="请输入身份证或手机号" />
+                                <Input size="large" prefix={<Icon type="user" />} placeholder="请输入手机号" />
                             )}
                         </Form.Item>
                         <Form.Item>

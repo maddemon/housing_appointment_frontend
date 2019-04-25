@@ -44,12 +44,13 @@ class UserStore {
     async setList(pageIndex, pageSize) {
         this.loading = true;
         const response = await api.user.list(pageIndex, pageSize);
-        if (!response) return;
-        this.page = {
-            pageSize: pageSize,
-            pageIndex: pageIndex,
-            total: response.data.total
-        };
+        if (response && response.data) {
+            this.page = {
+                pageSize: pageSize,
+                pageIndex: pageIndex,
+                total: response.data.total
+            };
+        }
         this.list = response.data.list
         this.loading = false;
     }
@@ -71,8 +72,9 @@ class UserStore {
     }
     async editPassword(oldPassword, newPassword) {
         this.loading = true;
-        await api.user.editPassword(oldPassword, newPassword)
+        const result = await api.user.editPassword(oldPassword, newPassword)
         this.loading = false;
+        return result;
     }
 
     async resetPassword(uuid) {

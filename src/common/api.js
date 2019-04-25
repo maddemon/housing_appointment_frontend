@@ -35,6 +35,9 @@ const api = {
         edit: (data) => {
             return $.post('batch/edit', null, data)
         },
+        delete: (uuid) => {
+            return $.get('batch/delete', { uuid })
+        },
         list: (pageIndex, pageSize) => {
             return $.get('batch/list', { pageIndex, pageSize })
         },
@@ -61,7 +64,7 @@ const api = {
             return $.get('reserve/history', { userUuid, pageIndex, pageSize })
         },
         reserve: (batchUuid, quotaUuid) => {
-            return $.post('reserve/reserve', { batchUuid, quotaUuid })
+            return $.post('reserve/reserve', null, { batchUuid, quotaUuid })
         },
         list: (batchUuid, pageIndex, pageSize) => {
             return $.get('reserve/reserveList', { batchUuid, pageIndex, pageSize })

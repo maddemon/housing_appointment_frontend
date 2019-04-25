@@ -1,39 +1,44 @@
-import { observable } from 'mobx'
+import { observable, action } from 'mobx'
 import api from '../common/api'
-class ReserveStore {
+class AppointmentStore {
 
     @observable list = [];
     @observable myList = [];
     @observable loading = false;
 
-    async setList(batchUuid, pageIndex, pageSize) {
+    @action async setList(batchUuid, pageIndex, pageSize) {
         this.loading = true;
         const response = await api.reserve.list(batchUuid, pageIndex, pageSize);
-        if (!response) return;
-        this.list = response.list;
+        if (response) {
+            this.list = response.list;
+        }
         this.loading = false;
     }
 
-    async setMyList(userUuid) {
+    @action async setMyList() {
         this.loading = true;
-        const response = await api.reserve.history(userUuid, 1, 1000);
-        if (!response) return;
-        this.myList = response.list || []
+        const response = await api.reserve.history(null, 1, 100);
+        if (response && response.data) {
+            this.myList = response.data.list || []
+        }
         this.loading = false;
     }
 
-    async make(batchUuid, quotaUuid) {
+    @action async make(batchUuid, quotaUuid) {
         this.loading = true;
         const result = await api.reserve.reserve(batchUuid, quotaUuid)
         this.loading = false;
         return result
     }
 
-    async delete(quotaUuid) {
-        await api.quota.delete(quotaUuid)
+    @action async delete(quotaUuid) {
+        this.loading = true;
+        const result = await api.quota.delete(quotaUuid);
+        this.loading = false;
+        return result
     }
 
 }
 
-const store = new ReserveStore();
+const store = new AppointmentStore();
 export default store;

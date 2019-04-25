@@ -80,6 +80,9 @@ async function request(path, query, data, httpMethod) {
         }
         const responseJson = await response.json();
         if (responseJson.status !== '200') {
+            if (responseJson.status === '1100') {
+                window.localStorage.clear();
+            }
             throwException(responseJson);
         }
         console.log(responseJson)

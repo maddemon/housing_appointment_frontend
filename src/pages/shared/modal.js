@@ -26,8 +26,6 @@ class SharedModal extends Component {
                     onOk={onSubmit}
                     onCancel={this.hideModal}
                     style={style}
-                    okText="确定"
-                    cancelText="取消"
                 >
                     {children}
                 </Modal>
@@ -67,8 +65,6 @@ export default class FormModal extends SharedModal {
                     onOk={this.handleSubmit}
                     onCancel={this.hideModal}
                     style={style}
-                    okText="确定"
-                    cancelText="取消"
                 >
                     <Form items={this.props.items || []} ref={frm => this.form = frm} loading={this.props.loading} />
                 </Modal>

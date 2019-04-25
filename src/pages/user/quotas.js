@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Row, Col, Button, Empty, Tag, PageHeader } from 'antd'
+import { Row, Col, Button, Empty, Tag, PageHeader, Spin } from 'antd'
 import AppointmentStepsControl from './_steps'
 @inject('stores')
 @observer
@@ -13,19 +13,20 @@ class UserQuotaPage extends Component {
 
     render() {
 
-        const list = this.props.stores.quotaStore.myList || [];
+        const { myList, loading } = this.props.stores.quotaStore;
 
         return (
             <>
-
                 <PageHeader
                     title="我的指标"
                     subTitle="点击指标进行预约"
                 />
                 <AppointmentStepsControl step={0} />
-                <Row gutter={{ xs: 8, sm: 16, md: 24 }}>
-                    {list.length === 0 ? <Empty>暂无指标</Empty> : list.map((item,i) => <QuotaItem key={i} model={item} {...this.props} />)}
-                </Row>
+                <Spin spinning={loading}>
+                    <Row gutter={{ xs: 8, sm: 16, md: 24 }}>
+                        {(myList || []).length === 0 ? <Empty>暂无指标</Empty> : myList.map((item, i) => <QuotaItem key={i} model={item} {...this.props} />)}
+                    </Row>
+                </Spin>
             </>
         )
     }

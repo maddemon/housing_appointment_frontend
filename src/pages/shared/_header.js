@@ -14,6 +14,7 @@ class TopNavbar extends Component {
     handleMenuClick = menu => {
         this.setState({ current: [menu.key] });
         if (menu.key === '/user/logout') {
+            this.setState({ current: ['/'] })
             this.props.stores.userStore.logout();
             this.props.history.push('/user/login');
         }

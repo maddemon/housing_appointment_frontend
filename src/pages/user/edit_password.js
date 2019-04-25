@@ -5,31 +5,22 @@ import { PageHeader, Form, Icon, Input, Button, Row, Col, message } from 'antd'
 @inject('stores')
 @observer
 class EditPasswordPage extends Component {
-
-    state = { loading: false }
-
     componentWillMount() {
         this.props.stores.globalStore.setTitle('修改密码');
     }
 
     handleSubmit = (e) => {
-        this.setState({ loading: true });
         e.preventDefault();
         this.props.form.validateFields(async (err, values) => {
             if (!err) {
                 if (values.newpassword !== values.repassword) {
                     message.warn("两次输入密码不相同");
-                    this.setState({ loading: false })
                     return false;
                 }
                 const result = await this.props.stores.userStore.editPassword(values.oldpassword, values.newpassword)
                 if (result === '200') {
                     message.success("修改完成")
-                } else {
-                    this.setState({ loading: false });
                 }
-            } else {
-                this.setState({ loading: false });
             }
         });
     }
@@ -57,7 +48,7 @@ class EditPasswordPage extends Component {
                             )}
                         </Form.Item>
                         <Form.Item className="additional">
-                            <Button size="large" loading={this.state.loading} type="primary" htmlType="submit">
+                            <Button size="large" loading={this.props.stores.userStore.loading} type="primary" htmlType="submit">
                                 <Icon type="check" />提交
                             </Button>
                         </Form.Item>
