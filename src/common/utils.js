@@ -37,7 +37,7 @@ function throwException(res) {
 function getRequestUrl(path, query) {
     let url = path
     if (path.indexOf('http') !== 0) {
-        url = Config.ApiPath + path
+        url = Config.Host + Config.ApiPath + path
     }
     if (query) {
         if (url.indexOf('?') > -1) {

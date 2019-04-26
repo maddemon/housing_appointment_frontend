@@ -17,8 +17,8 @@ class QuotaStore {
                 pageIndex: pageIndex,
                 total: response.data.total
             };
+            this.list = response.data.list;
         }
-        this.list = response.data.list;
         this.loading = false;
     }
 
