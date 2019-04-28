@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Redirect } from 'react-router-dom'
 import { inject, observer } from 'mobx-react'
-import UserQuotasPage from '../user/quotas'
+import MyQuotasPage from '../my/quotas'
 import UserIndexPage from '../user/index'
 @inject('stores')
 @observer
@@ -13,7 +13,7 @@ export default class HomePage extends Component {
         const user = this.props.stores.userStore.current;
         if (user) {
             if (user.role === 'user') {
-                return <UserQuotasPage {...this.props} />
+                return <MyQuotasPage {...this.props} />
             }
             else if (user.role === 'admin') {
                 return <UserIndexPage {...this.props} />

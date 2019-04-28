@@ -9,8 +9,8 @@ import UserIndexPage from '../user';
 import BatchIndexPage from '../batch';
 import QuotaIndexPage from '../quota';
 import AppointmentIndexPage from '../appointment';
-import UserAppointmentsPage from '../user/appointments';
-import MakeAppointmentPage from '../user/make_appointment';
+import MyAppointmentsPage from '../my/appointments';
+import MakeAppointmentPage from '../my/make_appointment';
 import UserEditPasswordPage from '../user/edit_password';
 import HomePage from '../home';
 import TestPage from '../home/test'
@@ -35,7 +35,7 @@ export default class PrimaryLayout extends Component {
                                 <Switch>
                                     <PrivateRoute exact path="/" component={HomePage} />
                                     <Route exact path="/house/user/login" component={TestPage} />
-                                    <PrivateRoute exact path="/user/appointments" component={UserAppointmentsPage} />
+                                    <PrivateRoute exact path="/user/appointments" component={MyAppointmentsPage} />
                                     <PrivateRoute exact path="/appointment/make" component={MakeAppointmentPage} />
                                     <PrivateRoute exact path="/batch/index" component={BatchIndexPage} />
                                     <PrivateRoute exact path="/quota/index" component={QuotaIndexPage} />

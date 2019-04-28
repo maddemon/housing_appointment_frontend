@@ -23,12 +23,12 @@ export default class BatchEditModal extends Component {
         const model = this.props.model || {}
         return [
             { name: 'uuid', defaultValue: model.uuid, type: "hidden" },
-            { title: '名称', name: 'name', defaultValue: model.name, },
-            { title: '房屋数量', name: 'houseNumber', defaultValue: model.houseNumber, type: "number" },
-            { title: '房屋地址', name: 'houseAddress', defaultValue: model.houseAddress, },
-            { title: '选房日期', name: 'chooseTime', defaultValue: moment(model.chooseTime), type: "date" },
-            { title: '预约开始时间', name: 'appointmentTimeStart', defaultValue: moment(model.appointmentTimeStart), type: "datetime" },
-            { title: '预约截止时间', name: 'appointmentTimeEnd', defaultValue: moment(model.appointmentTimeEnd), type: "datetime" },
+            { title: '名称', name: 'name', defaultValue: model.name, rules: [{ required: true }], },
+            { title: '房屋数量', name: 'houseNumber', defaultValue: model.houseNumber, type: "number", rules: [{ required: true }], },
+            { title: '房屋地址', name: 'houseAddress', defaultValue: model.houseAddress, rules: [{ required: true }], },
+            { title: '选房日期', name: 'chooseTime', defaultValue: moment(model.chooseTime), type: "date", rules: [{ required: true }], },
+            { title: '预约开始时间', name: 'appointmentTimeStart', defaultValue: moment(model.appointmentTimeStart), type: "datetime", rules: [{ required: true }], },
+            { title: '预约截止时间', name: 'appointmentTimeEnd', defaultValue: moment(model.appointmentTimeEnd), type: "datetime", rules: [{ required: true }], },
         ];
     }
 

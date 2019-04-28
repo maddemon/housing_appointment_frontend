@@ -26,6 +26,7 @@ export default class UserEditModal extends Component {
                 name: 'cardType',
                 defaultValue: model.cardType,
                 type: 'select',
+                rules: [{ required: true }],
                 props: {
                     options: [
                         { text: '身份证', value: 1 },
@@ -34,10 +35,10 @@ export default class UserEditModal extends Component {
                     ]
                 }
             },
-            { title: '证件号码', name: 'cardNumber', defaultValue: model.cardNumber, },
-            { title: '姓名', name: 'name', defaultValue: model.name, },
-            { title: '手机', name: 'phone', defaultValue: model.phone, },
-            { title: '优先级', name: 'priority', defaultValue: model.priority, },
+            { title: '证件号码', name: 'cardNumber', defaultValue: model.cardNumber, rules: [{ required: true }], },
+            { title: '姓名', name: 'name', defaultValue: model.name, rules: [{ required: true }], },
+            { title: '手机', name: 'phone', defaultValue: model.phone, rules: [{ required: true }], },
+            { title: '优先级', name: 'priority', defaultValue: model.priority, rules: [{ required: true }], },
         ];
     }
 
