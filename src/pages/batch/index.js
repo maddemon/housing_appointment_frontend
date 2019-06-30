@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
+import { Link } from 'react-router-dom'
 import { Row, PageHeader, Icon, Button, Table, message, Modal } from 'antd'
 import { QueryString } from '../../common/utils'
 import moment from 'moment'
@@ -64,10 +65,16 @@ export default class BatchIndexPage extends Component {
     operateColumnRender = (text, item) => {
         let buttons = [
             <Button type="default" onClick={() => this.handleNotifyClick(item)} ><Icon type="bell" />通知</Button>,
-            <EditModal key="btnEdit" model={item} trigger={<Button><Icon type="edit" />修改</Button>} onSubmit={this.handleSubmit} />,
-            <Button key="btnDelete" type="danger" onClick={() => this.handleDelete(item)}><Icon type="delete" />删除</Button>,
+            <EditModal key="btnEdit" model={item} trigger={<Button title="修改"><Icon type="edit" /></Button>} onSubmit={this.handleSubmit} />,
+            <Button key="btnDelete" type="danger" onClick={() => this.handleDelete(item)} title="删除"><Icon type="delete" /></Button>,
         ];
         return buttons;
+    }
+    viewAppointmentRender = (text, item) => {
+        return <Button type="primary" onClick={() => {
+            this.props.stores.batchStore.setModel(item)
+            this.props.history.push('/appointment/index?batchUuid=' + item.uuid)
+        }}><Icon type="user" />查看</Button>
     }
 
     render() {
@@ -84,13 +91,14 @@ export default class BatchIndexPage extends Component {
                     loading={loading}
                     rowKey="uuid"
                     columns={[
-                        { dataIndex: "name", title: "批次名称", width: 150 },
+                        { dataIndex: "name", title: "批次名称", width: 150, },
                         { dataIndex: "houseNumber", title: "房屋数量", width: 100 },
                         { dataIndex: "houseAddress", title: "房屋地址" },
                         { dataIndex: "appointmentTimeStart", title: "预约时间", render: (text, item) => `${moment(item.appointmentTimeStart).format('YYYY-MM-DD HH:mm')} - ${moment(item.appointmentTimeEnd).format('YYYY-MM-DD HH:mm')}` },
                         { dataIndex: "chooseAddress" },
-                        { dataIndex: "chooseTime", title: "选房日期", width: 140, render: (text) => moment(text).format('YYYY-MM-DD') },
-                        { title: "操作", render: this.operateColumnRender, width: 260 },
+                        { dataIndex: "chooseTime", title: "选房日期", render: (text) => moment(text).format('YYYY-MM-DD') },
+                        { title: "预约管理", render: this.viewAppointmentRender },
+                        { title: "操作", render: this.operateColumnRender, },
                     ]}
                     dataSource={list || []}
                     pagination={{ ...page, size: 5, onChange: this.handlePageChange, }}

@@ -5,7 +5,12 @@ class BatchStore {
     @observable list = [];
     @observable page = null;
     @observable loading = false;
+    @observable model = {}
 
+    @action setModel(model) {
+        this.model = model;
+    }
+    
     @action async setList(pageIndex, pageSize) {
         this.loading = true;
         const response = await api.batch.list(pageIndex, pageSize)
@@ -40,7 +45,7 @@ class BatchStore {
         return result;
     }
 
-    @action async notify(){
+    @action async notify() {
         this.loading = true;
         const result = await api.batch.notify()
         this.loading = false;

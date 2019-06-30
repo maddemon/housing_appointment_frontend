@@ -5,7 +5,7 @@ const QueryString = {
     parseJSON: (str) => {
         let json = {}
         if (!str) return json
-        str.split('&').map(kv => {
+        str.replace('?','').split('&').map(kv => {
             let arr = kv.split('=')
             if (arr.length === 2) {
                 json[arr[0]] = decodeURIComponent(arr[1])

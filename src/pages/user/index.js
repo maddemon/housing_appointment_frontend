@@ -76,7 +76,7 @@ export default class UserIndexPage extends Component {
     }
 
     render() {
-        const { loading, list, page, importUrl, templateUrl } = this.props.stores.userStore
+        const { loading, list, page, importUrl } = this.props.stores.userStore
         return (
             <Row>
                 <PageHeader title="用户管理" />
@@ -88,7 +88,7 @@ export default class UserIndexPage extends Component {
                             action={importUrl}
                             onChange={this.handleUpload}
                         />
-                        <a href={templateUrl}><Icon type="download" />下载导入模板</a>
+                        <a href="/templates/uers.xslx"><Icon type="download" />下载导入模板</a>
                     </Button.Group>
                 </div>
                 <Table

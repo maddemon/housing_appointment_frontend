@@ -42,11 +42,6 @@ class TopNavbar extends Component {
                 break;
             case 'admin':
                 result = [
-                    <Menu.Item key="/" >
-                        <Link to="/">
-                            <Icon type="usergroup-add" />用户管理
-                        </Link>
-                    </Menu.Item>,
                     <Menu.Item key="/batch/index" >
                         <Link to="/batch/index">
                             <Icon type="import" />批次管理
@@ -55,6 +50,11 @@ class TopNavbar extends Component {
                     <Menu.Item key="/quota/index" >
                         <Link to="/quota/index">
                             <Icon type="switcher" />指标管理
+                        </Link>
+                    </Menu.Item>,
+                    <Menu.Item key="/" >
+                        <Link to="/">
+                            <Icon type="usergroup-add" />用户管理
                         </Link>
                     </Menu.Item>,
                 ];
