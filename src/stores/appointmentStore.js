@@ -4,6 +4,7 @@ class AppointmentStore {
 
     @observable list = [];
     @observable myList = [];
+    @observable resultList = [];
     @observable loading = false;
 
     @action async setList(batchUuid, pageIndex, pageSize) {
@@ -24,6 +25,14 @@ class AppointmentStore {
         this.loading = false;
     }
 
+    @action async setResultList(searchKey, pageIndex, pageSize) {
+        this.loading = true;
+        const response = await api.reserve.results(searchKey, pageIndex, pageSize);
+        if (response && response.data) {
+            this.resultList = response.data.list || []
+        }
+        this.loading = false;
+    }
     @action async make(batchUuid, quotaUuid) {
         this.loading = true;
         const result = await api.reserve.reserve(batchUuid, quotaUuid)

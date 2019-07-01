@@ -66,6 +66,9 @@ const api = {
         reserve: (batchUuid, quotaUuid) => {
             return $.post('reserve/reserve', null, { batchUuid, quotaUuid })
         },
+        results: (queryWord, pageIndex, pageSize) => {
+            return $.get('reserve/result', { queryWord, pageIndex, pageSize })
+        },
         list: (batchUuid, pageIndex, pageSize) => {
             return $.get('reserve/reserveList', { batchUuid, pageIndex, pageSize })
         },

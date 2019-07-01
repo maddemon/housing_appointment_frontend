@@ -76,7 +76,8 @@ async function request(path, query, data, httpMethod) {
                 break;
         }
         if (response.status === 404) {
-
+            throwException({ message: "接口不存在" })
+            return;
         }
         const responseJson = await response.json();
         if (responseJson.status !== '200') {

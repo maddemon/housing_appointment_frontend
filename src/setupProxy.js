@@ -1,7 +1,7 @@
 const proxy = require('http-proxy-middleware');
 module.exports = function (app) {
     app.use(proxy('/house', {
-        target: 'http://house.287jw.cn/',
+        target: 'http://loan.shuaibosys.com/',
         changeOrigin: true
     }));
 };

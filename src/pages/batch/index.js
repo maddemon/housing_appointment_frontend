@@ -18,10 +18,8 @@ export default class BatchIndexPage extends Component {
 
     async componentWillReceiveProps(nextProps) {
         let query = QueryString.parseJSON(nextProps.location.search)
-        if (query.pageIndex && query.pageIndex !== this.state.pageIndex) {
-            this.setState({ pageIndex: query.pageIndex })
-            await this.props.stores.batchStore.setList(query.pageIndex, this.state.pageSize)
-        }
+        await this.setState({ pageIndex: query.pageIndex || 1 });
+        await this.props.stores.batchStore.setList(this.state.pageIndex, this.state.pageSize)
     }
 
     handlePageChange = page => {

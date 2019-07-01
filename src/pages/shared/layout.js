@@ -47,7 +47,9 @@ export default class PrimaryLayout extends Component {
                                 </Switch>
                             </div>
                         </Content>
-                        <Footer></Footer>
+                        <Footer>
+                            &copy;2019
+                        </Footer>
                     </Router >
                 </Layout>
             </DocumentTitle>

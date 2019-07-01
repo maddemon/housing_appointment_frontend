@@ -16,7 +16,7 @@ class UserLoginPage extends Component {
         this.props.form.validateFields(async (err, values) => {
             if (!err) {
                 const response = await this.props.stores.userStore.login(values.username, values.password)
-                if (response.status === '200') {
+                if (response && response.status === '200') {
                     const query = QueryString.parseJSON(this.props.location.seach)
                     this.props.history.push(query.returnUrl || '/')
                 }
