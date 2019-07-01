@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { HashRouter as Router, Route, Redirect, Switch, } from "react-router-dom";
+import { BrowserRouter as Router, Route, Redirect, Switch, } from "react-router-dom";
 import { inject, observer } from 'mobx-react';
 import DocumentTitle from 'react-document-title';
 import { Layout, Breadcrumb } from 'antd';
@@ -13,7 +13,6 @@ import MyAppointmentsPage from '../my/appointments';
 import MakeAppointmentPage from '../my/make_appointment';
 import UserEditPasswordPage from '../user/edit_password';
 import HomePage from '../home';
-import TestPage from '../home/test'
 const { Header, Content, Footer } = Layout;
 
 @inject('stores')
@@ -33,8 +32,7 @@ export default class PrimaryLayout extends Component {
                             </Breadcrumb>
                             <div style={{ background: '#fff', padding: 24, minHeight: 380 }}>
                                 <Switch>
-                                    <PrivateRoute exact path="/" component={HomePage} />
-                                    <Route exact path="/house/user/login" component={TestPage} />
+                                    <Route exact path="/" component={HomePage} />
                                     <PrivateRoute exact path="/user/appointments" component={MyAppointmentsPage} />
                                     <PrivateRoute exact path="/appointment/make" component={MakeAppointmentPage} />
                                     <PrivateRoute exact path="/batch/index" component={BatchIndexPage} />
@@ -59,7 +57,7 @@ export default class PrimaryLayout extends Component {
 @observer
 class PrivateRoute extends Component {
     render() {
-        const authenticated = this.props.stores.userStore.authenticated;
+        const authenticated = this.props.stores.userStore.authenticated();
         if (!authenticated) {
             const returnUrl = `${this.props.location.pathname}${this.props.location.search}`
             return <Redirect to={`/user/login?returnUrl=${returnUrl}`} />

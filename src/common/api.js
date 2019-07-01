@@ -46,8 +46,8 @@ const api = {
         },
     },
     quota: {
-        delete: (uuids) => {
-            return $.get('quota/delete?quotaUuid=' + uuids)
+        delete: (quotaUuid) => {
+            return $.post('quota/delete', null, { quotaUuid })
         },
         list: (status, queryWord, pageIndex, pageSize) => {
             return $.get('quota/list', { status, queryWord, pageIndex, pageSize })

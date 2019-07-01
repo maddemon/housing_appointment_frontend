@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
-import { withRouter } from 'react-router-dom'
+import { withRouter, Link } from 'react-router-dom'
 import { inject, observer } from 'mobx-react'
 import { Row, Col, Menu, Icon } from 'antd'
 import Config from '../../common/config';
-import { Link } from 'react-router-dom'
 
 @inject('stores')
 @observer
@@ -12,75 +11,58 @@ class TopNavbar extends Component {
     state = { current: [this.props.location.pathname] }
 
     handleMenuClick = menu => {
-        this.setState({ current: [menu.key] });
         if (menu.key === '/user/logout') {
             this.setState({ current: ['/'] })
             this.props.stores.userStore.logout();
-            this.props.history.push('/user/login');
+            this.props.history.push('/')
+            console.log(this.props.stores.userStore.authenticated())
+        } else {
+            this.setState({ current: [menu.key] });
+            this.props.history.push(menu.key);
         }
     }
 
     getMenuItems = (identity) => {
-        let result = [];
-        if (!identity) {
-            return null;
+        let result = [
+            <Menu.Item key="/" ><Icon type="home" />首页</Menu.Item>,
+        ];
+        if (identity) {
+            switch (identity.role) {
+                case 'user':
+                    result = result.concat([
+                        <Menu.Item key="/my/quotas" ><Icon type="ordered-list" />我的指标</Menu.Item>,
+                        <Menu.Item key="/my/appointments" ><Icon type="calendar" />我的预约</Menu.Item>
+                    ]);
+                    break;
+                case 'admin':
+                    result = result.concat([
+                        <Menu.Item key="/batch/index" ><Icon type="import" />批次管理</Menu.Item>,
+                        <Menu.Item key="/quota/index" ><Icon type="switcher" />指标管理 </Menu.Item>,
+                        <Menu.Item key="/user/index" ><Icon type="usergroup-add" />用户管理</Menu.Item>,
+                    ]);
+                    break;
+                default:
+                    break;
+            }
+            result = result.concat([
+                <Menu.Item key="/user/editpassword"><Icon type="key" />修改密码</Menu.Item>,
+                <Menu.Item key="/user/logout"> <Icon type="poweroff" />退出 </Menu.Item>
+            ])
+        } else {
+            result = result.concat([
+                <Menu.Item key="/user/login"><Icon type="user" />登录</Menu.Item>,
+            ]);
         }
-        switch (identity.role) {
-            case 'user':
-                result = [
-                    <Menu.Item key="/" >
-                        <Link to="/">
-                            <Icon type="ordered-list" />我的指标
-                        </Link>
-                    </Menu.Item>,
-                    <Menu.Item key="/user/appointments" >
-                        <Link to="/user/appointments">
-                            <Icon type="calendar" />我的预约
-                        </Link>
-                    </Menu.Item>
-                ];
-                break;
-            case 'admin':
-                result = [
-                    <Menu.Item key="/" >
-                        <Link to="/batch/index">
-                            <Icon type="import" />批次管理
-                        </Link>
-                    </Menu.Item>,
-                    <Menu.Item key="/quota/index" >
-                        <Link to="/quota/index">
-                            <Icon type="switcher" />指标管理
-                        </Link>
-                    </Menu.Item>,
-                    <Menu.Item key="/user/index" >
-                        <Link to="/user/index">
-                            <Icon type="usergroup-add" />用户管理
-                        </Link>
-                    </Menu.Item>,
-                ];
-                break;
-            default:
-                break;
-        }
-        result = result.concat([
-            <Menu.Item key="/user/editpassword">
-                <Link to="/user/editpassword">
-                    <Icon type="key" />修改密码
-                </Link>
-            </Menu.Item>,
-            <Menu.Item key="/user/logout">
-                <Icon type="poweroff" />退出
-            </Menu.Item>
-        ])
         return result;
     }
 
     render() {
-        const identity = this.props.stores.userStore.current;
+        const identity = this.props.stores.userStore.current();
+        console.log(identity)
         return (
             <Row>
                 <Col xs={24} sm={24} md={5} lg={5} xl={5} xxl={4} className="logo"  >
-                    <h1 style={{ lineHeight: '64px', color: "#fff" }}>{Config.SystemName}</h1>
+                    <h1 style={{ lineHeight: '64px', color: "#fff" }}><Link to="/">{Config.SystemName}</Link></h1>
                 </Col>
                 <Col xs={0} sm={0} md={19} log={19} xl={19} xxl={20}>
                     <Menu onClick={this.handleMenuClick} mode="horizontal" selectedKeys={this.state.current} theme="dark" style={{ lineHeight: '64px' }}>
