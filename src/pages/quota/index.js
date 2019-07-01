@@ -10,20 +10,19 @@ export default class QuotaIndexPage extends Component {
 
     state = { status: '', searchKey: '', pageIndex: 1, pageSize: 20, selectedRowKeys: [] }
 
-    componentWillMount() {
+    async componentWillMount() {
         this.props.stores.globalStore.setTitle('指标管理');
-        this.loadList(this.props)
+        await this.loadList(this.props)
     }
 
-    componentWillReceiveProps(nextProps) {
-        this.loadList(nextProps)
+    async componentWillReceiveProps(nextProps) {
+        await this.loadList(nextProps)
     }
 
-    loadList = (props) => {
+    loadList = async (props) => {
         let query = QueryString.parseJSON(props.location.search)
-        this.setState({ status: query.status || '', searchKey: query.searchKey || '', pageIndex: query.pageIndex || 1 }, () => {
-            this.props.stores.quotaStore.setList(this.state.status, this.state.searchKey, this.state.pageIndex, this.state.pageSize);
-        });
+        await this.setState({ status: query.status || '', searchKey: query.searchKey || '', pageIndex: query.pageIndex || 1 });
+        await this.props.stores.quotaStore.setList(this.state.status, this.state.searchKey, this.state.pageIndex, this.state.pageSize);
     }
 
     handleDelete = () => {
@@ -52,9 +51,9 @@ export default class QuotaIndexPage extends Component {
         return buttons;
     }
 
-    handleUpload = (response) => {
+    handleUpload = async (response) => {
         if (response.status === '200') {
-            this.props.stores.quotaStore.setList(this.state.pageIndex, this.state.pageSize)
+            await this.props.stores.quotaStore.setList(this.state.pageIndex, this.state.pageSize)
         }
     }
 

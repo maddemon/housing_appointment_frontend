@@ -10,12 +10,11 @@ class TopNavbar extends Component {
 
     state = { current: [this.props.location.pathname] }
 
-    handleMenuClick = menu => {
+    handleMenuClick = async menu => {
         if (menu.key === '/user/logout') {
-            this.setState({ current: ['/'] })
-            this.props.stores.userStore.logout();
+            await this.props.stores.userStore.logout();
             this.props.history.push('/')
-            console.log(this.props.stores.userStore.authenticated())
+            await this.setState({ current: ['/'] })
         } else {
             this.setState({ current: [menu.key] });
             this.props.history.push(menu.key);
@@ -58,7 +57,6 @@ class TopNavbar extends Component {
 
     render() {
         const identity = this.props.stores.userStore.current();
-        console.log(identity)
         return (
             <Row>
                 <Col xs={24} sm={24} md={5} lg={5} xl={5} xxl={4} className="logo"  >

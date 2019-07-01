@@ -62,8 +62,6 @@ class PrivateRoute extends Component {
             const returnUrl = `${this.props.location.pathname}${this.props.location.search}`
             return <Redirect to={`/user/login?returnUrl=${returnUrl}`} />
         }
-        console.log(this.props)
-
         return (
             <Route {...this.props}></Route>
         )

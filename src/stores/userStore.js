@@ -1,4 +1,4 @@
-import { observable, action, computed } from 'mobx';
+import { observable, action } from 'mobx';
 import cookie from 'react-cookies';
 import api from '../common/api';
 import Config from '../common/config';
@@ -32,13 +32,13 @@ class UserStore {
             await window.localStorage.setItem(user.sessionId, JSON.stringify(user))
         }
         this.loading = false;
+        return data;
     }
 
-    logout() {
+    @action async logout() {
         const sessionId = this.authenticated;
-        window.localStorage.removeItem(sessionId)
+        await window.localStorage.removeItem(sessionId)
         cookie.remove(Config.CookieName)
-        console.log(cookie.load(Config.CookieName))
     }
 
     async setList(pageIndex, pageSize) {

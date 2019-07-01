@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Icon, Button, message, Upload } from 'antd'
+import { Icon, Button, message, Upload, Tooltip } from 'antd'
 
 export default class ImportButton extends Component {
     static propTypes = {
@@ -39,7 +39,9 @@ export default class ImportButton extends Component {
                 onChange={this.handleUpload}
                 withCredentials={true}
             >
-                <Button type="success" loading={this.state.uploading}><Icon type="import" /> {this.props.text}</Button>
+                <Tooltip title={this.props.tooltip}>
+                    <Button type="success" loading={this.state.uploading}><Icon type="import" /> {this.props.text}</Button>
+                </Tooltip>
             </Upload>
         )
     }

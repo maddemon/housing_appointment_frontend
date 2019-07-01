@@ -11,16 +11,16 @@ import EditModal from './edit'
 export default class BatchIndexPage extends Component {
 
     state = { pageIndex: 1, pageSize: 20 }
-    componentWillMount() {
+    async componentWillMount() {
         this.props.stores.globalStore.setTitle('批次管理');
-        this.props.stores.batchStore.setList(this.state.pageIndex, this.state.pageSize)
+        await this.props.stores.batchStore.setList(this.state.pageIndex, this.state.pageSize)
     }
 
-    componentWillReceiveProps(nextProps) {
+    async componentWillReceiveProps(nextProps) {
         let query = QueryString.parseJSON(nextProps.location.search)
         if (query.pageIndex && query.pageIndex !== this.state.pageIndex) {
             this.setState({ pageIndex: query.pageIndex })
-            this.props.stores.batchStore.setList(query.pageIndex, this.state.pageSize)
+            await this.props.stores.batchStore.setList(query.pageIndex, this.state.pageSize)
         }
     }
 
@@ -28,10 +28,10 @@ export default class BatchIndexPage extends Component {
         this.props.history.push(`/user/index?page=${page}`)
     }
 
-    handleSubmit = result => {
+    handleSubmit = async result => {
         if (result.status === '200') {
             message.success(result.message);
-            this.props.stores.batchStore.setList(this.state.pageIndex, this.state.pageSize)
+            await this.props.stores.batchStore.setList(this.state.pageIndex, this.state.pageSize)
         }
     }
 
@@ -43,7 +43,7 @@ export default class BatchIndexPage extends Component {
                 const result = await this.props.stores.batchStore.delete(item.uuid);
                 if (result.status === '200') {
                     message.success(result.message);
-                    this.props.stores.batchStore.setList(this.state.pageIndex, this.state.pageSize)
+                    await this.props.stores.batchStore.setList(this.state.pageIndex, this.state.pageSize)
                 }
             },
         })
@@ -71,8 +71,8 @@ export default class BatchIndexPage extends Component {
         return buttons;
     }
     viewAppointmentRender = (text, item) => {
-        return <Button type="primary" onClick={() => {
-            this.props.stores.batchStore.setModel(item)
+        return <Button type="primary" onClick={async () => {
+            await this.props.stores.batchStore.setModel(item)
             this.props.history.push('/appointment/index?batchUuid=' + item.uuid)
         }}><Icon type="user" />查看</Button>
     }

@@ -6,23 +6,20 @@ import { QueryString } from '../../common/utils'
 @inject('stores')
 @observer
 class UserLoginPage extends Component {
-    state = {
-        loading: false,
-    }
+
     componentWillMount() {
         this.props.stores.globalStore.setTitle('用户登录');
     }
 
     handleSubmit = (e) => {
-        this.setState({ loading: true });
         e.preventDefault();
         this.props.form.validateFields(async (err, values) => {
             if (!err) {
-                await this.props.stores.userStore.login(values.username, values.password)
-                const query = QueryString.parseJSON(this.props.location.seach)
-                this.props.history.push(query.returnUrl || '/')
-            } else {
-                this.setState({ loading: false });
+                const response = await this.props.stores.userStore.login(values.username, values.password)
+                if (response.status === '200') {
+                    const query = QueryString.parseJSON(this.props.location.seach)
+                    this.props.history.push(query.returnUrl || '/')
+                }
             }
         });
     }
@@ -48,7 +45,7 @@ class UserLoginPage extends Component {
                         </Form.Item>
 
                         <Form.Item className="additional">
-                            <Button size="large" loading={this.state.loading} type="primary" htmlType="submit">
+                            <Button size="large" loading={this.props.stores.userStore.loading} type="primary" htmlType="submit">
                                 <Icon type="login" />登录
                             </Button>
                         </Form.Item>

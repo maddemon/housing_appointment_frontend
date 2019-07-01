@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Row, PageHeader, Icon, Table } from 'antd'
+import { Row, PageHeader, Icon, Table, Button, Tooltip } from 'antd'
+import ImportButton from '../shared/import_button'
 import { QueryString } from '../../common/utils'
 import moment from 'moment'
 
@@ -8,20 +9,19 @@ import moment from 'moment'
 @observer
 export default class AppointmentIndexPage extends Component {
     state = { batchUuid: '', pageIndex: 1, pageSize: 20 }
-    componentWillMount() {
+    async componentWillMount() {
         this.props.stores.globalStore.setTitle('预约管理');
-        this.loadList(this.props);
+        await this.loadList(this.props);
     }
 
-    componentWillReceiveProps(nextProps) {
-        this.loadList(nextProps);
+    async componentWillReceiveProps(nextProps) {
+        await this.loadList(nextProps);
     }
 
-    loadList = (props) => {
+    loadList = async (props) => {
         let query = QueryString.parseJSON(props.location.search)
-        this.setState({ batchUuid: query.batchUuid || '', pageIndex: query.pageIndex || 1 }, () => {
-            this.props.stores.appointmentStore.setList(this.state.batchUuid, this.state.pageIndex, this.state.pageSize);
-        });
+        await this.setState({ batchUuid: query.batchUuid || '', pageIndex: query.pageIndex || 1 });
+        await this.props.stores.appointmentStore.setList(this.state.batchUuid, this.state.pageIndex, this.state.pageSize);
     }
 
     handlePageChange = page => {
@@ -32,15 +32,32 @@ export default class AppointmentIndexPage extends Component {
 
     }
 
+    handleExportClick = () => {
+        window.open('/house/reserve/reserveExcel?batchUuid=' + this.state.batchUuid)
+    }
+
+    handleImport = async (response) => {
+        if (response.status === '200') {
+            await this.loadList(this.props)
+        }
+    }
+
     render() {
         const batch = this.props.stores.batchStore.model
         const { list, page, loading } = this.props.stores.appointmentStore
         return (
             <Row>
                 <PageHeader title="预约管理"
-                    subTitle={`预约总数:${(page || {}).recordCount || 0}`}
+                    subTitle={`预约总数:${(page || {}).recordCount || 0} ${batch.name ? `所属批次：${batch.name}` : ''} `}
                     backIcon={<Icon type="arrow-left" />}
-                    extra={batch.name ? `所属批次：${batch.name}` : null} />
+                    extra={<Button.Group>
+                        <Button type="primary" onClick={this.handleExportClick}><Icon type="export" />导出预约记录</Button>
+                        <ImportButton
+                            tooltip="请先导出预约记录，再填写对应结果"
+                            text="导入选房结果"
+                            onChange={this.handleImport}
+                        />
+                    </Button.Group>} />
                 <div className="toolbar">
 
                 </div>
@@ -52,6 +69,7 @@ export default class AppointmentIndexPage extends Component {
                         { dataIndex: "reserveTime", title: "预约时间", render: (text) => moment(text).format('LLL') },
                         { dataIndex: "quotaUuid", title: "所用指标" },
                         { dataIndex: "userUuid", title: "预约用户" },
+                        { dataIndex: "chooseResult", title: "选房结果" },
                         { title: "操作", render: this.operateColumnRender, },
                     ]}
                     dataSource={list || []}
