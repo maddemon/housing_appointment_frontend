@@ -3,12 +3,27 @@ import api from '../common/api'
 class BatchStore {
 
     @observable list = [];
+    @observable avaliables =[];
     @observable page = null;
     @observable loading = false;
     @observable model = {}
 
     @action setModel(model) {
         this.model = model;
+    }
+
+    @action async setMyList(pageIndex, pageSize) {
+        this.loading = true;
+        const response = await api.batch.avaliables(pageIndex, pageSize)
+        if (response && response.data) {
+            this.page = {
+                pageSize: pageSize,
+                pageIndex: pageIndex,
+                total: response.data.total
+            };
+            this.avaliables = response.data.list
+        }
+        this.loading = false;
     }
     
     @action async setList(pageIndex, pageSize) {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, Redirect, Switch, } from "react-router-dom";
+import { HashRouter as Router, Route, Redirect, Switch, } from "react-router-dom";
 import { inject, observer } from 'mobx-react';
 import DocumentTitle from 'react-document-title';
 import { Layout, Breadcrumb } from 'antd';
@@ -10,6 +10,7 @@ import BatchIndexPage from '../batch';
 import QuotaIndexPage from '../quota';
 import AppointmentIndexPage from '../appointment';
 import MyAppointmentsPage from '../my/appointments';
+import MyQuotasPage from '../my/quotas';
 import MakeAppointmentPage from '../my/make_appointment';
 import UserEditPasswordPage from '../user/edit_password';
 import HomePage from '../home';
@@ -33,7 +34,8 @@ export default class PrimaryLayout extends Component {
                             <div style={{ background: '#fff', padding: 24, minHeight: 380 }}>
                                 <Switch>
                                     <Route exact path="/" component={HomePage} />
-                                    <PrivateRoute exact path="/user/appointments" component={MyAppointmentsPage} />
+                                    <PrivateRoute exact path="/my/appointments" component={MyAppointmentsPage} />
+                                    <PrivateRoute exact path="/my/quotas" component={MyQuotasPage} />
                                     <PrivateRoute exact path="/appointment/make" component={MakeAppointmentPage} />
                                     <PrivateRoute exact path="/batch/index" component={BatchIndexPage} />
                                     <PrivateRoute exact path="/quota/index" component={QuotaIndexPage} />

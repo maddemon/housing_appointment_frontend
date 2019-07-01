@@ -8,11 +8,11 @@ import moment from 'moment'
 @observer
 export default class MakeAppointmentPage extends Component {
 
-    state = { step: 1, selectedBatch: null }
+    state = { step: 1, selectedBatch: null, pageIndex: 1, pageSize: 100 }
 
     componentWillMount() {
         this.props.stores.globalStore.setTitle('预约选房');
-        this.props.stores.batchStore.setList(1, 100);
+        this.props.stores.batchStore.setMyList(this.state.pageIndex, this.state.pageSize);
     }
 
     handleBack = () => {
@@ -23,26 +23,24 @@ export default class MakeAppointmentPage extends Component {
         this.setState({ step: 2, selectedBatch: batch })
     }
 
-
-
     render() {
         const quota = this.props.stores.quotaStore.selected;
         if (!quota) {
             return <h1>没有选择指标</h1>
         }
-        let { list, loading } = this.props.stores.batchStore;
-        list = (list || []).filter(e => moment(e.appointmentTimeEnd) > moment());
+        let { avaliables, loading } = this.props.stores.batchStore;
+        avaliables = (avaliables || []).filter(e => moment(e.appointmentTimeEnd) > moment());
         return (
             <>
                 <PageHeader title="预约选房" tags={<Tag color="red">已选指标{quota.uuid}</Tag>} onBack={this.handleBack} />
                 <AppointmentStepsControl step={this.state.step} />
                 <Spin spinning={loading}>
-                    {list.length === 0 ?
+                    {avaliables.length === 0 ?
                         <Alert type="error" message={"当前没有可以预约的批次，请耐心关注下一批次开放预约时间。"} icon="bell"></Alert>
                         :
                         !this.state.selectedBatch ?
                             <Row gutter={10}>
-                                {list.map((item, i) => <Col key={i} lg={12} xl={12} xxl={12}>
+                                {avaliables.map((item, i) => <Col key={i} lg={12} xl={12} xxl={12}>
                                     <BatchItemControl model={item} handleClick={this.handleItemClick} />
                                 </Col>)}
                             </Row>

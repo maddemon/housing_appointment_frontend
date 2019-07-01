@@ -47,7 +47,6 @@ class QuotaStore {
     }
 
     @action async delete(uuids) {
-        console.log(uuids)
         this.loading = true;
         const result = await api.quota.delete(uuids)
         this.loading = false;

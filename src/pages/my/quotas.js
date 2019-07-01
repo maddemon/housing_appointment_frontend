@@ -24,7 +24,7 @@ class UserQuotaPage extends Component {
                 <AppointmentStepsControl step={0} />
                 <Spin spinning={loading}>
                     <Row gutter={{ xs: 8, sm: 16, md: 24 }}>
-                        {(myList || []).length === 0 ? <Empty>暂无指标</Empty> : myList.map((item, i) => <QuotaItem key={i} model={item} {...this.props} />)}
+                        {(myList || []).length === 0 ? <Empty description="暂无可用指标"></Empty> : myList.map((item, i) => <QuotaItem key={i} model={item} {...this.props} />)}
                     </Row>
                 </Spin>
             </>

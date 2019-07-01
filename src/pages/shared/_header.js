@@ -13,8 +13,8 @@ class TopNavbar extends Component {
     handleMenuClick = async menu => {
         if (menu.key === '/user/logout') {
             await this.props.stores.userStore.logout();
-            this.props.history.push('/')
-            await this.setState({ current: ['/'] })
+            await this.props.history.push('/user/login')
+            await this.setState({ current: ['/user/login'] })
         } else {
             this.setState({ current: [menu.key] });
             this.props.history.push(menu.key);
