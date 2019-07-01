@@ -8,9 +8,9 @@ class QuotaStore {
     @observable selected = null;
     @observable loading = false;
 
-    @action async setList(pageIndex, pageSize) {
+    @action async setList(status, searchKey, pageIndex, pageSize) {
         this.loading = true;
-        const response = await api.quota.list(pageIndex, pageSize);
+        const response = await api.quota.list(status, searchKey, pageIndex, pageSize);
         if (response && response.data) {
             this.page = {
                 pageSize: pageSize,
@@ -46,9 +46,10 @@ class QuotaStore {
         return result;
     }
 
-    @action async delete(quotaUuid) {
+    @action async delete(uuids) {
+        console.log(uuids)
         this.loading = true;
-        const result = await api.quota.delete(quotaUuid)
+        const result = await api.quota.delete(uuids)
         this.loading = false;
         return result;
     }

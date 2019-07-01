@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Link } from 'react-router-dom'
-import { Row, PageHeader, Icon, Button, Table, message, Modal } from 'antd'
+import { Row, PageHeader, Icon, Table } from 'antd'
 import { QueryString } from '../../common/utils'
 import moment from 'moment'
 
@@ -20,13 +19,9 @@ export default class AppointmentIndexPage extends Component {
 
     loadList = (props) => {
         let query = QueryString.parseJSON(props.location.search)
-        if ((query.pageIndex && query.pageIndex !== this.state.pageIndex)
-            ||
-            (query.batchUuid !== this.state.batchUuid)
-        ) {
-            this.setState({ batchUuid: query.batchUuid, pageIndex: query.pageIndex })
-            this.props.stores.appointmentStore.setList(query.batchUuid, query.pageIndex, this.state.pageSize)
-        }
+        this.setState({ batchUuid: query.batchUuid || '', pageIndex: query.pageIndex || 1 }, () => {
+            this.props.stores.appointmentStore.setList(this.state.batchUuid, this.state.pageIndex, this.state.pageSize);
+        });
     }
 
     handlePageChange = page => {
@@ -42,10 +37,10 @@ export default class AppointmentIndexPage extends Component {
         const { list, page, loading } = this.props.stores.appointmentStore
         return (
             <Row>
-                <PageHeader title="预约管理" 
-                subTitle={`预约总数:${(page || {}).recordCount || 0}`} 
-                backIcon={<Icon type="arrow-left" />} 
-                extra={batch.name ? `所属批次：${batch.name}` : null} />
+                <PageHeader title="预约管理"
+                    subTitle={`预约总数:${(page || {}).recordCount || 0}`}
+                    backIcon={<Icon type="arrow-left" />}
+                    extra={batch.name ? `所属批次：${batch.name}` : null} />
                 <div className="toolbar">
 
                 </div>

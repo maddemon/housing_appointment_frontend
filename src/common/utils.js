@@ -1,11 +1,11 @@
 import Config from '../common/config'
 import { message } from 'antd'
-
+import userStore from '../stores/userStore'
 const QueryString = {
     parseJSON: (str) => {
         let json = {}
         if (!str) return json
-        str.replace('?','').split('&').map(kv => {
+        str.replace('?', '').split('&').map(kv => {
             let arr = kv.split('=')
             if (arr.length === 2) {
                 json[arr[0]] = decodeURIComponent(arr[1])
@@ -80,12 +80,11 @@ async function request(path, query, data, httpMethod) {
         }
         const responseJson = await response.json();
         if (responseJson.status !== '200') {
-            if (responseJson.status === '1100') {
-                window.localStorage.clear();
+            if (responseJson.status === '1100' || responseJson.status === '403') {
+                userStore.logout()
             }
             throwException(responseJson);
         }
-        console.log(responseJson)
         return responseJson;
     } catch (err) {
         throwException(err)

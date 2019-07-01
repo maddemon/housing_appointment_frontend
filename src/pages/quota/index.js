@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Row, PageHeader, Icon, Button, Table, Modal, Tag } from 'antd'
+import { Row, PageHeader, Icon, Button, Table, Modal, Tag, Radio } from 'antd'
 import { QueryString } from '../../common/utils'
 import ImportButton from '../shared/import_button'
 
@@ -8,27 +8,30 @@ import ImportButton from '../shared/import_button'
 @observer
 export default class QuotaIndexPage extends Component {
 
-    state = { pageIndex: 1, pageSize: 20 }
+    state = { status: '', searchKey: '', pageIndex: 1, pageSize: 20, selectedRowKeys: [] }
 
-    async componentWillMount() {
+    componentWillMount() {
         this.props.stores.globalStore.setTitle('指标管理');
-        await this.props.stores.quotaStore.setList(this.state.pageIndex, this.state.pageSize)
+        this.loadList(this.props)
     }
 
-    async componentWillReceiveProps(nextProps) {
-        let query = QueryString.parseJSON(nextProps.location.search)
-        if (query.pageIndex && query.pageIndex !== this.state.pageIndex) {
-            this.setState({ pageIndex: query.pageIndex })
-            await this.props.stores.quotaStore.setList(query.pageIndex, this.state.pageSize)
-        }
+    componentWillReceiveProps(nextProps) {
+        this.loadList(nextProps)
     }
 
-    handleDelete = (uuid) => {
+    loadList = (props) => {
+        let query = QueryString.parseJSON(props.location.search)
+        this.setState({ status: query.status || '', searchKey: query.searchKey || '', pageIndex: query.pageIndex || 1 }, () => {
+            this.props.stores.quotaStore.setList(this.state.status, this.state.searchKey, this.state.pageIndex, this.state.pageSize);
+        });
+    }
+
+    handleDelete = () => {
         Modal.confirm({
             title: "确认",
-            content: "你确定要删除该指标吗？",
+            content: "你确定要删除所选的所有指标吗？",
             onOk: async () => {
-                const data = await this.props.stores.quotaStore.delete(uuid)
+                const data = await this.props.stores.quotaStore.delete(this.state.selectedRowKeys.join())
                 if (data.status === '200') {
                     await this.props.stores.quotaStore.setList(this.state.pageIndex, this.state.pageSize)
                 }
@@ -42,7 +45,9 @@ export default class QuotaIndexPage extends Component {
 
     operateColumnRender = (text, item) => {
         let buttons = [
-            <Button key="btnDelete" onClick={() => this.handleDelete(item.uuid)} type="danger"><Icon type="delete" />删除</Button>,
+            <Button key="btnDelete" onClick={() => this.handleDelete(item.uuid)} type="danger" title="删除">
+                <Icon type="delete" />
+            </Button>,
         ];
         return buttons;
     }
@@ -53,26 +58,47 @@ export default class QuotaIndexPage extends Component {
         }
     }
 
+    handleSelectChange = selectedRowKeys => {
+        this.setState({ selectedRowKeys });
+    }
+
+    handleStatusChange = (e) => {
+        this.props.history.push(`/quota/index?status=${e.target.value}`)
+    }
+
     render() {
         const { list, page, loading, importUrl } = this.props.stores.quotaStore
+        const { status, selectedRowKeys } = this.state
         return (
             <Row>
-                <PageHeader title="指标管理" />
+                <PageHeader title="指标管理" extra={
+                    <Radio.Group onChange={this.handleStatusChange}>
+                        <Radio.Button value="" checked={status === '' || status === undefined}>全部</Radio.Button>
+                        <Radio.Button value="0" checked={status === '0'}>未预约</Radio.Button>
+                        <Radio.Button value="1" checked={status === '1'}>已预约</Radio.Button>
+                        <Radio.Button value="2" checked={status === '2'}>已选房</Radio.Button>
+                    </Radio.Group>
+                } />
                 <div className="toolbar">
+                    <Button type="danger" disabled={selectedRowKeys.length === 0} onClick={this.handleDelete}>
+                        <Icon type="delete" />批量删除
+                    </Button>
                     <ImportButton
                         text="导入指标"
                         action={importUrl}
                         onChange={this.handleUpload}
                     />
+                    <a href="/templates/指标导入模板.xslx"><Icon type="download" />下载导入模板</a>
                 </div>
                 <Table
                     loading={loading}
+                    rowSelection={{ selectedRowKeys, onChange: this.handleSelectChange }}
                     rowKey="uuid"
                     columns={[
                         { dataIndex: "priority", title: "优先级", },
                         { dataIndex: "userName", title: "用户", },
                         { dataIndex: "quotaStatus", title: "状态", render: (text) => text === "1" ? <Tag color="green">已使用</Tag> : <Tag color="gray">未使用</Tag> },
-                        { title: "操作", render: this.operateColumnRender, width: 100 },
+                        //{ title: "操作", render: this.operateColumnRender, width: 100 },
                     ]}
                     dataSource={list}
                     pagination={{ ...page, size: 5, onChange: this.handlePageChange, }}

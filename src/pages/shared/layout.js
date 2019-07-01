@@ -60,7 +60,6 @@ export default class PrimaryLayout extends Component {
 class PrivateRoute extends Component {
     render() {
         const authenticated = this.props.stores.userStore.authenticated;
-        console.log('authenticated', authenticated)
         if (!authenticated) {
             const returnUrl = `${this.props.location.pathname}${this.props.location.search}`
             return <Redirect to={`/user/login?returnUrl=${returnUrl}`} />

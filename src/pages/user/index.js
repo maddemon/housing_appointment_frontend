@@ -56,8 +56,9 @@ export default class UserIndexPage extends Component {
 
     operateColumnRender = (text, item) => {
         let buttons = [
-            <Button key="btnreset" onClick={() => this.handleResetPassword(item.uuid)}>重置密码</Button>,
-            <EditModal key="btnedit" model={item} trigger={<Button><Icon type="edit" />修改</Button>} onSubmit={this.handleSubmit} />,
+            <Button key="btnReset" onClick={() => this.handleResetPassword(item.uuid)}>
+                <Icon type="key" />重置密码</Button>,
+            <EditModal key="btnEdit" model={item} trigger={<Button title="修改"><Icon type="edit" /></Button>} onSubmit={this.handleSubmit} />,
         ];
         return buttons;
     }
@@ -88,7 +89,7 @@ export default class UserIndexPage extends Component {
                             action={importUrl}
                             onChange={this.handleUpload}
                         />
-                        <a href="/templates/uers.xslx"><Icon type="download" />下载导入模板</a>
+                        <a href="/templates/用户导入模板.xslx"><Icon type="download" />下载导入模板</a>
                     </Button.Group>
                 </div>
                 <Table

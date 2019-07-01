@@ -46,11 +46,11 @@ const api = {
         },
     },
     quota: {
-        delete: (quotaUuid) => {
-            return $.get('quota/delete', { quotaUuid })
+        delete: (uuids) => {
+            return $.get('quota/delete?quotaUuid=' + uuids)
         },
-        list: (pageIndex, pageSize) => {
-            return $.get('quota/list', { pageIndex, pageSize })
+        list: (status, queryWord, pageIndex, pageSize) => {
+            return $.get('quota/list', { status, queryWord, pageIndex, pageSize })
         },
         listOfCustomer: () => {
             return $.get('quota/listOfCustomer')

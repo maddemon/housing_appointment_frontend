@@ -1,15 +1,14 @@
-import { observable, action } from 'mobx';
+import { observable, action, computed } from 'mobx';
 import cookie from 'react-cookies';
 import api from '../common/api';
-
-const CookieName = "authtoken"
+import Config from '../common/config';
 
 class UserStore {
     @observable list = [];
     @observable page = {};
     @observable loading = false;
 
-    get current() {
+    @computed get current() {
         const sessionId = this.authenticated
         const json = window.localStorage.getItem(sessionId);
         if (json) {
@@ -18,8 +17,8 @@ class UserStore {
         return null;
     }
 
-    get authenticated() {
-        const sessionId = cookie.load(CookieName)
+    @computed get authenticated() {
+        const sessionId = cookie.load(Config.CookieName)
         return sessionId
     }
 
@@ -28,7 +27,7 @@ class UserStore {
         const data = await api.user.login(username, password);
         if (data && data.status === '200') {
             const user = data.data;
-            cookie.save(CookieName, user.sessionId, { path: '/' })
+            cookie.save(Config.CookieName, user.sessionId, { path: '/' })
             window.localStorage.clear();
             await window.localStorage.setItem(user.sessionId, JSON.stringify(user))
         }
@@ -38,7 +37,7 @@ class UserStore {
     logout() {
         const sessionId = this.authenticated;
         window.localStorage.removeItem(sessionId)
-        cookie.remove(CookieName)
+        cookie.remove(Config.CookieName)
     }
 
     async setList(pageIndex, pageSize) {
