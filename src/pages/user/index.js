@@ -3,7 +3,6 @@ import { inject, observer } from 'mobx-react'
 import { Row, PageHeader, Icon, Button, Table, Modal, message } from 'antd'
 import { QueryString } from '../../common/utils'
 import EditModal from './edit'
-import ImportButton from '../shared/import_button'
 
 @inject('stores')
 @observer
@@ -71,19 +70,13 @@ export default class UserIndexPage extends Component {
     }
 
     render() {
-        const { loading, list, page, importUrl } = this.props.stores.userStore
+        const { loading, list, page } = this.props.stores.userStore
         return (
             <Row>
                 <PageHeader title="用户管理" />
                 <div className="toolbar">
                     <Button.Group>
                         <EditModal title="添加用户" trigger={<Button type="primary"><Icon type="plus" /> 添加用户</Button>} onSubmit={this.handleSubmit} />
-                        <ImportButton
-                            text="导入用户"
-                            action={importUrl}
-                            onChange={this.handleUpload}
-                        />
-                        <a href="/templates/用户导入模板.xslx"><Icon type="download" />下载导入模板</a>
                     </Button.Group>
                 </div>
                 <Table

@@ -3,6 +3,7 @@ import { withRouter, Link } from 'react-router-dom'
 import { inject, observer } from 'mobx-react'
 import { Row, Col, Menu, Icon } from 'antd'
 import Config from '../../common/config';
+const { SubMenu } = Menu;
 
 @inject('stores')
 @observer
@@ -44,10 +45,16 @@ class TopNavbar extends Component {
                 default:
                     break;
             }
-            result = result.concat([
-                <Menu.Item key="/user/editpassword"><Icon type="key" />修改密码</Menu.Item>,
-                <Menu.Item key="/user/logout"> <Icon type="poweroff" />退出 </Menu.Item>
-            ])
+            result = result.concat(
+                <SubMenu key="user"
+                    title={
+                        <span><Icon type="user"></Icon>{identity.name}</span>
+                    }
+                >
+                    <Menu.Item key="/user/editpassword"><Icon type="key" />修改密码</Menu.Item>
+                    <Menu.Item key="/user/logout"> <Icon type="poweroff" />退出 </Menu.Item>
+                </SubMenu>
+            )
         } else {
             result = result.concat([
                 <Menu.Item key="/user/login"><Icon type="user" />登录</Menu.Item>,
@@ -60,10 +67,10 @@ class TopNavbar extends Component {
         const identity = this.props.stores.userStore.current();
         return (
             <Row>
-                <Col xs={24} sm={24} md={5} lg={5} xl={5} xxl={4} className="logo"  >
+                <Col xs={15} sm={15} md={5} lg={5} xl={5} xxl={4} className="logo"  >
                     <h1 style={{ lineHeight: '64px', color: "#fff" }}><Link to="/">{Config.SystemName}</Link></h1>
                 </Col>
-                <Col xs={0} sm={0} md={19} log={19} xl={19} xxl={20}>
+                <Col xs={9} sm={9} md={19} log={19} xl={19} xxl={20}>
                     <Menu onClick={this.handleMenuClick} mode="horizontal" selectedKeys={this.state.current} theme="dark" style={{ lineHeight: '64px' }}>
                         {this.getMenuItems(identity)}
                     </Menu>

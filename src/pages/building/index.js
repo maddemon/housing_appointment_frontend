@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react'
 import { Row, PageHeader, Icon, Button, Table, message, Modal } from 'antd'
 import { QueryString } from '../../common/utils'
 import EditModal from './edit'
+import ImportButton from '../shared/import_button'
 
 @inject('stores')
 @observer
@@ -57,7 +58,7 @@ export default class BuildingIndexPage extends Component {
     }
 
     render() {
-        const { list, page, loading } = this.props.stores.buildingStore
+        const { list, page, loading, importUrl } = this.props.stores.buildingStore
         return (
             <Row>
                 <PageHeader title="楼盘管理" />
@@ -68,16 +69,22 @@ export default class BuildingIndexPage extends Component {
                             trigger={<Button type="primary"><Icon type="plus" /> 添加楼盘</Button>}
                             onSubmit={this.handleSubmit}
                         />
+                        <ImportButton
+                            text="导入楼盘"
+                            action={importUrl}
+                            onChange={this.handleUpload}
+                        />
+                        <a href="/templates/楼盘导入模板.xslx"><Icon type="download" />下载导入模板</a>
                     </Button.Group>
                 </div>
                 <Table
                     loading={loading}
                     rowKey="uuid"
                     columns={[
-                        { dataIndex: "name", title: "名称", width: 150, },
+                        { dataIndex: "name", title: "名称",  },
                         { dataIndex: "houseNumber", title: "房屋数量", width: 100 },
                         { dataIndex: "lastNumber", title: "剩余数量", width: 100 },
-                        { title: "操作", render: this.operateColumnRender, },
+                        { title: "操作", render: this.operateColumnRender,width:150 },
                     ]}
                     dataSource={list || []}
                     pagination={{ ...page, size: 5, onChange: this.handlePageChange, }}

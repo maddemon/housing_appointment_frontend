@@ -3,12 +3,22 @@ import api from '../common/api'
 class BuildingStore {
 
     @observable list = [];
+    @observable avaliables = [];
     @observable page = null;
     @observable loading = false;
     @observable model = {}
 
     @action setModel(model) {
         this.model = model;
+    }
+
+    @action async setAvaliables() {
+        this.loading = true;
+        const response = await api.building.avaliables();
+        if (response && response.data) {
+            this.avaliables = response.data
+        }
+        this.loading = false
     }
 
     @action async setList(batchId, pageIndex, pageSize) {

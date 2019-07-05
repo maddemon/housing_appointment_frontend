@@ -36,11 +36,11 @@ export default class AppointmentIndexPage extends Component {
         window.open('/house/reserve/reserveExcel?batchUuid=' + this.state.batchUuid)
     }
 
-    handleImport = async (response) => {
-        if (response.status === '200') {
-            await this.loadList(this.props)
-        }
-    }
+    // handleImport = async (response) => {
+    //     if (response.status === '200') {
+    //         await this.loadList(this.props)
+    //     }
+    // }
 
     render() {
         const batch = this.props.stores.batchStore.model
@@ -52,11 +52,11 @@ export default class AppointmentIndexPage extends Component {
                     backIcon={<Icon type="arrow-left" />}
                     extra={<Button.Group>
                         <Button type="primary" onClick={this.handleExportClick}><Icon type="export" />导出预约记录</Button>
-                        <ImportButton
+                        {/* <ImportButton
                             tooltip="请先导出预约记录，再填写对应结果"
                             text="导入选房结果"
                             onChange={this.handleImport}
-                        />
+                        /> */}
                     </Button.Group>} />
                 <div className="toolbar">
 

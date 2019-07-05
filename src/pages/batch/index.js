@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Link } from 'react-router-dom'
 import { Row, PageHeader, Icon, Button, Table, message, Modal } from 'antd'
 import { QueryString } from '../../common/utils'
 import moment from 'moment'
@@ -60,10 +59,20 @@ export default class BatchIndexPage extends Component {
     }
 
     operateColumnRender = (text, item) => {
+        const canNotify = moment(item.appointmentTimeEnd) > moment()
+        const canEdit = moment(item.chooseTime) > moment()
+        const canDelete = moment(item.appointmentTimeStart) > moment()
         let buttons = [
-            <Button type="default" onClick={() => this.handleNotifyClick(item)} ><Icon type="bell" />通知</Button>,
-            <EditModal key="btnEdit" model={item} trigger={<Button title="修改"><Icon type="edit" /></Button>} onSubmit={this.handleSubmit} />,
-            <Button key="btnDelete" type="danger" onClick={() => this.handleDelete(item)} title="删除"><Icon type="delete" /></Button>,
+            <Button
+                title={canNotify ? "发送预约通知" : "预约时间已结束，不可使用"}
+                disabled={!canNotify}
+                type="default"
+                onClick={() => this.handleNotifyClick(item)}
+            >
+                <Icon type="bell" />通知
+            </Button>,
+            <EditModal key="btnEdit" model={item} trigger={<Button title={canEdit ? "修改" : "批次已结束，无法修改"} disabled={!canEdit}><Icon type="edit" /></Button>} onSubmit={this.handleSubmit} />,
+            <Button title={canDelete ? "删除" : "预约已开始，无法删除"} disabled={!canDelete} key="btnDelete" type="danger" onClick={() => this.handleDelete(item)} title="删除"><Icon type="delete" /></Button>
         ];
         return buttons;
     }
@@ -73,7 +82,12 @@ export default class BatchIndexPage extends Component {
             this.props.history.push('/appointment/index?batchUuid=' + item.uuid)
         }}><Icon type="user" />查看</Button>
     }
-
+    viewBuildingRender = (text, item) => {
+        return <Button type="primary" onClick={async () => {
+            await this.props.stores.batchStore.setModel(item)
+            this.props.history.push('/building/select?batchUuid=' + item.uuid)
+        }}><Icon type="build" />选房</Button>
+    }
     render() {
         const { list, page, loading } = this.props.stores.batchStore
         return (
@@ -94,7 +108,8 @@ export default class BatchIndexPage extends Component {
                         { dataIndex: "appointmentTimeStart", title: "预约时间", render: (text, item) => `${moment(item.appointmentTimeStart).format('YYYY-MM-DD HH:mm')} - ${moment(item.appointmentTimeEnd).format('YYYY-MM-DD HH:mm')}` },
                         { dataIndex: "chooseAddress" },
                         { dataIndex: "chooseTime", title: "选房日期", render: (text) => moment(text).format('YYYY-MM-DD') },
-                        { title: "预约管理", render: this.viewAppointmentRender },
+                        { title: "预约名单", render: this.viewAppointmentRender },
+                        { title: "楼盘", render: this.viewBuildingRender },
                         { title: "操作", render: this.operateColumnRender, },
                     ]}
                     dataSource={list || []}
