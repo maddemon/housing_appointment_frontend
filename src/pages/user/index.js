@@ -13,22 +13,16 @@ export default class UserIndexPage extends Component {
 
     async componentWillMount() {
         await this.props.stores.globalStore.setTitle('用户管理');
-        this.loadData()
     }
 
     async  componentWillReceiveProps(nextProps) {
-        let query = QueryString.parseJSON(nextProps.location.search)
-        if (query.pageIndex && query.pageIndex !== this.state.pageIndex) {
-            this.loadData(query.pageIndex)
-        }
+        await this.loadList(nextProps)
     }
 
-    loadData = async (pageIndex) => {
-        pageIndex = pageIndex || this.state.pageIndex
-        if (pageIndex !== this.state.pageIndex) {
-            await this.setState({ pageIndex: pageIndex })
-        }
-        await this.props.stores.userStore.setList(pageIndex, this.state.pageSize)
+    loadList = async (props) => {
+        const query = QueryString.parseJSON(props.location.search)
+        await this.setState({ searchKey: query.searchKey || '', pageIndex: query.pageIndex || 1 });
+        await this.props.stores.userStore.setList(this.state.pageIndex, this.state.pageSize)
     }
 
     handleDelete = (uuid) => {

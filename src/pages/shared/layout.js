@@ -6,6 +6,7 @@ import { Layout, Breadcrumb } from 'antd';
 import TopNavbar from '../shared/_header';
 import UserLoginPage from '../user/login';
 import UserIndexPage from '../user';
+import BuildingIndexPage from '../building'
 import BatchIndexPage from '../batch';
 import QuotaIndexPage from '../quota';
 import AppointmentIndexPage from '../appointment';
@@ -37,6 +38,7 @@ export default class PrimaryLayout extends Component {
                                     <PrivateRoute exact path="/my/appointments" component={MyAppointmentsPage} />
                                     <PrivateRoute exact path="/my/quotas" component={MyQuotasPage} />
                                     <PrivateRoute exact path="/appointment/make" component={MakeAppointmentPage} />
+                                    <PrivateRoute exact path="/building/index" component={BuildingIndexPage} />
                                     <PrivateRoute exact path="/batch/index" component={BatchIndexPage} />
                                     <PrivateRoute exact path="/quota/index" component={QuotaIndexPage} />
                                     <PrivateRoute exact path="/appointment/index" component={AppointmentIndexPage} />

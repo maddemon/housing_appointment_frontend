@@ -35,6 +35,7 @@ class TopNavbar extends Component {
                     break;
                 case 'admin':
                     result = result.concat([
+                        <Menu.Item key="/building/index" ><Icon type="build" />楼盘管理</Menu.Item>,
                         <Menu.Item key="/batch/index" ><Icon type="import" />批次管理</Menu.Item>,
                         <Menu.Item key="/quota/index" ><Icon type="switcher" />指标管理 </Menu.Item>,
                         <Menu.Item key="/user/index" ><Icon type="usergroup-add" />用户管理</Menu.Item>,

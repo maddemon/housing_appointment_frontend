@@ -13,7 +13,6 @@ export default class BatchIndexPage extends Component {
     state = { pageIndex: 1, pageSize: 20 }
     async componentWillMount() {
         this.props.stores.globalStore.setTitle('批次管理');
-        await this.props.stores.batchStore.setList(this.state.pageIndex, this.state.pageSize)
     }
 
     async componentWillReceiveProps(nextProps) {
@@ -23,7 +22,7 @@ export default class BatchIndexPage extends Component {
     }
 
     handlePageChange = page => {
-        this.props.history.push(`/user/index?page=${page}`)
+        this.props.history.push(`/batch/index?page=${page}`)
     }
 
     handleSubmit = async result => {
@@ -36,7 +35,7 @@ export default class BatchIndexPage extends Component {
     handleDelete = async item => {
         Modal.confirm({
             title: "确认",
-            content: "你确定要删除该用户吗？",
+            content: "你确定要删除该批次吗？",
             onOk: async () => {
                 const result = await this.props.stores.batchStore.delete(item.uuid);
                 if (result.status === '200') {

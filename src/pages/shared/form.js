@@ -19,32 +19,32 @@ class SharedForm extends Component {
         if (item.getField === false) getField = false
         if (!item.name) getField = false
         if (!item.render) {
-
+            item.size = item.size || "default";
             switch (item.type) {
                 case "hidden":
-                    item.render = <Input type="hidden" />
+                    item.render = <Input type="hidden" size={item.size} />
                     break;
                 default:
                 case "number":
                 case "text":
-                    item.render = <Input type={item.type} placeholder={item.placeholder} />
+                    item.render = <Input type={item.type} placeholder={item.placeholder} size={item.size} />
                     break;
                 case "textarea":
-                    item.render = <Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} onChange={item.onChange} placeholder={item.placeholder} />
+                    item.render = <Input type="textarea" size={item.size} autosize={{ minRows: 2, maxRows: 6 }} onChange={item.onChange} placeholder={item.placeholder} />
                     break;
                 case "date":
-                    item.render = <DatePicker showTime={false} onChange={item.onChange} placeholder={item.placeholder} />
+                    item.render = <DatePicker size={item.size} showTime={false} onChange={item.onChange} placeholder={item.placeholder} />
                     break;
                 case "datetime":
-                    item.render = <DatePicker showTime={true} onChange={item.onChange} placeholder={item.placeholder} />
+                    item.render = <DatePicker size={item.size} showTime={true} onChange={item.onChange} placeholder={item.placeholder} />
                     break;
                 case "select":
-                    item.render = <Select>
+                    item.render = <Select size={item.size}>
                         {item.props.options.map(option => <Select.Option key={option.value}>{option.text}</Select.Option>)}
                     </Select>
                     break;
                 case "file":
-                    item.render = <Upload {...item.props}>
+                    item.render = <Upload {...item.props} size={item.size}>
                         <Button> <Icon type="upload" />{item.text || '点击上传'}</Button>
                     </Upload>
                     break;
@@ -74,7 +74,7 @@ class SharedForm extends Component {
         const style = this.props.style || {}
         const formItemLayout = this.props.itemLayout || {
             labelCol: { span: 6 },
-            wrapperCol: { span: 14 },
+            wrapperCol: { span: 16 },
         };
 
         const layout = this.props.layout || 'horizontal'

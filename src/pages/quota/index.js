@@ -12,7 +12,6 @@ export default class QuotaIndexPage extends Component {
 
     async componentWillMount() {
         this.props.stores.globalStore.setTitle('指标管理');
-        await this.loadList(this.props)
     }
 
     async componentWillReceiveProps(nextProps) {

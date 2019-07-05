@@ -28,6 +28,20 @@ const api = {
             return $.post('user/addByExcel', null, formData)
         }
     },
+    building: {
+        add: (data) => {
+            return $.post('building/add', null, data)
+        },
+        edit: (data) => {
+            return $.post('building/edit', null, data)
+        },
+        delete: (uuid) => {
+            return $.get('building/delete', { uuid })
+        },
+        list: (batchUuid, pageIndex, pageSize) => {
+            return $.get('building/list', { batchUuid, pageIndex, pageSize })
+        },
+    },
     batch: {
         add: (data) => {
             return $.post('batch/add', null, data)
