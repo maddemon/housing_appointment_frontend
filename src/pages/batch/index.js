@@ -12,6 +12,7 @@ export default class BatchIndexPage extends Component {
     state = { pageIndex: 1, pageSize: 20 }
     async componentWillMount() {
         this.props.stores.globalStore.setTitle('批次管理');
+        this.props.stores.housesStore.setAvaliables();
     }
 
     async componentWillReceiveProps(nextProps) {
@@ -82,10 +83,10 @@ export default class BatchIndexPage extends Component {
             this.props.history.push('/appointment/index?batchUuid=' + item.uuid)
         }}><Icon type="user" />查看</Button>
     }
-    viewBuildingRender = (text, item) => {
+    viewHousesRender = (text, item) => {
         return <Button type="primary" onClick={async () => {
             await this.props.stores.batchStore.setModel(item)
-            this.props.history.push('/building/select?batchUuid=' + item.uuid)
+            this.props.history.push('/houses/select?batchUuid=' + item.uuid)
         }}><Icon type="build" />选房</Button>
     }
     render() {
@@ -109,7 +110,7 @@ export default class BatchIndexPage extends Component {
                         { dataIndex: "chooseAddress" },
                         { dataIndex: "chooseTime", title: "选房日期", render: (text) => moment(text).format('YYYY-MM-DD') },
                         { title: "预约名单", render: this.viewAppointmentRender },
-                        { title: "楼盘", render: this.viewBuildingRender },
+                        { title: "楼盘", render: this.viewHousesRender },
                         { title: "操作", render: this.operateColumnRender, },
                     ]}
                     dataSource={list || []}

@@ -30,13 +30,13 @@ class TopNavbar extends Component {
             switch (identity.role) {
                 case 'user':
                     result = result.concat([
-                        <Menu.Item key="/my/quotas" ><Icon type="ordered-list" />我的指标</Menu.Item>,
+                        <Menu.Item key="/my/quotas" ><Icon type="ordered-list" />预约选房</Menu.Item>,
                         <Menu.Item key="/my/appointments" ><Icon type="calendar" />我的预约</Menu.Item>
                     ]);
                     break;
                 case 'admin':
                     result = result.concat([
-                        <Menu.Item key="/building/index" ><Icon type="build" />楼盘管理</Menu.Item>,
+                        <Menu.Item key="/houses/index" ><Icon type="build" />楼盘管理</Menu.Item>,
                         <Menu.Item key="/batch/index" ><Icon type="import" />批次管理</Menu.Item>,
                         <Menu.Item key="/quota/index" ><Icon type="switcher" />指标管理 </Menu.Item>,
                         <Menu.Item key="/user/index" ><Icon type="usergroup-add" />用户管理</Menu.Item>,

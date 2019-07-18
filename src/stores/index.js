@@ -1,6 +1,6 @@
 import userStore from './userStore'
 import globalStore from './globalStore'
-import buildingStore from './buildingStore'
+import housesStore from './housesStore'
 import batchStore from './batchStore'
 import quotaStore from './quotaStore'
 import appointmentStore from './appointmentStore'
@@ -8,7 +8,7 @@ import appointmentStore from './appointmentStore'
 export default {
     globalStore,
     userStore,
-    buildingStore,
+    housesStore,
     batchStore,
     quotaStore,
     appointmentStore

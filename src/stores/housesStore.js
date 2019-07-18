@@ -1,6 +1,6 @@
 import { observable, action } from 'mobx'
 import api from '../common/api'
-class BuildingStore {
+class HousesStore {
 
     @observable list = [];
     @observable avaliables = [];
@@ -11,10 +11,14 @@ class BuildingStore {
     @action setModel(model) {
         this.model = model;
     }
+    
+    get importUrl() {
+        return api.houses.getImportUrl();
+    }
 
     @action async setAvaliables() {
         this.loading = true;
-        const response = await api.building.avaliables();
+        const response = await api.houses.avaliables();
         if (response && response.data) {
             this.avaliables = response.data
         }
@@ -23,7 +27,7 @@ class BuildingStore {
 
     @action async setList(batchId, pageIndex, pageSize) {
         this.loading = true;
-        const response = await api.building.list(batchId, pageIndex, pageSize)
+        const response = await api.houses.list(batchId, pageIndex, pageSize)
         if (response && response.data) {
             this.page = {
                 pageSize: pageSize,
@@ -39,22 +43,22 @@ class BuildingStore {
         this.loading = true;
         let result = null;
         if (data.uuid) {
-            result = await api.building.edit(data)
+            result = await api.houses.edit(data)
         }
         else {
-            result = await api.building.add(data)
+            result = await api.houses.add(data)
         }
         this.loading = false;
         return result;
     }
 
-    @action async delete(buildingUuid) {
+    @action async delete(housesUuid) {
         this.loading = true;
-        const result = await api.building.delete(buildingUuid)
+        const result = await api.houses.delete(housesUuid)
         this.loading = false;
         return result;
     }
 }
 
-const store = new BuildingStore();
+const store = new HousesStore();
 export default store;

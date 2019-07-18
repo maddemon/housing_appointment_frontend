@@ -28,19 +28,25 @@ const api = {
             return $.post('user/addByExcel', null, formData)
         }
     },
-    building: {
+    houses: {
         add: (data) => {
-            return $.post('building/add', null, data)
+            return $.post('houses/add', null, data)
         },
         edit: (data) => {
-            return $.post('building/edit', null, data)
+            return $.post('houses/edit', null, data)
         },
         delete: (uuid) => {
-            return $.get('building/delete', { uuid })
+            return $.get('houses/delete', { uuid })
         },
         list: (batchUuid, pageIndex, pageSize) => {
-            return $.get('building/list', { batchUuid, pageIndex, pageSize })
+            return $.get('houses/list', { batchUuid, pageIndex, pageSize })
         },
+        avaliables: () => {
+            return $.get('houses/avaliables')
+        },
+        getImportUrl :()=>{
+            return '/house/houses/add'
+        }
     },
     batch: {
         add: (data) => {

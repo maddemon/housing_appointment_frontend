@@ -7,7 +7,7 @@ import AppointmentStepsControl from './_steps'
 class UserQuotaPage extends Component {
 
     componentWillMount() {
-        this.props.stores.globalStore.setTitle('我的指标');
+        this.props.stores.globalStore.setTitle('预约选房');
         this.props.stores.quotaStore.setMyList();
     }
 
@@ -18,10 +18,9 @@ class UserQuotaPage extends Component {
         return (
             <>
                 <PageHeader
-                    title="我的指标"
-                    subTitle="点击指标进行预约"
+                    title="预约选房"
+                    subTitle="点击您的购房资格，进行预约"
                 />
-                <AppointmentStepsControl step={0} />
                 <Spin spinning={loading}>
                     <Row gutter={{ xs: 8, sm: 16, md: 24 }}>
                         {(myList || []).length === 0 ? <Empty description="暂无可用指标"></Empty> : myList.map((item, i) => <QuotaItem key={i} model={item} {...this.props} />)}

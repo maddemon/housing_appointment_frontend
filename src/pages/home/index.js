@@ -27,7 +27,7 @@ export default class HomePage extends Component {
     }
 
     render() {
-        const { loading, resultList, page } = this.props.stores.appointmentStore
+        // const { loading, resultList, page } = this.props.stores.appointmentStore
         return <Row>
             <PageHeader title="欢迎您"
                 subTitle="预约公示"
@@ -35,7 +35,7 @@ export default class HomePage extends Component {
                     <Search placeholder="输入姓名查询" onSearch={this.handleSearch} enterButton ></Search>
                 }
             />
-            <Table
+            {/* <Table
                 loading={loading}
                 rowKey="uuid"
                 columns={[
@@ -46,7 +46,7 @@ export default class HomePage extends Component {
                 ]}
                 dataSource={resultList || []}
                 pagination={{ ...page, size: 5, onChange: this.handlePageChange, }}
-            ></Table>
+            ></Table> */}
         </Row>
     }
 }

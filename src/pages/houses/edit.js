@@ -5,11 +5,11 @@ import { inject, observer } from 'mobx-react'
 
 @inject('stores')
 @observer
-export default class BuildingEditModal extends Component {
+export default class HousesEditModal extends Component {
 
     handleSubmit = async (data) => {
 
-        const result = await this.props.stores.buildingStore.save(data);
+        const result = await this.props.stores.housesStore.save(data);
         if (this.props.onSubmit) {
             this.props.onSubmit(result)
         }
@@ -22,8 +22,7 @@ export default class BuildingEditModal extends Component {
             { name: 'uuid', defaultValue: model.uuid, type: "hidden" },
             { title: '名称', name: 'name', defaultValue: model.name, rules: [{ required: true, message: '此项没有填写' }], },
             { title: '楼层数', name: 'floorNumber', defaultValue: model.floorNumber, type: "number", rules: [{ required: true, message: '此项没有填写' }], },
-            { title: '单元数', name: 'unitNumber', defaultValue: model.unitNumber, type: "number", rules: [{ required: true, message: '此项没有填写' }], },
-            { title: '每梯户数', name: 'doorNumber', defaultValue: model.doorNumber, type: "number", rules: [{ required: true, message: '此项没有填写' }], },
+            { title: '户数', name: 'houseNumber', defaultValue: model.unitNumber, type: "number", rules: [{ required: true, message: '此项没有填写' }], },
         ];
     }
 
@@ -34,7 +33,7 @@ export default class BuildingEditModal extends Component {
                 onSubmit={this.handleSubmit}
                 trigger={this.props.trigger || <Button>修改</Button>}
                 items={this.getFormItems()}
-                loading={this.props.stores.buildingStore.loading}
+                loading={this.props.stores.housesStore.loading}
             >
             </Modal>
         )
