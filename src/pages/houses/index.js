@@ -15,9 +15,10 @@ export default class HousesIndexPage extends Component {
     }
 
     loadList = async (props) => {
+        props = props || this.props;
         let query = QueryString.parseJSON(props.location.search)
         await this.setState({ pageIndex: query.pageIndex || 1 });
-        await this.props.stores.housesStore.setList('', this.state.pageIndex, this.state.pageSize)
+        await this.props.stores.housesStore.getList(this.state.pageIndex, this.state.pageSize)
     }
 
     async componentWillReceiveProps(nextProps) {
@@ -31,7 +32,7 @@ export default class HousesIndexPage extends Component {
     handleSubmit = async result => {
         if (result.status === '200') {
             message.success(result.message);
-            await this.props.stores.housesStore.setList('', this.state.pageIndex, this.state.pageSize)
+            this.loadList()
         }
     }
 
@@ -43,7 +44,7 @@ export default class HousesIndexPage extends Component {
                 const result = await this.props.stores.housesStore.delete(item.uuid);
                 if (result.status === '200') {
                     message.success(result.message);
-                    await this.props.stores.housesStore.setList(this.state.pageIndex, this.state.pageSize)
+                    this.loadList()
                 }
             },
         })
@@ -51,10 +52,16 @@ export default class HousesIndexPage extends Component {
 
     operateColumnRender = (text, item) => {
         let buttons = [
-            // <EditModal key="btnEdit" model={item} trigger={<Button title="修改"><Icon type="edit" /></Button>} onSubmit={this.handleSubmit} />,
-            // <Button key="btnDelete" type="danger" onClick={() => this.handleDelete(item)} title="删除"><Icon type="delete" /></Button>,
+            <EditModal key="btnEdit" model={item} trigger={<Button title="修改"><Icon type="edit" /></Button>} onSubmit={this.handleSubmit} />,
+            <Button key="btnDelete" type="danger" onClick={() => this.handleDelete(item)} title="删除"><Icon type="delete" /></Button>,
         ];
         return buttons;
+    }
+
+    handleUpload = (result) => {
+        if (result.status === '200') {
+            this.loadList(this.props)
+        }
     }
 
     render() {
@@ -81,10 +88,9 @@ export default class HousesIndexPage extends Component {
                     loading={loading}
                     rowKey="uuid"
                     columns={[
-                        { dataIndex: "name", title: "名称",  },
-                        { dataIndex: "houseNumber", title: "房屋总量", width: 100 },
-                        { dataIndex: "lastNumber", title: "剩余数量", width: 100 },
-                        { title: "操作", render: this.operateColumnRender,width:150 },
+                        { dataIndex: "name", title: "名称", },
+                        { dataIndex: "status", title: "楼盘状态", width: 100 },
+                        { title: "操作", render: this.operateColumnRender, width: 150 },
                     ]}
                     dataSource={list || []}
                     pagination={{ ...page, size: 5, onChange: this.handlePageChange, }}

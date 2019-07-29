@@ -1,8 +1,8 @@
 import $ from './utils'
 const api = {
     user: {
-        login: async (account, password) => {
-            return await $.post('user/login', null, { account, password })
+        login: (account, password) => {
+            return $.post('user/login', null, { account, password })
         },
         add: (user) => {
             return $.post('user/add', null, user)
@@ -29,22 +29,19 @@ const api = {
         }
     },
     houses: {
-        add: (data) => {
-            return $.post('houses/add', null, data)
-        },
         edit: (data) => {
-            return $.post('houses/edit', null, data)
+            return $.put('houses/edit', null, data)
         },
         delete: (uuid) => {
             return $.get('houses/delete', { uuid })
         },
-        list: (batchUuid, pageIndex, pageSize) => {
-            return $.get('houses/list', { batchUuid, pageIndex, pageSize })
+        list: (pageIndex, pageSize) => {
+            return $.get('houses/housesList', { pageIndex, pageSize })
         },
         avaliables: () => {
-            return $.get('houses/avaliables')
+            return $.get('houses/houses')
         },
-        getImportUrl :()=>{
+        getImportUrl: () => {
             return '/house/houses/add'
         }
     },
@@ -64,6 +61,9 @@ const api = {
         avaliables: (pageIndex, pageSize) => {
             return $.get('batch/batchAvaliable', { pageIndex, pageSize })
         },
+        successAppointment: (batchUuid) => {
+            return $.get('batch/successAppointment', { batchUuid })
+        }
     },
     quota: {
         delete: (quotaUuid) => {
@@ -72,8 +72,8 @@ const api = {
         list: (status, queryWord, pageIndex, pageSize) => {
             return $.get('quota/list', { status, queryWord, pageIndex, pageSize })
         },
-        listOfCustomer: () => {
-            return $.get('quota/listOfCustomer')
+        userQuotas: () => {
+            return $.get('quota/userQuota')
         },
         getImportUrl: () => {
             return '/house/quota/add';

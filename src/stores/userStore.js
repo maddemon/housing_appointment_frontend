@@ -41,7 +41,7 @@ class UserStore {
         cookie.remove(Config.CookieName)
     }
 
-    async setList(pageIndex, pageSize) {
+    async getList(pageIndex, pageSize) {
         this.loading = true;
         const response = await api.user.list(pageIndex, pageSize);
         if (response && response.data) {
@@ -53,6 +53,7 @@ class UserStore {
             this.list = response.data.list
         }
         this.loading = false;
+        return this.list
     }
 
     async save(user) {

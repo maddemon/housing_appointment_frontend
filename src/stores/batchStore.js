@@ -12,7 +12,7 @@ class BatchStore {
         this.model = model;
     }
 
-    @action async setMyList(pageIndex, pageSize) {
+    @action async getMyList(pageIndex, pageSize) {
         this.loading = true;
         const response = await api.batch.avaliables(pageIndex, pageSize)
         if (response && response.data) {
@@ -26,7 +26,7 @@ class BatchStore {
         this.loading = false;
     }
     
-    @action async setList(pageIndex, pageSize) {
+    @action async getList(pageIndex, pageSize) {
         this.loading = true;
         const response = await api.batch.list(pageIndex, pageSize)
         if (response && response.data) {
@@ -38,6 +38,7 @@ class BatchStore {
             this.list = response.data.list
         }
         this.loading = false;
+        return this.list
     }
 
     @action async save(data) {

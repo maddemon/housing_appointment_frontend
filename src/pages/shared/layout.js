@@ -15,6 +15,8 @@ import MyQuotasPage from '../my/quotas';
 import MakeAppointmentPage from '../my/make_appointment';
 import UserEditPasswordPage from '../user/edit_password';
 import HomePage from '../home';
+import 'moment/locale/zh-cn'
+
 const { Header, Content, Footer } = Layout;
 
 @inject('stores')

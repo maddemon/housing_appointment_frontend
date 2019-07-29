@@ -25,7 +25,7 @@ class HousesStore {
         this.loading = false
     }
 
-    @action async setList(batchId, pageIndex, pageSize) {
+    @action async getList(batchId, pageIndex, pageSize) {
         this.loading = true;
         const response = await api.houses.list(batchId, pageIndex, pageSize)
         if (response && response.data) {
@@ -37,12 +37,13 @@ class HousesStore {
             this.list = response.data.list
         }
         this.loading = false;
+        return this.list
     }
 
     @action async save(data) {
         this.loading = true;
         let result = null;
-        if (data.uuid) {
+        if (data.housesUuid) {
             result = await api.houses.edit(data)
         }
         else {

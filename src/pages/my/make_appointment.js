@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Row, Col, Button, PageHeader, Alert, Icon, Card, Tag, message, Modal, Spin } from 'antd'
+import { Row, Col, Button, PageHeader, Alert, Icon, Card, Tag, message, Modal, Spin, Statistic } from 'antd'
 import AppointmentStepsControl from './_steps'
 import moment from 'moment'
 
@@ -12,7 +12,7 @@ export default class MakeAppointmentPage extends Component {
 
     componentWillMount() {
         this.props.stores.globalStore.setTitle('预约选房');
-        this.props.stores.batchStore.setMyList(this.state.pageIndex, this.state.pageSize);
+        this.props.stores.batchStore.getMyList(this.state.pageIndex, this.state.pageSize);
     }
 
     handleBack = () => {
@@ -32,7 +32,7 @@ export default class MakeAppointmentPage extends Component {
         avaliables = (avaliables || []).filter(e => moment(e.appointmentTimeEnd) > moment());
         return (
             <>
-                <PageHeader title="预约选房" tags={<Tag color="red">已选指标{quota.uuid}</Tag>} onBack={this.handleBack} />
+                <PageHeader title="预约选房" tags={<Tag color="red">已选指标{quota.quotaUuid}</Tag>} onBack={this.handleBack} />
                 <AppointmentStepsControl step={this.state.step} />
                 <Spin spinning={loading}>
                     {avaliables.length === 0 ?
@@ -65,9 +65,17 @@ const SelectedBatchControl = props => {
 }
 
 const BatchDetailControl = props => {
-    const { model } = props
+    const { model, successState } = props
     return <div>
-        <p>房屋数量：{model.houseNumber}</p>
+        <Row>
+            <Col span={12}>
+                <Statistic title="房屋数量" value={successState.houseNumber}></Statistic>
+            </Col>
+            <Col span={12}>
+                <Statistic title="已预约数量" value={successState.successCount}></Statistic>
+            </Col>
+        </Row>
+        <p></p>
         <p>房屋地址：{model.houseAddress}</p>
         <p>选房时间：{moment(model.chooseTime).format('LL')}</p>
         <p>选房地点：{model.chooseAddress}</p>
@@ -77,7 +85,22 @@ const BatchDetailControl = props => {
 }
 
 @inject('stores')
+@observer
 class BatchItemControl extends Component {
+    componentWillMount() {
+        moment.locale('zh-cn')
+        const timer = setInterval(this.getSuccessState, 1000 * 2);
+        this.setState({ timer })
+    }
+    componentWillUnmount() {
+        clearInterval(this.state.timer);
+    }
+
+    getSuccessState = async () => {
+        const batch = this.props.model
+        await this.props.stores.appointmentStore.getSuccessState(batch.uuid)
+    }
+
 
     handleClick = () => {
         const batch = this.props.model
@@ -92,11 +115,11 @@ class BatchItemControl extends Component {
             cancelText: "再想想",
             content: <div>
                 <p>已选批次：{batch.name}</p>
-                <p>已选指标：{quota.uuid}</p>
+                <p>已选指标：{quota.quotaUuid}</p>
                 <p>当前日期：{moment().format('LL')}</p>
             </div>,
             onOk: async () => {
-                const result = await this.props.stores.appointmentStore.make(batch.uuid, quota.uuid)
+                const result = await this.props.stores.appointmentStore.make(batch.uuid, quota.quotaUuid)
                 if (result === '200') {
                     message.success("预约成功");
                     this.props.handleClick(batch);
@@ -120,13 +143,14 @@ class BatchItemControl extends Component {
 
     render() {
         const { model } = this.props
+        const successState = this.props.stores.appointmentStore.successState[model.uuid] || {}
         return (
             <Card
                 hoverable={false}
                 title={model.name}
                 extra={this.extraRender(model)}
             >
-                <BatchDetailControl model={model} />
+                <BatchDetailControl model={model} successState={successState} />
             </Card>
         )
     }

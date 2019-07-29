@@ -69,6 +69,7 @@ async function request(path, query, data, httpMethod) {
                 response = await fetch(url, options)
                 break;
             case 'POST':
+            case 'PUT':
                 options.body = JSON.stringify(data)
                 response = await fetch(url, options)
                 break;

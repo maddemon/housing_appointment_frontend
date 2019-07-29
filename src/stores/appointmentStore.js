@@ -6,17 +6,19 @@ class AppointmentStore {
     @observable myList = [];
     @observable resultList = [];
     @observable loading = false;
+    @observable successState = {}
 
-    @action async setList(batchUuid, pageIndex, pageSize) {
+    @action async getList(batchUuid, pageIndex, pageSize) {
         this.loading = true;
         const response = await api.reserve.list(batchUuid, pageIndex, pageSize);
         if (response) {
             this.list = response.list;
         }
         this.loading = false;
+        return this.list
     }
 
-    @action async setMyList() {
+    @action async getMyList() {
         this.loading = true;
         const response = await api.reserve.history(null, 1, 100);
         if (response && response.data) {
@@ -47,6 +49,13 @@ class AppointmentStore {
         return result
     }
 
+    @action async getSuccessState(batchUuid) {
+        const response = await api.batch.successAppointment(batchUuid);
+        if (response && response.data) {
+            this.successState[batchUuid] = response.data
+            return this.successState[batchUuid]
+        }
+    }
 }
 
 const store = new AppointmentStore();

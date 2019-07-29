@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
 import { Row, PageHeader, Icon, Table, Button, Tooltip } from 'antd'
-import ImportButton from '../shared/import_button'
 import { QueryString } from '../../common/utils'
 import moment from 'moment'
 
@@ -11,7 +10,6 @@ export default class AppointmentIndexPage extends Component {
     state = { batchUuid: '', pageIndex: 1, pageSize: 20 }
     async componentWillMount() {
         this.props.stores.globalStore.setTitle('预约管理');
-        await this.loadList(this.props);
     }
 
     async componentWillReceiveProps(nextProps) {
@@ -19,9 +17,10 @@ export default class AppointmentIndexPage extends Component {
     }
 
     loadList = async (props) => {
+        props = props || this.props
         let query = QueryString.parseJSON(props.location.search)
         await this.setState({ batchUuid: query.batchUuid || '', pageIndex: query.pageIndex || 1 });
-        await this.props.stores.appointmentStore.setList(this.state.batchUuid, this.state.pageIndex, this.state.pageSize);
+        await this.props.stores.appointmentStore.getList(this.state.batchUuid, this.state.pageIndex, this.state.pageSize);
     }
 
     handlePageChange = page => {

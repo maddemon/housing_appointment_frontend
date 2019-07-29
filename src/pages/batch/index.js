@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Row, PageHeader, Icon, Button, Table, message, Modal } from 'antd'
+import { Row, PageHeader, Icon, Button, Table, message, Modal, Tag } from 'antd'
 import { QueryString } from '../../common/utils'
 import moment from 'moment'
 import EditModal from './edit'
@@ -12,13 +12,18 @@ export default class BatchIndexPage extends Component {
     state = { pageIndex: 1, pageSize: 20 }
     async componentWillMount() {
         this.props.stores.globalStore.setTitle('批次管理');
-        this.props.stores.housesStore.setAvaliables();
+        this.props.stores.housesStore.getList(1, 99999);
     }
 
     async componentWillReceiveProps(nextProps) {
-        let query = QueryString.parseJSON(nextProps.location.search)
+        await this.loadData(nextProps);
+    }
+
+    loadData = async (props) => {
+        props = props || this.props;
+        let query = QueryString.parseJSON(props.location.search)
         await this.setState({ pageIndex: query.pageIndex || 1 });
-        await this.props.stores.batchStore.setList(this.state.pageIndex, this.state.pageSize)
+        await this.props.stores.batchStore.getList(this.state.pageIndex, this.state.pageSize)
     }
 
     handlePageChange = page => {
@@ -28,7 +33,7 @@ export default class BatchIndexPage extends Component {
     handleSubmit = async result => {
         if (result.status === '200') {
             message.success(result.message);
-            await this.props.stores.batchStore.setList(this.state.pageIndex, this.state.pageSize)
+            await this.props.stores.batchStore.getList(this.state.pageIndex, this.state.pageSize)
         }
     }
 
@@ -40,7 +45,7 @@ export default class BatchIndexPage extends Component {
                 const result = await this.props.stores.batchStore.delete(item.uuid);
                 if (result.status === '200') {
                     message.success(result.message);
-                    await this.props.stores.batchStore.setList(this.state.pageIndex, this.state.pageSize)
+                    await this.props.stores.batchStore.getList(this.state.pageIndex, this.state.pageSize)
                 }
             },
         })
@@ -65,6 +70,7 @@ export default class BatchIndexPage extends Component {
         const canDelete = moment(item.appointmentTimeStart) > moment()
         let buttons = [
             <Button
+                key="btnNotify"
                 title={canNotify ? "发送预约通知" : "预约时间已结束，不可使用"}
                 disabled={!canNotify}
                 type="default"
@@ -83,12 +89,19 @@ export default class BatchIndexPage extends Component {
             this.props.history.push('/appointment/index?batchUuid=' + item.uuid)
         }}><Icon type="user" />查看</Button>
     }
+
     viewHousesRender = (text, item) => {
         return <Button type="primary" onClick={async () => {
             await this.props.stores.batchStore.setModel(item)
             this.props.history.push('/houses/select?batchUuid=' + item.uuid)
         }}><Icon type="build" />选房</Button>
     }
+
+    housesColumnRender = (text, item) => {
+        const houses = (this.props.stores.housesStore.list || [])
+        return houses.filter(e => item.housesUuid.includes(e.uuid.toString())).map(e => <Tag key={e.uuid}>{e.name}</Tag>)
+    }
+
     render() {
         const { list, page, loading } = this.props.stores.batchStore
         return (
@@ -104,10 +117,8 @@ export default class BatchIndexPage extends Component {
                     rowKey="uuid"
                     columns={[
                         { dataIndex: "name", title: "批次名称", width: 150, },
-                        { dataIndex: "houseNumber", title: "房屋数量", width: 100 },
-                        { dataIndex: "houseAddress", title: "房屋地址" },
+                        { dataIndex: "housesUuid", title: "楼盘", render: this.housesColumnRender },
                         { dataIndex: "appointmentTimeStart", title: "预约时间", render: (text, item) => `${moment(item.appointmentTimeStart).format('YYYY-MM-DD HH:mm')} - ${moment(item.appointmentTimeEnd).format('YYYY-MM-DD HH:mm')}` },
-                        { dataIndex: "chooseAddress" },
                         { dataIndex: "chooseTime", title: "选房日期", render: (text) => moment(text).format('YYYY-MM-DD') },
                         { title: "预约名单", render: this.viewAppointmentRender },
                         { title: "楼盘", render: this.viewHousesRender },
@@ -116,7 +127,7 @@ export default class BatchIndexPage extends Component {
                     dataSource={list || []}
                     pagination={{ ...page, size: 5, onChange: this.handlePageChange, }}
                 ></Table>
-            </Row>
+            </Row >
         )
     }
 }

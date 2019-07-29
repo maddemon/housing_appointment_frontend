@@ -11,7 +11,7 @@ export default class HomePage extends Component {
 
     async componentWillMount() {
         this.props.stores.globalStore.setTitle('公示预约结果');
-        //await this.props.stores.batchStore.setList(1, 100);
+        //await this.props.stores.batchStore.getList(1, 100);
         //await this.loadList(this.props)
     }
 

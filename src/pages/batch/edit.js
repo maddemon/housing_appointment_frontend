@@ -8,7 +8,7 @@ import moment from 'moment'
 @observer
 export default class BatchEditModal extends Component {
 
-    state = { selectedHousess: (this.props.model || {}).housess || [] }
+    state = { selectedHouses: (this.props.model || {}).houses || [] }
 
     handleSubmit = async (data) => {
         data.appointmentTimeStart = data.appointmentTimeStart.format('YYYY-MM-DD HH:mm:ss')
@@ -22,26 +22,26 @@ export default class BatchEditModal extends Component {
     }
 
     handleChooseHouses = (selectedItems) => {
-        this.setState({ selectedHousess: selectedItems })
+        this.setState({ selectedHouses: selectedItems })
     }
 
     getFormItems = () => {
         const model = this.props.model || {}
-        const housess = this.props.stores.housesStore.avaliables;
-        const fitledBuilds = housess.filter(e => !this.state.selectedHousess.include(e.uuid));
+        const houses = this.props.stores.housesStore.list;
         return [
             { name: 'uuid', defaultValue: model.uuid, type: "hidden" },
             { title: '名称', name: 'name', defaultValue: model.name, rules: [{ required: true, message: '请填写批次名称' }], },
             {
                 title: '楼盘',
-                name: 'housess',
-                defaultValue: '',
+                name: 'housesUuid',
+                defaultValue: model.housesUuid || [],
                 rules: [{ required: true, message: '请选择楼盘' }],
                 render: <Select mode="multiple" placeholder="请选择楼盘" onChange={this.handleChooseHouses}>
-                    <Select.Option key="1">楼盘1</Select.Option>
+                    {houses.map(item => <Select.Option key={item.uuid} disabled={item.status === 0} >{item.name}</Select.Option>)}
                 </Select>
             },
             { title: '房屋地址', name: 'houseAddress', defaultValue: model.houseAddress, rules: [{ required: true, message: '请填写房屋地址' }], },
+            { title: '选房地址', name: 'chooseAddress', defaultValue: model.chooseAddress, rules: [{ required: true, message: '请填写选房地址' }], },
             { title: '选房日期', name: 'chooseTime', defaultValue: moment(model.chooseTime), type: "date", rules: [{ required: true, message: '请选择选房日期' }], },
             { title: '预约开始时间', name: 'appointmentTimeStart', defaultValue: moment(model.appointmentTimeStart), type: "datetime", rules: [{ required: true, message: '请选择预约开始时间' }], },
             { title: '预约截止时间', name: 'appointmentTimeEnd', defaultValue: moment(model.appointmentTimeEnd), type: "datetime", rules: [{ required: true, message: '请选择预约结束时间' }], },

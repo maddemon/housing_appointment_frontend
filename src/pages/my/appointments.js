@@ -8,7 +8,7 @@ import moment from 'moment'
 export default class UserAppointmentsPage extends Component {
     async componentWillMount() {
         this.props.stores.globalStore.setTitle('我的预约');
-        await this.props.stores.appointmentStore.setMyList();
+        await this.props.stores.appointmentStore.getMyList();
     }
     render() {
         const { myList, loading } = this.props.stores.appointmentStore;

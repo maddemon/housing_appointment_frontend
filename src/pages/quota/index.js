@@ -21,7 +21,7 @@ export default class QuotaIndexPage extends Component {
     loadList = async (props) => {
         let query = QueryString.parseJSON(props.location.search)
         await this.setState({ status: query.status || '', searchKey: query.searchKey || '', pageIndex: query.pageIndex || 1 });
-        await this.props.stores.quotaStore.setList(this.state.status, this.state.searchKey, this.state.pageIndex, this.state.pageSize);
+        await this.props.stores.quotaStore.getList(this.state.status, this.state.searchKey, this.state.pageIndex, this.state.pageSize);
     }
 
     handleDelete = () => {
@@ -31,7 +31,7 @@ export default class QuotaIndexPage extends Component {
             onOk: async () => {
                 const data = await this.props.stores.quotaStore.delete(this.state.selectedRowKeys.join())
                 if (data.status === '200') {
-                    await this.props.stores.quotaStore.setList(this.state.pageIndex, this.state.pageSize)
+                    await this.props.stores.quotaStore.getList(this.state.pageIndex, this.state.pageSize)
                 }
             },
         })
@@ -52,7 +52,7 @@ export default class QuotaIndexPage extends Component {
 
     handleUpload = async (response) => {
         if (response.status === '200') {
-            await this.props.stores.quotaStore.setList(this.state.pageIndex, this.state.pageSize)
+            await this.props.stores.quotaStore.getList(this.state.pageIndex, this.state.pageSize)
         }
     }
 

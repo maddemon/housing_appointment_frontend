@@ -21,7 +21,7 @@ export default class UserIndexPage extends Component {
     loadList = async (props) => {
         const query = QueryString.parseJSON(props.location.search)
         await this.setState({ searchKey: query.searchKey || '', pageIndex: query.pageIndex || 1 });
-        await this.props.stores.userStore.setList(this.state.pageIndex, this.state.pageSize)
+        await this.props.stores.userStore.getList(this.state.pageIndex, this.state.pageSize)
     }
 
     handleDelete = (uuid) => {
@@ -59,13 +59,13 @@ export default class UserIndexPage extends Component {
     handleSubmit = (result) => {
         if (result.status === '200') {
             message.success(result.message)
-            this.props.stores.userStore.setList(this.state.pageIndex, this.state.pageSize)
+            this.props.stores.userStore.getList(this.state.pageIndex, this.state.pageSize)
         }
     }
 
     handleUpload = (result) => {
         if (result.status === '200') {
-            this.props.stores.userStore.setList(this.state.pageIndex, this.state.pageSize)
+            this.props.stores.userStore.getList(this.state.pageIndex, this.state.pageSize)
         }
     }
 

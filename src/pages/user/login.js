@@ -12,6 +12,10 @@ export default class UserLoginPage extends Component {
     componentWillMount() {
         this.props.stores.globalStore.setTitle('用户登录');
     }
+    
+    componentWillUnmount() {
+        clearInterval(this.state.timer);
+    }
 
     updateSeconds = () => {
         if (this.state.seconds < 1) {
@@ -27,7 +31,7 @@ export default class UserLoginPage extends Component {
     handleVerifyCodeClick = () => {
         const getTimes = this.state.getTimes + 1;
         this.setState({ seconds: 60, getTimes: getTimes })
-        var timer = setInterval(this.updateSeconds, 1000);
+        const timer = setInterval(this.updateSeconds, 1000);
         this.setState({ timer })
     }
 

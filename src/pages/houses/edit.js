@@ -8,7 +8,6 @@ import { inject, observer } from 'mobx-react'
 export default class HousesEditModal extends Component {
 
     handleSubmit = async (data) => {
-
         const result = await this.props.stores.housesStore.save(data);
         if (this.props.onSubmit) {
             this.props.onSubmit(result)
@@ -19,10 +18,8 @@ export default class HousesEditModal extends Component {
     getFormItems = () => {
         const model = this.props.model || {}
         return [
-            { name: 'uuid', defaultValue: model.uuid, type: "hidden" },
+            { name: 'housesUuid', defaultValue: model.uuid, type: "hidden" },
             { title: '名称', name: 'name', defaultValue: model.name, rules: [{ required: true, message: '此项没有填写' }], },
-            { title: '楼层数', name: 'floorNumber', defaultValue: model.floorNumber, type: "number", rules: [{ required: true, message: '此项没有填写' }], },
-            { title: '户数', name: 'houseNumber', defaultValue: model.unitNumber, type: "number", rules: [{ required: true, message: '此项没有填写' }], },
         ];
     }
 
