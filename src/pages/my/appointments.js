@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { PageHeader, Card, Spin } from 'antd'
+import { PageHeader, Card, Spin, Col, Row } from 'antd'
 import moment from 'moment'
 
 @inject('stores')
@@ -16,7 +16,9 @@ export default class UserAppointmentsPage extends Component {
             <div>
                 <PageHeader title="我的预约" subTitle="查询您的预约记录" />
                 <Spin spinning={loading}>
-                    {(myList || []).map((item, i) => <UserAppointmentItemControl key={i} model={item} />)}
+                    <Row gutter={16}>
+                        {(myList || []).map((item, i) => <UserAppointmentItemControl key={i} model={item} />)}
+                    </Row>
                 </Spin>
             </div>
         )
@@ -25,11 +27,12 @@ export default class UserAppointmentsPage extends Component {
 
 const UserAppointmentItemControl = (props) => {
     const model = props.model;
-    return <Card title={model.batchName}>
+    return <Col span={12} style={{ marginBottom: '16px' }}><Card title={model.batchName}>
         <p>预约时间：{moment(model.reserveTime).format('LLL')}</p>
         <p>所用指标：{model.quotaUuid}</p>
         <p>房屋地址：{model.houseAddress}</p>
         <p>选房时间：{moment(model.chooseTime).format('L')}</p>
         <p>选房地点：{model.chooseAddress}</p>
     </Card>
+    </Col>
 }

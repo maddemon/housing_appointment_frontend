@@ -8,10 +8,10 @@ class HousesStore {
     @observable loading = false;
     @observable model = {}
 
-    @action setModel(model) {
+    @action selectModel(model) {
         this.model = model;
     }
-    
+
     get importUrl() {
         return api.houses.getImportUrl();
     }
@@ -30,8 +30,8 @@ class HousesStore {
         const response = await api.houses.list(batchId, pageIndex, pageSize)
         if (response && response.data) {
             this.page = {
-                pageSize: pageSize,
-                pageIndex: pageIndex,
+                pageSize: response.data.pageSize,
+                pageIndex: response.data.pageNum,
                 total: response.data.total
             };
             this.list = response.data.list

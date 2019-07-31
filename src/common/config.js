@@ -1,5 +1,5 @@
 const config = {
-    SystemName: '房产预约系统',
+    SystemName: '选房系统',
     Version: '0.1.0',
     Host: '',
     ApiPath: '/house/',

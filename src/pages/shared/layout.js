@@ -14,6 +14,9 @@ import MyAppointmentsPage from '../my/appointments';
 import MyQuotasPage from '../my/quotas';
 import MakeAppointmentPage from '../my/make_appointment';
 import UserEditPasswordPage from '../user/edit_password';
+import ChooseRoomPage from '../batch/chooseRoom';
+import ChooseUserPage from '../batch/choosePermit';
+import ChooseResultPage from '../batch/chooseResult';
 import HomePage from '../home';
 import 'moment/locale/zh-cn'
 
@@ -41,6 +44,9 @@ export default class PrimaryLayout extends Component {
                                     <PrivateRoute exact path="/my/quotas" component={MyQuotasPage} />
                                     <PrivateRoute exact path="/appointment/make" component={MakeAppointmentPage} />
                                     <PrivateRoute exact path="/houses/index" component={HousesIndexPage} />
+                                    <PrivateRoute exact path="/batch/chooseRoom" component={ChooseRoomPage} />
+                                    <PrivateRoute exact path="/batch/choosePermit" component={ChooseUserPage} />
+                                    <PrivateRoute exact path="/batch/chooseResult" component={ChooseResultPage} />
                                     <PrivateRoute exact path="/batch/index" component={BatchIndexPage} />
                                     <PrivateRoute exact path="/quota/index" component={QuotaIndexPage} />
                                     <PrivateRoute exact path="/appointment/index" component={AppointmentIndexPage} />

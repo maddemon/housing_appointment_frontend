@@ -58,29 +58,68 @@ class QuotaItem extends Component {
 
     handleItemClick = () => {
         const item = this.props.model;
-        this.props.stores.quotaStore.selectQuota(item);
+        this.props.stores.quotaStore.selectModel(item);
         this.props.onClick(item);
     }
 
     render() {
         const item = this.props.model;
-        const disabled = !(item.state === '0' && item.my);
+        const quota = new Quota(item);
         return (
-            <Col xxl={12} xl={12} lg={12} key={item.uuid + Math.random()}>
+            <Col xxl={12} xl={12} lg={12} key={quota.uuid + Math.random()}>
                 <Button onClick={this.handleItemClick}
                     style={{ width: '100%', height: '100px', marginTop: '10px' }}
-                    disabled={disabled}>
-                    <h3>指标号：{item.quotaUuid}</h3>
+                    disabled={quota.disabled}>
+                    <h3>指标号：{quota.quotaUuid}</h3>
                     <small>
-                        <Tag color={disabled ? "gray" : "green"}>
-                            {item.my ? '我' : item.userName}的
+                        <Tag color={quota.disabled ? "gray" : "green"}>
+                            {quota.my ? '我' : quota.userName}的
                         </Tag>
-                        <Tag color={item.state === '1' ? "red" : "green"}>
-                            {item.state === '1' ? '已使用' : '未使用'}
+                        <Tag color={quota.stateColor}>
+                            {quota.stateText}
                         </Tag>
                     </small>
                 </Button>
             </Col>
         )
+    }
+}
+
+
+function Quota(model) {
+    Object.assign(this, model);
+    this.stateText = '';
+    this.stateColor = 'gray'
+    this.disabled = true;
+    switch (model.state) {
+        case '-1':
+            this.stateText = '尾批';
+            this.stateColor = 'red';
+            break;
+        default:
+        case '0':
+            this.stateText = '未预约';
+            this.disabled = !this.my;
+            break;
+        case '1':
+            this.stateText = '等待他人预约';
+            this.stateColor = 'blue';
+            break;
+        case '2':
+            this.stateText = '已预约';
+            this.stateColor = 'blue';
+            break;
+        case '3':
+            this.stateText = '已入围（正选）';
+            this.stateColor = 'green';
+            break;
+        case '4':
+            this.stateText = '预约成功';
+            this.stateColor = 'blue';
+            break;
+        case '5':
+            this.stateText = '已选房';
+            this.stateColor = 'green';
+            break;
     }
 }

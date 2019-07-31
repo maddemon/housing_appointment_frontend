@@ -63,6 +63,24 @@ const api = {
         },
         successAppointment: (batchUuid) => {
             return $.get('batch/successAppointment', { batchUuid })
+        },
+        getRooms: (batchUuid) => {
+            return $.get('batch/batchRoom', { batchUuid })
+        },
+        getUsers: (batchUuid) => {
+            //return $.get('batch/batchUser', { batchUuid })
+            return {
+                "data": [
+                    {
+                        "batchQuotaUuid": "1",
+                        "idCard": "1122334455",
+                        "permitCode": "00161678",
+                        "userName": "langxing"
+                    },
+                ],
+                "message": "",
+                "status": "200"
+            }
         }
     },
     quota: {

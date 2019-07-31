@@ -5,7 +5,7 @@ class QuotaStore {
     @observable list = [];
     @observable page = {};
     @observable myList = [];
-    @observable selected = null;
+    @observable selectedModel = null;
     @observable loading = false;
 
     @action async getList(status, searchKey, pageIndex, pageSize) {
@@ -59,8 +59,8 @@ class QuotaStore {
     }
 
     
-    @action selectQuota(model) {
-        this.selected = model;
+    @action selectModel(model) {
+        this.selectedModel = model;
     }
 
     @action async save(data) {

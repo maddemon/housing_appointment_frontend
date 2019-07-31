@@ -77,17 +77,6 @@ export default class QuotaIndexPage extends Component {
                         <Radio.Button value="2" checked={status === '2'}>已选房</Radio.Button>
                     </Radio.Group>
                 } />
-                <div className="toolbar">
-                    <Button type="danger" disabled={selectedRowKeys.length === 0} onClick={this.handleDelete}>
-                        <Icon type="delete" />批量删除
-                    </Button>
-                    <ImportButton
-                        text="导入指标"
-                        action={importUrl}
-                        onChange={this.handleUpload}
-                    />
-                    <a href="/templates/指标导入模板.xslx"><Icon type="download" />下载导入模板</a>
-                </div>
                 <Table
                     loading={loading}
                     rowSelection={{ selectedRowKeys, onChange: this.handleSelectChange }}

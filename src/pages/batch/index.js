@@ -83,18 +83,30 @@ export default class BatchIndexPage extends Component {
         ];
         return buttons;
     }
-    viewAppointmentRender = (text, item) => {
-        return <Button type="primary" onClick={async () => {
-            await this.props.stores.batchStore.setModel(item)
-            this.props.history.push('/appointment/index?batchUuid=' + item.uuid)
-        }}><Icon type="user" />查看</Button>
-    }
 
-    viewHousesRender = (text, item) => {
-        return <Button type="primary" onClick={async () => {
-            await this.props.stores.batchStore.setModel(item)
-            this.props.history.push('/houses/select?batchUuid=' + item.uuid)
-        }}><Icon type="build" />选房</Button>
+    // viewAppointmentRender = (text, item) => {
+    //     return <Button type="primary" onClick={async () => {
+    //         await this.props.stores.batchStore.selectModel(item)
+    //         this.props.history.push('/appointment/index?batchUuid=' + item.uuid)
+    //     }}><Icon type="user" />查看</Button>
+    // }
+
+    chooseHouseButton = (text, item) => {
+        let result = [];
+        //选房日期已结束
+        if (moment(item.chooseTime) > moment()) {
+            result.push(<Button type="primary" key="chooseRoom" onClick={() => this.redirectToChoosePage(item)}><Icon type="build" />选房</Button>)
+        }
+        result.push(<Button type="primary" key="chooseResult" onClick={() => this.redirectToResultPage(item)}><Icon type="eye" />结果</Button>)
+        return result
+    }
+    redirectToChoosePage = async (item) => {
+        await this.props.stores.batchStore.selectModel(item)
+        this.props.history.push('/batch/choosePermit')
+    }
+    redirectToResultPage = async (item) => {
+        await this.props.stores.batchStore.selectModel(item)
+        this.props.history.push('/batch/chooseResult')
     }
 
     housesColumnRender = (text, item) => {
@@ -120,8 +132,7 @@ export default class BatchIndexPage extends Component {
                         { dataIndex: "housesUuid", title: "楼盘", render: this.housesColumnRender },
                         { dataIndex: "appointmentTimeStart", title: "预约时间", render: (text, item) => `${moment(item.appointmentTimeStart).format('YYYY-MM-DD HH:mm')} - ${moment(item.appointmentTimeEnd).format('YYYY-MM-DD HH:mm')}` },
                         { dataIndex: "chooseTime", title: "选房日期", render: (text) => moment(text).format('YYYY-MM-DD') },
-                        { title: "预约名单", render: this.viewAppointmentRender },
-                        { title: "楼盘", render: this.viewHousesRender },
+                        { title: "选房", render: this.chooseHouseButton },
                         { title: "操作", render: this.operateColumnRender, },
                     ]}
                     dataSource={list || []}

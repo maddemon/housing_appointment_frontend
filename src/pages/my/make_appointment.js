@@ -24,7 +24,7 @@ export default class MakeAppointmentPage extends Component {
     }
 
     render() {
-        const quota = this.props.stores.quotaStore.selected;
+        const quota = this.props.stores.quotaStore.selectedModel;
         if (!quota) {
             return <h1>没有选择指标</h1>
         }
@@ -56,9 +56,7 @@ export default class MakeAppointmentPage extends Component {
 const SelectedBatchControl = props => {
     const { model } = props
     return (
-        <Card hoverable={false}
-            title={`您已预约${model.name}`}
-        >
+        <Card hoverable={false} title={`您已预约${model.name}`}        >
             <BatchDetailControl model={model} />
         </Card>
     )
@@ -67,14 +65,16 @@ const SelectedBatchControl = props => {
 const BatchDetailControl = props => {
     const { model, successState } = props
     return <div>
-        <Row>
-            <Col span={12}>
-                <Statistic title="房屋数量" value={successState.houseNumber}></Statistic>
-            </Col>
-            <Col span={12}>
-                <Statistic title="已预约数量" value={successState.successCount}></Statistic>
-            </Col>
-        </Row>
+        {successState ?
+            <Row>
+                <Col span={12}>
+                    <Statistic title="房屋数量" value={successState.houseNumber}></Statistic>
+                </Col>
+                <Col span={12}>
+                    <Statistic title="已预约数量" value={successState.successCount}></Statistic>
+                </Col>
+            </Row>
+            : null}
         <p></p>
         <p>房屋地址：{model.houseAddress}</p>
         <p>选房时间：{moment(model.chooseTime).format('LL')}</p>
@@ -104,7 +104,7 @@ class BatchItemControl extends Component {
 
     handleClick = () => {
         const batch = this.props.model
-        const quota = this.props.stores.quotaStore.selected;
+        const quota = this.props.stores.quotaStore.selectedModel;
         if (!quota) {
             message.warning("没有选择指标");
             return;
@@ -120,7 +120,7 @@ class BatchItemControl extends Component {
             </div>,
             onOk: async () => {
                 const result = await this.props.stores.appointmentStore.make(batch.uuid, quota.quotaUuid)
-                if (result === '200') {
+                if (result.status === '200') {
                     message.success("预约成功");
                     this.props.handleClick(batch);
                 }
