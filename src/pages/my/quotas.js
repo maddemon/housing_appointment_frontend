@@ -8,7 +8,7 @@ class UserQuotaPage extends Component {
 
     componentWillMount() {
         this.props.stores.globalStore.setTitle('预约选房');
-        this.props.stores.quotaStore.getMyList();
+        this.props.stores.permitStore.getMyList();
     }
 
     handleQuotaClick = (item) => {
@@ -17,7 +17,7 @@ class UserQuotaPage extends Component {
 
     render() {
 
-        const { myList, loading } = this.props.stores.quotaStore;
+        const { myList, loading } = this.props.stores.permitStore;
 
         return (
             <>
@@ -45,7 +45,7 @@ class PermitItem extends Component {
         const model = this.props.model;
 
         return (
-            <Card title={`准购证号：${model.permitCode}`} style={{ marginBottom: '10px' }}>
+            <Card title={`准购证号：${model.code}`} style={{ marginBottom: '10px' }}>
                 {model.quotas.map(item => <QuotaItem key={item.quotaUuid} model={item} onClick={this.props.onClick} />)}
             </Card>
         )

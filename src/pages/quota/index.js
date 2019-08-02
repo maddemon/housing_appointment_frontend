@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
 import { Row, PageHeader, Icon, Button, Table, Modal, Tag, Radio } from 'antd'
 import { QueryString } from '../../common/utils'
-import ImportButton from '../shared/import_button'
 
 @inject('stores')
 @observer
@@ -11,7 +10,7 @@ export default class QuotaIndexPage extends Component {
     state = { status: '', searchKey: '', pageIndex: 1, pageSize: 20, selectedRowKeys: [] }
 
     async componentWillMount() {
-        this.props.stores.globalStore.setTitle('指标管理');
+        this.props.stores.globalStore.setTitle('准购证管理');
     }
 
     async componentWillReceiveProps(nextProps) {

@@ -64,7 +64,11 @@ export default class ChooseRoomPage extends Component {
                             <Row className="floors">
                                 {unit.floors.map(floor => <Row key={floor.name} className="rooms">
                                     {floor.rooms.map(room => <Col key={room.roomUuid} span={parseInt(24 / floor.rooms.length)} >
-                                        <Button style={{ width: '100%', height: '100px', marginTop: '10px' }}>{room.room}</Button>
+                                        <Button style={{ width: '100%', height: '100px', marginTop: '10px' }}>
+                                            <h1>{room.room}</h1>
+                                            <p>{room.model}</p>
+                                            <p>{room.area}㎡</p>
+                                        </Button>
                                     </Col>)}
                                 </Row>)}
                             </Row>

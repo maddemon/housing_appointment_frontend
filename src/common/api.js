@@ -83,12 +83,29 @@ const api = {
             }
         }
     },
+    permit: {
+        list: (searchKey, pageIndex, pageSize) => {
+            return $.get('permit/permit', { searchKey, pageIndex, pageSize })
+        },
+        add: (data) => {
+            return $.post('permit/permit', null, data)
+        },
+        edit: (data) => {
+            return $.put('permit/permit', data)
+        },
+        delete: (permitUuid) => {
+            return $.get('permit/delete', { permitUuid })
+        },
+        userPermits: () => {
+            return $.get('quota/userQuota')
+        }
+    },
     quota: {
         delete: (quotaUuid) => {
             return $.post('quota/delete', null, { quotaUuid })
         },
-        list: (status, queryWord, pageIndex, pageSize) => {
-            return $.get('quota/list', { status, queryWord, pageIndex, pageSize })
+        list: (permitUuid, pageIndex, pageSize) => {
+            return $.get('quota/list', { permitUuid, pageIndex, pageSize })
         },
         userQuotas: () => {
             return $.get('quota/userQuota')

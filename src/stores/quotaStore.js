@@ -8,9 +8,9 @@ class QuotaStore {
     @observable selectedModel = null;
     @observable loading = false;
 
-    @action async getList(status, searchKey, pageIndex, pageSize) {
+    @action async getList(permitUuid, pageIndex, pageSize) {
         this.loading = true;
-        const response = await api.quota.list(status, searchKey, pageIndex, pageSize);
+        const response = await api.quota.list(permitUuid, pageIndex, pageSize);
         if (response && response.data) {
             this.page = {
                 pageSize: pageSize,
@@ -23,42 +23,6 @@ class QuotaStore {
         return this.list
     }
 
-    @action async getMyList() {
-        this.loading = true;
-        const response = await api.quota.userQuotas()
-        /*
-            "my": true,
-            "permitCode": "string",
-            "quotaUuid": "string",
-            "state": "string",
-            "userName": "string"
-        */
-        if (response && response.data) {
-            let permits = []
-            response.data.map(item => {
-                let permit = null
-                let where = permits.filter(e => e.permitCode === item.permitCode)
-                if (where.length === 0) {
-                    permit = { permitCode: item.permitCode, quotas: [] }
-                    permits.push(permit);
-                } else {
-                    permit = where[0]
-                }
-                permit.quotas.push(item);
-                return item;
-            })
-            console.log(permits)
-            this.myList = permits;
-        }
-
-        this.loading = false;
-    }
-
-    get importUrl() {
-        return api.quota.getImportUrl();
-    }
-
-    
     @action selectModel(model) {
         this.selectedModel = model;
     }
