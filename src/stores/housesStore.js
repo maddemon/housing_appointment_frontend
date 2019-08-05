@@ -16,7 +16,7 @@ class HousesStore {
         return api.houses.getImportUrl();
     }
 
-    @action async setAvaliables() {
+    @action async getAvaliables() {
         this.loading = true;
         const response = await api.houses.avaliables();
         if (response && response.data) {

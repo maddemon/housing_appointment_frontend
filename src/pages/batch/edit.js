@@ -27,7 +27,10 @@ export default class BatchEditModal extends Component {
 
     getFormItems = () => {
         const model = this.props.model || {}
-        const houses = this.props.stores.housesStore.list;
+        let houses = this.props.stores.housesStore.list;
+        if (!model.uuid) {
+            houses = houses.filter(e => e.remainingRoomsCount > 0);
+        }
         return [
             { name: 'uuid', defaultValue: model.uuid, type: "hidden" },
             { title: '名称', name: 'name', defaultValue: model.name, rules: [{ required: true, message: '请填写批次名称' }], },
@@ -36,8 +39,8 @@ export default class BatchEditModal extends Component {
                 name: 'housesUuid',
                 defaultValue: model.housesUuid || [],
                 rules: [{ required: true, message: '请选择楼盘' }],
-                render: <Select mode="multiple" placeholder="请选择楼盘" onChange={this.handleChooseHouses}>
-                    {houses.map(item => <Select.Option key={item.uuid} disabled={item.status === 0} >{item.name}</Select.Option>)}
+                render: <Select key="houses" mode="multiple" placeholder="请选择楼盘" onChange={this.handleChooseHouses}>
+                    {houses.map(item => <Select.Option key={item.housesUuid} >{item.name}</Select.Option>)}
                 </Select>
             },
             { title: '房屋地址', name: 'houseAddress', defaultValue: model.houseAddress, rules: [{ required: true, message: '请填写房屋地址' }], },

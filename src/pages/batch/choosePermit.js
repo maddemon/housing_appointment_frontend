@@ -15,7 +15,6 @@ export default class ChoosePermitPage extends Component {
 
     loadData = async () => {
         const batch = this.props.stores.batchStore.selectedModel;
-        console.log(batch.uuid)
         if (batch) {
             await this.props.stores.batchStore.getPermits(batch.uuid)
         }

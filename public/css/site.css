@@ -1,0 +1,14 @@
+button.ant-btn.room {
+    width: 90%;
+    height: 140px;
+}
+button.ant-btn.room p {
+    margin: 0;
+}
+button.ant-btn.room h1 {
+    margin: 0;
+    font-size: 2rem;
+}
+.toolbar{
+    margin-bottom: 10px;
+}

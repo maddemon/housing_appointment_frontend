@@ -7,7 +7,7 @@ import { QueryString } from '../../common/utils'
 @observer
 export default class PermitIndexPage extends Component {
 
-    state = { searchKey: '', pageIndex: 1, pageSize: 20 }
+    state = { subList: {}, searchKey: '', pageIndex: 1, pageSize: 20 }
 
     async componentWillMount() {
         this.props.stores.globalStore.setTitle('准购证管理');
@@ -19,7 +19,7 @@ export default class PermitIndexPage extends Component {
 
     loadList = async (props) => {
         let query = QueryString.parseJSON(props.location.search)
-        await this.setState({ searchKey: query.searchKey || '', pageIndex: query.pageIndex || 1 });
+        await this.setState({ searchKey: query.searchKey || '', pageIndex: query.page || 1 });
         await this.props.stores.permitStore.getList(this.state.searchKey, this.state.pageIndex, this.state.pageSize);
     }
 
@@ -40,13 +40,27 @@ export default class PermitIndexPage extends Component {
         this.props.history.push(`/permit/index?key=${value}`)
     }
 
-    quotaRowRender = (permit) => {
-        const data = this.props.stores.permitStore.expandedRows[permit.uuid] || []
+    handleExpand = async (expanded, permit) => {
+        if (expanded) {
+            await this.props.stores.quotaStore.getList(permit.uuid, 1, 9999)
+            const list = this.props.stores.quotaStore.list
+            let subList = this.state.subList;
+            subList[permit.code] = list;
+            await this.setState({ subList })
+        }
+    }
+
+    quotaRowRender = (record, index, indent, expanded) => {
+        if (!expanded) {
+            return null
+        }
         return <Table
+            bordered={false}
             rowKey="uuid"
-            loading={this.props.stores.permitStore.loading}
-            dataSource={data}
+            pagination={false}
+            dataSource={this.state.subList[record.code] || []}
             columns={[
+                { dataIndex: 'quotaCode', title: '指标编号' },
                 { dataIndex: 'userName', title: "购房人" },
                 {
                     dataIndex: 'quotaStatus', title: "状态", render: (text, item) => {
@@ -76,12 +90,6 @@ export default class PermitIndexPage extends Component {
         />
     }
 
-    handleExpand = (expanded, permit) => {
-        if (expanded) {
-            this.props.stores.permitStore.expanded(permit.uuid)
-        }
-    }
-
     render() {
         const { list, page, loading } = this.props.stores.permitStore
         return (
@@ -90,12 +98,14 @@ export default class PermitIndexPage extends Component {
                     <Input.Search onSearch={this.handleSearch} />
                 } />
                 <Table
+                    bordered={true}
                     loading={loading}
                     rowKey="uuid"
                     columns={[
                         { dataIndex: "code", title: "准购证号", },
-                        { dataIndex: "userName", title: "被征收人", },
+                        { dataIndex: "agency", title: "动迁机构", },
                         { dataIndex: "town", title: "镇街" },
+                        { dataIndex: "quotaNum", title: "限购套数" },
                         { dataIndex: "remark", title: "备注" },
                     ]}
                     dataSource={list}

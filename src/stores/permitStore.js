@@ -7,7 +7,7 @@ class PermitStore {
     @observable myList = [];
     @observable selectedModel = null;
     @observable loading = false;
-    @observable expandedRows = {}
+    @observable statistic = []
 
     @action async getList(searchKey, pageIndex, pageSize) {
         this.loading = true;
@@ -19,6 +19,15 @@ class PermitStore {
                 total: response.data.total
             };
             this.list = response.data.list;
+        }
+        this.loading = false;
+        return this.list
+    }
+    @action async getStatistic() {
+        this.loading = true;
+        const response = await api.permit.statistic();
+        if (response && response.data) {
+            this.statistic = response.data;
         }
         this.loading = false;
         return this.list

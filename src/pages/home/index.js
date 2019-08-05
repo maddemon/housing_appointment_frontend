@@ -17,7 +17,7 @@ export default class HomePage extends Component {
 
     loadList = async (props) => {
         let query = QueryString.parseJSON(props.location.search)
-        await this.setState({ searchKey: query.searchKey || '', pageIndex: query.pageIndex || 1 });
+        await this.setState({ searchKey: query.searchKey || '', pageIndex: query.page || 1 });
     }
 
 

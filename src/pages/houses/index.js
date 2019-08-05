@@ -17,7 +17,7 @@ export default class HousesIndexPage extends Component {
     loadList = async (props) => {
         props = props || this.props;
         let query = QueryString.parseJSON(props.location.search)
-        await this.setState({ pageIndex: query.pageIndex || 1 });
+        await this.setState({ pageIndex: query.page || 1 });
         await this.props.stores.housesStore.getList(this.state.pageIndex, this.state.pageSize)
     }
 
@@ -85,6 +85,7 @@ export default class HousesIndexPage extends Component {
                     </Button.Group>
                 </div>
                 <Table
+                    bordered={true}
                     loading={loading}
                     rowKey="uuid"
                     columns={[

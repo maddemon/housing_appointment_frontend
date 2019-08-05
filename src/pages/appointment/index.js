@@ -19,7 +19,7 @@ export default class AppointmentIndexPage extends Component {
     loadList = async (props) => {
         props = props || this.props
         let query = QueryString.parseJSON(props.location.search)
-        await this.setState({ batchUuid: query.batchUuid || '', pageIndex: query.pageIndex || 1 });
+        await this.setState({ batchUuid: query.batchUuid || '', pageIndex: query.page || 1 });
         await this.props.stores.appointmentStore.getList(this.state.batchUuid, this.state.pageIndex, this.state.pageSize);
     }
 

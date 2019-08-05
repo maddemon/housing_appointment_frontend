@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Row, PageHeader, Icon, Button, Table, message, Modal, Tag } from 'antd'
+import { PageHeader, Icon, Button, Row, Col, message, Modal, Tag, Card } from 'antd'
 import { QueryString } from '../../common/utils'
 import moment from 'moment'
 import EditModal from './edit'
@@ -22,7 +22,7 @@ export default class BatchIndexPage extends Component {
     loadData = async (props) => {
         props = props || this.props;
         let query = QueryString.parseJSON(props.location.search)
-        await this.setState({ pageIndex: query.pageIndex || 1 });
+        await this.setState({ pageIndex: query.page || 1 });
         await this.props.stores.batchStore.getList(this.state.pageIndex, this.state.pageSize)
     }
 
@@ -100,19 +100,7 @@ export default class BatchIndexPage extends Component {
         result.push(<Button type="primary" key="chooseResult" onClick={() => this.redirectToResultPage(item)}><Icon type="eye" />结果</Button>)
         return result
     }
-    redirectToChoosePage = async (item) => {
-        await this.props.stores.batchStore.selectModel(item)
-        this.props.history.push('/batch/choosePermit')
-    }
-    redirectToResultPage = async (item) => {
-        await this.props.stores.batchStore.selectModel(item)
-        this.props.history.push('/batch/chooseResult')
-    }
 
-    housesColumnRender = (text, item) => {
-        const houses = (this.props.stores.housesStore.list || [])
-        return houses.filter(e => item.housesUuid.includes(e.uuid.toString())).map(e => <Tag key={e.uuid}>{e.name}</Tag>)
-    }
 
     render() {
         const { list, page, loading } = this.props.stores.batchStore
@@ -124,7 +112,10 @@ export default class BatchIndexPage extends Component {
                         <EditModal title="添加批次" trigger={<Button type="primary"><Icon type="plus" /> 添加批次</Button>} onSubmit={this.handleSubmit} />
                     </Button.Group>
                 </div>
-                <Table
+                <Row gutter={16}>
+                    {list.map(item => <Col key={item.uuid} xxl={12} xl={12} lg={12} md={12} xs={24}> <BatchItemControl model={item} history={this.props.history} /></Col>)}
+                </Row>
+                {/* <Table
                     loading={loading}
                     rowKey="uuid"
                     columns={[
@@ -137,8 +128,60 @@ export default class BatchIndexPage extends Component {
                     ]}
                     dataSource={list || []}
                     pagination={{ ...page, size: 5, onChange: this.handlePageChange, }}
-                ></Table>
+                ></Table> */}
             </Row >
+        )
+    }
+}
+
+@observer
+@inject('stores')
+class BatchItemControl extends Component {
+
+    housesRender = () => {
+        const model = this.props.model
+        const houses = (this.props.stores.housesStore.list || [])
+        return houses.filter(e => model.housesUuid.includes(e.uuid)).map(e => <Tag key={e.uuid}>{e.name}</Tag>)
+    }
+    redirectToChoosePage = async (item) => {
+        await this.props.stores.batchStore.selectModel(item)
+        this.props.history.push('/batch/choosePermit')
+    }
+    redirectToResultPage = async (item) => {
+        await this.props.stores.batchStore.selectModel(item)
+        this.props.history.push('/batch/chooseResult')
+    }
+
+    chooseButtonRender = () => {
+        const model = this.props.model
+        let result = [];
+        //选房日期已结束
+        if (moment(model.chooseTime) > moment()) {
+            result.push(<Button type="primary" key="chooseRoom" icon="build" onClick={() => this.redirectToChoosePage(model)}>
+                选房
+                </Button>)
+        }
+        result.push(<Button type="secondary" key="chooseResult" onClick={() => this.redirectToResultPage(model)}>
+            <Icon type="eye" />结果</Button>)
+        return result
+    }
+
+    render() {
+        const model = this.props.model
+        return (
+            <Card title={model.name}
+                actions={[
+                    <Icon type="edit" onClick={this.handleEdit} />,
+                    <Icon type="remove" onClick={this.handleDelete} />,
+                    <Icon type="ellipsis" onClick={this.handleNotify} />
+                ]}
+                extra={<Button.Group>{this.chooseButtonRender()}</Button.Group>}
+                style={{ marginTop: "16px" }}
+            >
+                <p>楼盘：{this.housesRender()}</p>
+                <p>预约时间：{moment(model.appointmentTimeStart).format('YYYY-MM-DD HH:mm')} - {moment(model.appointmentTimeEnd).format('YYYY-MM-DD HH:mm')}</p>
+                <p>选房日期：{moment(model.chooseTime).format('YYYY-MM-DD')}</p>
+            </Card>
         )
     }
 }

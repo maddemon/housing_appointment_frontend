@@ -58,8 +58,8 @@ const api = {
         list: (pageIndex, pageSize) => {
             return $.get('batch/list', { pageIndex, pageSize })
         },
-        avaliables: (pageIndex, pageSize) => {
-            return $.get('batch/batchAvaliable', { pageIndex, pageSize })
+        avaliables: () => {
+            return $.get('batch/batchAvaliable', { pageIndex: 1, pageSize: 100 })
         },
         successAppointment: (batchUuid) => {
             return $.get('batch/successAppointment', { batchUuid })
@@ -81,11 +81,17 @@ const api = {
                 "message": "",
                 "status": "200"
             }
+        },
+        chooseRoom: (batchQuotaUuid, roomUuid) => {
+            return $.put('batch/chooseRoom', null, { batchQuotaUuid, roomUuid })
         }
     },
     permit: {
         list: (searchKey, pageIndex, pageSize) => {
             return $.get('permit/permit', { searchKey, pageIndex, pageSize })
+        },
+        statistic: () => {
+            return $.get('permit/statistic')
         },
         add: (data) => {
             return $.post('permit/permit', null, data)

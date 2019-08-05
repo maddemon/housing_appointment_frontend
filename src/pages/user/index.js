@@ -20,7 +20,7 @@ export default class UserIndexPage extends Component {
 
     loadList = async (props) => {
         const query = QueryString.parseJSON(props.location.search)
-        await this.setState({ searchKey: query.searchKey || '', pageIndex: query.pageIndex || 1 });
+        await this.setState({ searchKey: query.searchKey || '', pageIndex: query.page || 1 });
         await this.props.stores.userStore.getList(this.state.pageIndex, this.state.pageSize)
     }
 
@@ -80,6 +80,7 @@ export default class UserIndexPage extends Component {
                     </Button.Group>
                 </div>
                 <Table
+                    bordered={true}
                     rowKey="uuid"
                     loading={loading}
                     columns={[

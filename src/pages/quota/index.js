@@ -19,7 +19,7 @@ export default class QuotaIndexPage extends Component {
 
     loadList = async (props) => {
         let query = QueryString.parseJSON(props.location.search)
-        await this.setState({ status: query.status || '', searchKey: query.searchKey || '', pageIndex: query.pageIndex || 1 });
+        await this.setState({ status: query.status || '', searchKey: query.searchKey || '', pageIndex: query.page || 1 });
         await this.props.stores.quotaStore.getList(this.state.status, this.state.searchKey, this.state.pageIndex, this.state.pageSize);
     }
 

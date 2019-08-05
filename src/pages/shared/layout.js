@@ -9,7 +9,7 @@ import UserIndexPage from '../user';
 import HousesIndexPage from '../houses'
 import BatchIndexPage from '../batch';
 import PermitIndexPage from '../permit';
-import QuotaIndexPage from '../quota';
+import PermitStatisticPage from '../permit/statistic';
 import AppointmentIndexPage from '../appointment';
 import MyAppointmentsPage from '../my/appointments';
 import MyQuotasPage from '../my/quotas';
@@ -47,9 +47,10 @@ export default class PrimaryLayout extends Component {
                                     <PrivateRoute exact path="/houses/index" component={HousesIndexPage} />
                                     <PrivateRoute exact path="/batch/chooseRoom" component={ChooseRoomPage} />
                                     <PrivateRoute exact path="/batch/choosePermit" component={ChooseUserPage} />
-                                    <PrivateRoute exact path="/batch/chooseResult" component={ChooseResultPage} />
+                                    <Route exact path="/batch/chooseResult" component={ChooseResultPage} />
                                     <PrivateRoute exact path="/batch/index" component={BatchIndexPage} />
                                     <PrivateRoute exact path="/permit/index" component={PermitIndexPage} />
+                                    <PrivateRoute exact path="/permit/statistic" component={PermitStatisticPage} />
                                     <PrivateRoute exact path="/appointment/index" component={AppointmentIndexPage} />
                                     <PrivateRoute exact path="/user/index" component={UserIndexPage} />
                                     <PrivateRoute exact path="/user/editpassword" component={UserEditPasswordPage} />

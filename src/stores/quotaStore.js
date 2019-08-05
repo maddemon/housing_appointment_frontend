@@ -20,7 +20,6 @@ class QuotaStore {
             this.list = response.data.list;
         }
         this.loading = false;
-        return this.list
     }
 
     @action selectModel(model) {

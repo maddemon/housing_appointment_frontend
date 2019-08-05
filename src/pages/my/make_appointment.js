@@ -12,7 +12,7 @@ export default class MakeAppointmentPage extends Component {
 
     componentWillMount() {
         this.props.stores.globalStore.setTitle('预约选房');
-        this.props.stores.batchStore.getMyList(this.state.pageIndex, this.state.pageSize);
+        this.props.stores.batchStore.getAvaliables();
     }
 
     handleBack = () => {
