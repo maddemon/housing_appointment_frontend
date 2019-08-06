@@ -66,7 +66,7 @@ export default class AppointmentIndexPage extends Component {
                     columns={[
                         { dataIndex: "batchUuid", title: "批次名称" },
                         { dataIndex: "reserveTime", title: "预约时间", render: (text) => moment(text).format('LLL') },
-                        { dataIndex: "quotaUuid", title: "所用指标" },
+                        { dataIndex: "quotaUuid", title: "所用购房证" },
                         { dataIndex: "userUuid", title: "预约用户" },
                         { dataIndex: "chooseResult", title: "选房结果" },
                         { title: "操作", render: this.operateColumnRender, },

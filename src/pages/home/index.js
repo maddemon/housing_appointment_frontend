@@ -10,6 +10,18 @@ export default class HomePage extends Component {
     state = { searchKey: '', pageIndex: 1, pageSize: 20 }
 
     async componentWillMount() {
+        const identity = this.props.stores.userStore.current();
+        let redirectUrl = ''
+        if (identity.role === 'admin') {
+            redirectUrl = 'batch/index'
+        }
+        else if(identity.role === 'user'){
+            redirectUrl = '/my/quotas'
+        }
+        if(redirectUrl){
+            this.props.history.push(redirectUrl);
+            return;
+        }
         this.props.stores.globalStore.setTitle('公示预约结果');
         //await this.props.stores.batchStore.getList(1, 100);
         //await this.loadList(this.props)

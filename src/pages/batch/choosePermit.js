@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Row, PageHeader, Input, Tag, Button, Card, Spin, Col } from 'antd'
+import { Row, PageHeader, Input, Tag, Button, Card, Spin, Col, Result } from 'antd'
 const { Search } = Input;
 
 @inject('stores')
@@ -14,6 +14,7 @@ export default class ChoosePermitPage extends Component {
     }
 
     loadData = async () => {
+        await this.props.stores.batchStore.selectModel();
         const batch = this.props.stores.batchStore.selectedModel;
         if (batch) {
             await this.props.stores.batchStore.getPermits(batch.uuid)
@@ -30,17 +31,28 @@ export default class ChoosePermitPage extends Component {
     }
 
     render() {
-        const { permits, loading } = this.props.stores.batchStore
+        const { selectedModel, permits, loading } = this.props.stores.batchStore
         return (
             <div>
-                <PageHeader title="选择准购证号"
-                    extra={<Search onSearch={this.handleSearch} placeholder="输入准购证号查询"></Search>}
-                />
-                <Row>
-                    <Spin spinning={loading}>
-                        {permits.filter(e => e.permitCode.indexOf(this.state.searchKey) > -1).map(item => <PermitItem key={item.permitCode} model={item} onClick={this.handleItemClick} />)}
-                    </Spin>
-                </Row>
+                <PageHeader title="选房" />
+                {selectedModel ?
+                    <Row>
+                        <Row type="flex" justify="center">
+                            <Search size="large" onSearch={this.handleSearch} onPressEnter={this.handleSearch} placeholder="输入准购证号查询" enterButton style={{ width: '50%' }}></Search>
+                        </Row>
+                        <Spin spinning={loading}>
+                            {permits.filter(e => e.permitCode.indexOf(this.state.searchKey) > -1).map(item => <PermitItem key={item.permitCode} model={item} onClick={this.handleItemClick} />)}
+                        </Spin>
+                    </Row>
+                    : <Result
+                        status="404"
+                        title="没有可用批次"
+                        subTitle="系统没有找到可用的批次，是否没有创建？"
+                        extra={<Button type="primary" onClick={() => {
+                            this.props.history.push('/batch/index')
+                        }}>返回批次管理</Button>}
+                    />
+                }
             </div>
         )
     }
@@ -52,12 +64,16 @@ class PermitItem extends Component {
     }
     render() {
         const model = this.props.model
+        const enabled = model.users.filter(e => e.flag === '3').length > 0;
         return (
-            <Col span={6}>
-                <Card size="small" title={model.permitCode} extra={<Button type="primary" size="small" onClick={this.handleClick}>选房</Button>}>
-                    {model.users.map(user => <Tag key={user.batchQuotaUuid}>{user.userName}</Tag>)}
-                </Card>
-            </Col>
+            <Button disabled={!enabled} onClick={this.handleClick}>
+                {model.permitCode}
+            </Button>
+            // <Col span={6}>
+            //     <Card size="small" title={model.permitCode} extra={canBeChoose ? <Button type="primary" size="small" onClick={this.handleClick}>选房</Button> : <Button disabled={true}>已选完</Button>} >
+            //         {model.users.map(user => <Tag key={user.batchQuotaUuid}>{user.userName}</Tag>)}
+            //     </Card>
+            // </Col>
         );
     }
 }

@@ -28,7 +28,7 @@ class UserQuotaPage extends Component {
                 <AppointmentStepsControl step={0} />
                 <Spin spinning={loading}>
                     <Row gutter={{ xs: 8, sm: 16, md: 24 }}>
-                        {(myList || []).length === 0 ? <Empty description="暂无可用指标"></Empty> :
+                        {(myList || []).length === 0 ? <Empty description="暂无可用购房证"></Empty> :
                             myList.map((item, i) => <PermitItem key={i} model={item} onClick={this.handleQuotaClick} />)}
                     </Row>
                 </Spin>
@@ -70,7 +70,7 @@ class QuotaItem extends Component {
                 <Button onClick={this.handleItemClick}
                     style={{ width: '100%', height: '100px', marginTop: '10px' }}
                     disabled={quota.disabled}>
-                    <h3>指标号：{quota.quotaUuid}</h3>
+                    <h3>资格证号:{quota.quotaCode}</h3>
                     <small>
                         <Tag color={quota.disabled ? "gray" : "green"}>
                             {quota.my ? '我' : quota.userName}的

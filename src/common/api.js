@@ -55,11 +55,11 @@ const api = {
         delete: (uuid) => {
             return $.get('batch/delete', { uuid })
         },
-        list: (pageIndex, pageSize) => {
-            return $.get('batch/list', { pageIndex, pageSize })
+        list: () => {
+            return $.get('batch/list', { pageIndex: 1, pageSize: 999 })
         },
         avaliables: () => {
-            return $.get('batch/batchAvaliable', { pageIndex: 1, pageSize: 100 })
+            return $.get('batch/batchAvaliable', { pageIndex: 1, pageSize: 999 })
         },
         successAppointment: (batchUuid) => {
             return $.get('batch/successAppointment', { batchUuid })
@@ -75,7 +75,8 @@ const api = {
                         "batchQuotaUuid": "1",
                         "idCard": "1122334455",
                         "permitCode": "00161678",
-                        "userName": "langxing"
+                        "userName": "langxing",
+                        "flag": "3"
                     },
                 ],
                 "message": "",

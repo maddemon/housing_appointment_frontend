@@ -4,7 +4,6 @@ class BatchStore {
 
     @observable list = [];
     @observable avaliables = [];
-    @observable page = null;
     @observable loading = false;
     @observable selectedModel = {}
     @observable rooms = []
@@ -15,7 +14,13 @@ class BatchStore {
     @observable selectedBuilding = null;
     @observable selectedUser = null
 
-    @action selectModel(model) {
+    @action async selectModel(model) {
+        if(!model){
+            if(this.avaliables.length === 0){
+                await api.batch.avaliables();
+            }
+            model = this.avaliables[0]
+        }
         this.selectedModel = model;
     }
 
@@ -29,15 +34,10 @@ class BatchStore {
         this.loading = false;
     }
 
-    @action async getList(pageIndex, pageSize) {
+    @action async getList() {
         this.loading = true;
-        const response = await api.batch.list(pageIndex, pageSize)
+        const response = await api.batch.list()
         if (response && response.data) {
-            this.page = {
-                pageSize: pageSize,
-                pageIndex: pageIndex,
-                total: response.data.total
-            };
             this.list = response.data.list
         }
         this.loading = false;
@@ -134,7 +134,7 @@ class BatchStore {
     @action selectPermit(permit) {
         this.selectedPermit = permit;
         if (permit.users.length > 0) {
-            this.selectUser(permit.users[0])
+            this.selectUser()
         }
     }
     @action selectHouse(name) {
@@ -158,7 +158,8 @@ class BatchStore {
     }
     @action async selectUser(user) {
         if (!user) {
-            this.selectedUser = this.selectedPermit.users.find(e => e);
+            user =  this.selectedPermit.users.find(e => e.flag === "3");
+            this.selectedUser =user;
         }
         else{
             this.selectedUser = user

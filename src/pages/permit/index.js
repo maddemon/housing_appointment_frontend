@@ -60,11 +60,11 @@ export default class PermitIndexPage extends Component {
             pagination={false}
             dataSource={this.state.subList[record.code] || []}
             columns={[
-                { dataIndex: 'quotaCode', title: '指标编号' },
+                { dataIndex: 'quotaCode', title: '购房证编号' },
                 { dataIndex: 'userName', title: "购房人" },
                 {
                     dataIndex: 'quotaStatus', title: "状态", render: (text, item) => {
-                        //指标状态  -1 尾批  0未预约 1（等待他人预约） 2 已预约 3 已入围 4 预约成功 5 已选房 8 备选
+                        //购房证状态  -1 尾批  0未预约 1（等待他人预约） 2 已预约 3 已入围 4 预约成功 5 已选房 8 备选
                         switch (text) {
                             case "-1":
                                 return "尾批";

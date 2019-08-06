@@ -26,13 +26,13 @@ export default class MakeAppointmentPage extends Component {
     render() {
         const quota = this.props.stores.quotaStore.selectedModel;
         if (!quota) {
-            return <h1>没有选择指标</h1>
+            return <h1>没有选择购房证</h1>
         }
         let { avaliables, loading } = this.props.stores.batchStore;
         avaliables = (avaliables || []).filter(e => moment(e.appointmentTimeEnd) > moment());
         return (
             <>
-                <PageHeader title="预约选房" tags={<Tag color="red">已选指标{quota.quotaUuid}</Tag>} onBack={this.handleBack} />
+                <PageHeader title="预约选房" tags={<Tag color="red">已选购房证{quota.quotaCode}</Tag>} onBack={this.handleBack} />
                 <AppointmentStepsControl step={this.state.step} />
                 <Spin spinning={loading}>
                     {avaliables.length === 0 ?
@@ -106,7 +106,7 @@ class BatchItemControl extends Component {
         const batch = this.props.model
         const quota = this.props.stores.quotaStore.selectedModel;
         if (!quota) {
-            message.warning("没有选择指标");
+            message.warning("没有选择购房证");
             return;
         }
         Modal.confirm({
@@ -115,7 +115,7 @@ class BatchItemControl extends Component {
             cancelText: "再想想",
             content: <div>
                 <p>已选批次：{batch.name}</p>
-                <p>已选指标：{quota.quotaUuid}</p>
+                <p>已选购房证：{quota.quotaUuid}</p>
                 <p>当前日期：{moment().format('LL')}</p>
             </div>,
             onOk: async () => {

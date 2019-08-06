@@ -26,7 +26,7 @@ export default class QuotaIndexPage extends Component {
     handleDelete = () => {
         Modal.confirm({
             title: "确认",
-            content: "你确定要删除所选的所有指标吗？",
+            content: "你确定要删除所选的所有购房证吗？",
             onOk: async () => {
                 const data = await this.props.stores.quotaStore.delete(this.state.selectedRowKeys.join())
                 if (data.status === '200') {
@@ -68,7 +68,7 @@ export default class QuotaIndexPage extends Component {
         const { status, selectedRowKeys } = this.state
         return (
             <Row>
-                <PageHeader title="指标管理" extra={
+                <PageHeader title="购房证管理" extra={
                     <Radio.Group onChange={this.handleStatusChange}>
                         <Radio.Button value="" checked={status === '' || status === undefined}>全部</Radio.Button>
                         <Radio.Button value="0" checked={status === '0'}>未预约</Radio.Button>
