@@ -12,13 +12,21 @@ export default class HomePage extends Component {
     async componentWillMount() {
         const identity = this.props.stores.userStore.current();
         let redirectUrl = ''
-        if (identity.role === 'admin') {
-            redirectUrl = 'batch/index'
+        switch (identity.role) {
+            case 'admin':
+                redirectUrl = '/batch/index'
+                break;
+            case 'user':
+                redirectUrl = '/my/quotas'
+                break;
+            case 'jiansheju':
+                redirectUrl = '/permit/statistic'
+                break;
+            default:
+                break;
         }
-        else if(identity.role === 'user'){
-            redirectUrl = '/my/quotas'
-        }
-        if(redirectUrl){
+
+        if (redirectUrl) {
             this.props.history.push(redirectUrl);
             return;
         }

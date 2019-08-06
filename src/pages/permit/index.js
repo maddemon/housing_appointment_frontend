@@ -40,6 +40,10 @@ export default class PermitIndexPage extends Component {
         this.props.history.push(`/permit/index?key=${value}`)
     }
 
+    handleRedirectToStatistics = ()=>{
+        this.props.history.push(`/permit/statistic`)
+    }
+
     handleExpand = async (expanded, permit) => {
         if (expanded) {
             await this.props.stores.quotaStore.getList(permit.uuid, 1, 9999)
@@ -97,6 +101,9 @@ export default class PermitIndexPage extends Component {
                 <PageHeader title="准购证管理" extra={
                     <Input.Search onSearch={this.handleSearch} />
                 } />
+                <div className="toolbar">
+                    <Button onClick={this.handleRedirectToStatistics}><Icon type="bar-chart" />查看发证情况</Button>
+                </div>
                 <Table
                     bordered={true}
                     loading={loading}

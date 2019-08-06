@@ -21,6 +21,38 @@ export default class BatchIndexPage extends Component {
         await this.props.stores.batchStore.getList()
     }
 
+    handleSubmit = async result => {
+        if (result.status === '200') {
+            message.success(result.message);
+            await this.loadData()
+        }
+    }
+    handleDelete = async item => {
+        Modal.confirm({
+            title: "确认",
+            content: "你确定要删除该批次吗？",
+            onOk: async () => {
+                const result = await this.props.stores.batchStore.delete(item.uuid);
+                if (result.status === '200') {
+                    message.success(result.message);
+                    await this.loadData()
+                }
+            },
+        })
+    }
+    handleNotify = (item) => {
+        Modal.confirm({
+            title: "摇号通知",
+            content: "你确定要发送通知短信吗？",
+            onOk: async () => {
+                const result = await this.props.stores.batchStore.notify(item.uuid)
+                if (result.status === '200') {
+                    message.success(result.message)
+                }
+            },
+        })
+    }
+
     render() {
         const { list, loading } = this.props.stores.batchStore
         return (
@@ -32,8 +64,15 @@ export default class BatchIndexPage extends Component {
                     </Button.Group>
                 </div>
                 <Row gutter={16}>
-
-                    {list.map(item => <Col key={item.uuid} xxl={12} xl={12} lg={12} md={12} xs={24}> <BatchItemControl model={item} history={this.props.history} /></Col>)}
+                    {list.map(item => <Col key={item.uuid} xxl={12} xl={12} lg={12} md={12} xs={24}>
+                        <BatchItemControl
+                            model={item}
+                            history={this.props.history}
+                            onSubmit={this.handleSubmit}
+                            onDelete={this.handleDelete}
+                            onNotify={this.handleNotify}
+                        />
+                    </Col>)}
                 </Row>
             </Row >
         )
@@ -49,46 +88,20 @@ class BatchItemControl extends Component {
         const houses = (this.props.stores.housesStore.list || [])
         return houses.filter(e => model.housesUuid.includes(e.uuid)).map(e => <Tag key={e.uuid}>{e.name}</Tag>)
     }
-    redirectToChoosePage = async (item) => {
-        await this.props.stores.batchStore.selectModel(item)
-        this.props.history.push('/batch/choosePermit')
-    }
-    redirectToResultPage = async (item) => {
-        await this.props.stores.batchStore.selectModel(item)
+
+    handleRedirectToResultPage = async () => {
+        await this.props.stores.batchStore.selectModel(this.props.model)
         this.props.history.push('/batch/chooseResult')
     }
-    handleSubmit = async result => {
-        if (result.status === '200') {
-            message.success(result.message);
-            await this.loadData()
-        }
-    }
 
-    handleDelete = async item => {
-        Modal.confirm({
-            title: "确认",
-            content: "你确定要删除该批次吗？",
-            onOk: async () => {
-                const result = await this.props.stores.batchStore.delete(item.uuid);
-                if (result.status === '200') {
-                    message.success(result.message);
-                    await this.loadData()
-                }
-            },
-        })
+    handleSubmit = () => {
+        this.props.onSubmit(this.props.model)
     }
-
-    handleNotifyClick = (item) => {
-        Modal.confirm({
-            title: "摇号通知",
-            content: "你确定要发送通知短信吗？",
-            onOk: async () => {
-                const result = await this.props.stores.batchStore.notify(item.uuid)
-                if (result.status === '200') {
-                    message.success(result.message)
-                }
-            },
-        })
+    handleDelete = () => {
+        this.props.onDelete(this.props.model)
+    }
+    handleNotify = () => {
+        this.props.onNotify(this.props.model)
     }
 
     getActions = () => {
@@ -98,25 +111,41 @@ class BatchItemControl extends Component {
         const canDelete = moment(model.appointmentTimeStart) > moment()
         const result = [];
 
-        if (canNotify) {
-            result.push(<Icon
-                key="btnNotify"
-                title={canNotify ? "发送预约通知" : "预约时间已结束，不可使用"}
-                type="bell"
-                onClick={canNotify ? this.handleNotifyClick : null}
-            />)
-        }
+
         if (canEdit) {
-            result.push(<EditModal key="btnEdit" model={model} trigger={<Icon type="edit" title={canEdit ? "修改" : "批次已结束，无法修改"} />} onSubmit={this.handleSubmit} />)
+            result.push(<EditModal
+                key="btnEdit"
+                model={model}
+                trigger={<Icon type="edit" title={canEdit ? "修改" : "批次已结束，无法修改"} />}
+                onSubmit={this.handleSubmit} />)
         }
         if (canDelete) {
             result.push(<Icon title={canDelete ? "删除" : "预约已开始，无法删除"}
                 key="btnDelete"
                 type="delete"
-                onClick={canDelete ? this.handleDelete : null}
+                onClick={this.handleDelete}
             />)
         }
         return result;
+    }
+
+    extraRender = () => {
+        const model = this.props.model
+        const canNotify = moment(model.appointmentTimeEnd) > moment()
+        if (canNotify) {
+            return (
+                <Button onClick={this.handleNotify} type="primary">
+                    <Icon type="bell" />
+                    发送预约通知
+                    </Button>
+            )
+        } else {
+            return (
+                <Button onClick={this.handleRedirectToResultPage} >
+                    <Icon type="profile" />查看选房结果
+                </Button>
+            );
+        }
     }
 
     render() {
@@ -124,8 +153,8 @@ class BatchItemControl extends Component {
         return (
             <Card title={model.name}
                 actions={this.getActions()}
-                extra={<Button type="secondary" onClick={() => this.redirectToResultPage(model)}><Icon type="profile" />结果</Button>}
                 style={{ marginTop: "16px" }}
+                extra={this.extraRender()}
             >
                 <p>楼盘：{this.housesRender()}</p>
                 <p>预约时间：{moment(model.appointmentTimeStart).format('YYYY-MM-DD HH:mm')} - {moment(model.appointmentTimeEnd).format('YYYY-MM-DD HH:mm')}</p>

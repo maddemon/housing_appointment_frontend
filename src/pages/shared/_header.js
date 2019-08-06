@@ -12,7 +12,7 @@ class TopNavbar extends Component {
     state = { current: [this.props.location.pathname] }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.location.pathname != this.state.current[0]) {
+        if (nextProps.location.pathname !== this.state.current[0]) {
             this.setState({ current: [nextProps.location.pathname] })
         }
     }
@@ -47,6 +47,11 @@ class TopNavbar extends Component {
                         <Menu.Item key="/user/index" ><Icon type="usergroup-add" />用户管理</Menu.Item>,
                     ]);
                     break;
+                case 'jiansheju':
+                    result = result.concat([
+                        <Menu.Item key="/permit/statistic" ><Icon type="bar-chart" />发证情况</Menu.Item>,
+                    ])
+                    break;
                 default:
                     break;
             }
@@ -54,7 +59,7 @@ class TopNavbar extends Component {
                 <Menu.Item key="/user/editpassword"><Icon type="key" />修改密码</Menu.Item>,
                 <Menu.Item key="/user/logout"> <Icon type="poweroff" />退出 </Menu.Item>
             ]
-        )
+            )
         } else {
             result = result.concat([
                 <Menu.Item key="/user/login"><Icon type="user" />登录</Menu.Item>,
@@ -68,7 +73,7 @@ class TopNavbar extends Component {
         return (
             <Row>
                 <Col xs={0} sm={0} md={5} lg={5} xl={5} xxl={4} className="logo"  >
-                    <h1 style={{ lineHeight: '64px', color: "#fff" }}><Link to="/">{Config.SystemName}</Link></h1>
+                    <Link to="/"><h1 style={{ lineHeight: '64px', color: "#fff" }}>{Config.SystemName}</h1></Link>
                 </Col>
                 <Col xs={24} sm={24} md={19} log={19} xl={19} xxl={20}>
                     <Menu onClick={this.handleMenuClick} mode="horizontal" selectedKeys={this.state.current} theme="dark" style={{ lineHeight: '64px' }}>

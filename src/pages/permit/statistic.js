@@ -31,7 +31,7 @@ export default class PermitStatisticPage extends Component {
         const { statistics, page, loading } = this.props.stores.permitStore
         return (
             <Row>
-                <PageHeader title="准购证管理发放情况" 
+                <PageHeader title="准购证管理发放情况统计表" 
                 extra={
                     <Input.Search onSearch={this.handleSearch} />
                 } />

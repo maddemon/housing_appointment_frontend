@@ -107,9 +107,6 @@ class BatchStore {
             return room;
         });
         this.houses = list;
-        this.selectHouse();
-        this.selectBuilding();
-
         this.loading = false;
     }
 
