@@ -107,7 +107,7 @@ export default class PermitIndexPage extends Component {
                 <Table
                     bordered={true}
                     loading={loading}
-                    rowKey="uuid"
+                    rowKey={Math.random}
                     columns={[
                         { dataIndex: "code", title: "准购证号", },
                         { dataIndex: "agency", title: "动迁机构", },

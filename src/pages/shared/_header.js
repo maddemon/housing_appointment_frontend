@@ -3,13 +3,15 @@ import { withRouter, Link } from 'react-router-dom'
 import { inject, observer } from 'mobx-react'
 import { Row, Col, Menu, Icon } from 'antd'
 import Config from '../../common/config';
+import EditPasswordModal from '../user/edit_password'
+
 const { SubMenu } = Menu;
 
 @inject('stores')
 @observer
 class TopNavbar extends Component {
 
-    state = { current: [this.props.location.pathname] }
+    state = { current: [this.props.location.pathname], editpw_visible: false }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.location.pathname !== this.state.current[0]) {
@@ -21,7 +23,10 @@ class TopNavbar extends Component {
         if (menu.key === '/user/logout') {
             await this.props.stores.userStore.logout();
             await this.props.history.push('/user/login')
-        } else {
+        } else if (menu.key === 'edit_password') {
+            this.setState({ editpw_visible: !this.state.editpw_visible })
+        }
+        else {
             this.props.history.push(menu.key);
         }
     }
@@ -56,8 +61,10 @@ class TopNavbar extends Component {
                     break;
             }
             result = result.concat([
-                <Menu.Item key="/user/editpassword"><Icon type="key" />修改密码</Menu.Item>,
-                <Menu.Item key="/user/logout"> <Icon type="poweroff" />退出 </Menu.Item>
+                <SubMenu key="user_menu" title={<><Icon type="user" /> {identity.name}</>}>
+                    <Menu.Item key="edit_password"> <Icon type="key" /> 修改密码 </Menu.Item>
+                    <Menu.Item key="/user/logout"> <Icon type="poweroff" /> 退出 </Menu.Item>
+                </SubMenu>
             ]
             )
         } else {
@@ -71,16 +78,19 @@ class TopNavbar extends Component {
     render() {
         const identity = this.props.stores.userStore.current();
         return (
-            <Row>
-                <Col xs={0} sm={0} md={5} lg={5} xl={5} xxl={4} className="logo"  >
-                    <Link to="/"><h1 style={{ lineHeight: '64px', color: "#fff" }}>{Config.SystemName}</h1></Link>
-                </Col>
-                <Col xs={24} sm={24} md={19} log={19} xl={19} xxl={20}>
-                    <Menu onClick={this.handleMenuClick} mode="horizontal" selectedKeys={this.state.current} theme="dark" style={{ lineHeight: '64px' }}>
-                        {this.getMenuItems(identity)}
-                    </Menu>
-                </Col>
-            </Row>
+            <>
+                <Row key="menu">
+                    <Col xs={0} sm={0} md={5} lg={5} xl={5} xxl={4} className="logo"  >
+                        <Link to="/"><h1 style={{ lineHeight: '64px', color: "#fff" }}>{Config.SystemName}</h1></Link>
+                    </Col>
+                    <Col xs={24} sm={24} md={19} log={19} xl={19} xxl={20}>
+                        <Menu onClick={this.handleMenuClick} mode="horizontal" selectedKeys={this.state.current} theme="dark" style={{ lineHeight: '64px' }}>
+                            {this.getMenuItems(identity)}
+                        </Menu>
+                    </Col>
+                </Row>
+                <EditPasswordModal key="modal" visible={this.state.editpw_visible} />
+            </>
         )
     }
 }

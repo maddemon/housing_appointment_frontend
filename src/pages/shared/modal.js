@@ -1,10 +1,26 @@
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Form from './form'
 import { Modal } from 'antd'
-import SharedModal from './SharedModal'
 
-export default class FormModal extends SharedModal {
+export default class FormModal extends Component {
+
+    state = { visible: false }
+    showModal = (e) => {
+        if (e) e.stopPropagation()
+        this.setState({ visible: true, })
+    }
+    hideModal = () => {
+        this.setState({ visible: false, })
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.visible !== this.state.visible) {
+            this.setState({ visible: nextProps.visible })
+        }
+    }
+
+
     form = null;
     handleSubmit = () => {
         this.form.validateFields(async (err, values) => {
@@ -24,9 +40,11 @@ export default class FormModal extends SharedModal {
         const { trigger, title, width, height, style } = this.props
         return (
             <>
-                <span onClick={this.showModal}>
-                    {trigger}
-                </span>
+                {trigger ?
+                    <span onClick={this.showModal}>
+                        {trigger}
+                    </span>
+                    : null}
                 <Modal title={title || ''}
                     visible={this.state.visible}
                     width={width}
@@ -42,8 +60,8 @@ export default class FormModal extends SharedModal {
     }
 }
 FormModal.propTypes = {
-    trigger: PropTypes.element.isRequired,
+    trigger: PropTypes.element,
     items: PropTypes.array.isRequired,
-    onSubmit: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func,
     loading: PropTypes.bool
 }

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Spin, Form, Tooltip, Icon, Row, Col, Input, Upload, Button, DatePicker, Select, Radio, Checkbox, AutoComplete } from 'antd'
 
 class SharedForm extends Component {
+
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
@@ -83,7 +84,9 @@ class SharedForm extends Component {
 
         return (
             <Spin spinning={this.props.loading}>
-                <Form layout={layout} onSubmit={this.handleSubmit} style={style}>
+                <Form layout={layout}
+                    onSubmit={this.handleSubmit}
+                    style={style}>
                     {items.map((item, key) =>
                         item.title ?
                             <Form.Item

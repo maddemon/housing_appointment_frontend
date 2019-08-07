@@ -28,27 +28,28 @@ export default class PermitStatisticPage extends Component {
     }
 
     render() {
-        const { statistics, page, loading } = this.props.stores.permitStore
+        const { statistic, loading } = this.props.stores.permitStore
+
         return (
             <Row>
-                <PageHeader title="准购证管理发放情况统计表" 
-                extra={
-                    <Input.Search onSearch={this.handleSearch} />
-                } />
-                <Table dataSource={statistics} bordered={true}>
-                    <Column title="镇街" dataIndex="unit" />
-                    <Column title="动迁机构" dataIndex="agency" />
+                <PageHeader title="准购证管理发放情况统计表"
+                    extra={
+                        <Input.Search onSearch={this.handleSearch} />
+                    } />
+                <Table dataSource={statistic} bordered={true} pagination={false} loading={loading}>
+                    <Column title="镇街" dataIndex="town" key="town" />
+                    <Column title="动迁机构" dataIndex="agency" key="agency" />
                     <ColumnGroup title="应发数">
-                        <Column title="户数" dataIndex="shouldHouseNum" />
-                        <Column title="房数" dataIndex="shouldQuotaNum" />
+                        <Column title="户数" dataIndex="family" key="family" />
+                        <Column title="房数" dataIndex="room" key="room" />
                     </ColumnGroup>
                     <ColumnGroup title="实发数">
-                        <Column title="户数" dataIndex="realHouseNum" />
-                        <Column title="房数" dataIndex="realQuotaNum" />
+                        <Column title="户数" dataIndex="realFamily" key="realFamily" />
+                        <Column title="房数" dataIndex="realRoom" key="realRoom" />
                     </ColumnGroup>
                     <ColumnGroup title="实发率">
-                        <Column title="户数" render={(text, item) => (item.realHouseNum / item.shouldHouseNum * 100).toFixed() + '%'} />
-                        <Column title="房数" dataIndex="quotaNumRate" render={(text, item) => (item.realQuotaNum / item.shouldQuotaNum * 100).toFixed() + '%'} />
+                        <Column title="户数" dataIndex="rateFamily" key="rateFamily" render={(text) => text + '%'} />
+                        <Column title="房数" dataIndex="rateRoom" key="rateRoom" render={(text) => text + '%'} />
                     </ColumnGroup>
                 </Table>
             </Row>

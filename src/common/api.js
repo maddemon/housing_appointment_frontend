@@ -1,8 +1,12 @@
 import $ from './utils'
 const api = {
     user: {
-        login: (account, password) => {
-            return $.post('user/login', null, { account, password })
+        login: (data) => {
+            let path = "user/login";
+            if (data.code && !data.password) {
+                path = "user/phoneLogin";
+            }
+            return $.post(path, null, data)
         },
         add: (user) => {
             return $.post('user/add', null, user)
@@ -21,6 +25,9 @@ const api = {
         },
         getImportUrl: () => {
             return '/house/user/addByExcel'
+        },
+        sendVerifyCode: (phone) => {
+            return $.get('user/sendVerifyCode', { phone })
         },
         import: (file) => {
             let formData = new FormData();
@@ -92,7 +99,7 @@ const api = {
             return $.get('permit/permit', { searchKey, pageIndex, pageSize })
         },
         statistic: () => {
-            return $.get('permit/statistic')
+            return $.get('permit/statistical')
         },
         add: (data) => {
             return $.post('permit/permit', null, data)

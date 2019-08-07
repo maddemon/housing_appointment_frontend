@@ -22,9 +22,9 @@ class UserStore {
         return sessionId
     }
 
-    @action async login(username, password) {
+    @action async login(formData) {
         this.loading = true;
-        const data = await api.user.login(username, password);
+        const data = await api.user.login(formData);
         if (data && data.status === '200') {
             const user = data.data;
             cookie.save(Config.CookieName, user.sessionId, { path: '/' })
@@ -41,7 +41,7 @@ class UserStore {
         cookie.remove(Config.CookieName)
     }
 
-    async getList(pageIndex, pageSize) {
+    @action async getList(pageIndex, pageSize) {
         this.loading = true;
         const response = await api.user.list(pageIndex, pageSize);
         if (response && response.data) {
@@ -56,7 +56,7 @@ class UserStore {
         return this.list
     }
 
-    async save(user) {
+    @action async save(user) {
         this.loading = true;
         let result = null;
         if (user.uuid) {
@@ -77,6 +77,9 @@ class UserStore {
         this.loading = false;
         return result;
     }
+    async  sendVerifyCode(mobile) {
+        await api.user.sendVerifyCode(mobile)
+    }
 
     async resetPassword(uuid) {
         await api.user.resetPassword(uuid)
@@ -85,6 +88,7 @@ class UserStore {
     get importUrl() {
         return api.user.getImportUrl()
     }
+
 }
 
 const store = new UserStore();
