@@ -13,7 +13,7 @@ export default class BatchEditModal extends Component {
     handleSubmit = async (data) => {
         data.appointmentTimeStart = data.appointmentTimeStart.format('YYYY-MM-DD HH:mm:ss')
         data.appointmentTimeEnd = data.appointmentTimeEnd.format('YYYY-MM-DD HH:mm:ss')
-        data.chooseTime = data.chooseTime.format('YYYY-MM-DD')
+        data.chooseTime = data.chooseTime.format('YYYY-MM-DD HH:mm:ss')
         const result = await this.props.stores.batchStore.save(data);
         if (this.props.onSubmit) {
             this.props.onSubmit(result)

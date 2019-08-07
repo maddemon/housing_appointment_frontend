@@ -17,7 +17,7 @@ class BatchStore {
     @action async selectModel(model) {
         if(!model){
             if(this.avaliables.length === 0){
-                await api.batch.avaliables();
+                await this.getAvaliables();
             }
             model = this.avaliables[0]
         }
@@ -32,6 +32,7 @@ class BatchStore {
             this.avaliables = response.data.list
         }
         this.loading = false;
+        return response.data.list
     }
 
     @action async getList() {

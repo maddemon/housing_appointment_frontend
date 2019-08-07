@@ -27,7 +27,7 @@ const api = {
             return '/house/user/addByExcel'
         },
         sendVerifyCode: (phone) => {
-            return $.get('user/sendVerifyCode', { phone })
+            return $.get('user/getVerifyCode', { phone })
         },
         import: (file) => {
             let formData = new FormData();

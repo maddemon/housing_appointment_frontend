@@ -64,7 +64,7 @@ export default class BatchIndexPage extends Component {
                     </Button.Group>
                 </div>
                 <Row gutter={16}>
-                    {list.map(item => <Col key={item.uuid} xxl={12} xl={12} lg={12} md={12} xs={24}>
+                    {list.map(item => <Col key={item.uuid} xxl={8} xl={8} lg={8} md={12} xs={24}>
                         <BatchItemControl
                             model={item}
                             history={this.props.history}
@@ -86,7 +86,7 @@ class BatchItemControl extends Component {
     housesRender = () => {
         const model = this.props.model
         const houses = (this.props.stores.housesStore.list || [])
-        return houses.filter(e => model.housesUuid.includes(e.uuid)).map(e => <Tag key={e.uuid}>{e.name}</Tag>)
+        return houses.filter(e => model.housesUuid.includes(e.housesUuid)).map(e => <Tag key={e.uuid}>{e.name}</Tag>)
     }
 
     handleRedirectToResultPage = async () => {
@@ -94,9 +94,6 @@ class BatchItemControl extends Component {
         this.props.history.push('/batch/chooseResult')
     }
 
-    handleSubmit = () => {
-        this.props.onSubmit(this.props.model)
-    }
     handleDelete = () => {
         this.props.onDelete(this.props.model)
     }
@@ -104,61 +101,39 @@ class BatchItemControl extends Component {
         this.props.onNotify(this.props.model)
     }
 
-    getActions = () => {
+    extraRender = () => {
         const model = this.props.model
         const canNotify = moment(model.appointmentTimeEnd) > moment()
         const canEdit = moment(model.chooseTime) > moment()
         const canDelete = moment(model.appointmentTimeStart) > moment()
-        const result = [];
-
-
+        var result = []
+        if (canNotify) {
+            result.push(<Button key="notify" onClick={this.handleNotify} type="primary" icon="bell" title="发送预约通知" />)
+        }
+        else{
+            result.push(<Button key="result" onClick={this.handleRedirectToResultPage} type="default" icon="file-search" title="查看选房结果" />)
+        }
         if (canEdit) {
-            result.push(<EditModal
-                key="btnEdit"
-                model={model}
-                trigger={<Icon type="edit" title={canEdit ? "修改" : "批次已结束，无法修改"} />}
-                onSubmit={this.handleSubmit} />)
+            result.push(<EditModal key="edit" model={model} trigger={<Button icon="edit" title="修改" />} onSubmit={this.props.onSubmit} />)
         }
         if (canDelete) {
-            result.push(<Icon title={canDelete ? "删除" : "预约已开始，无法删除"}
-                key="btnDelete"
-                type="delete"
-                onClick={this.handleDelete}
-            />)
+            result.push(<Button key="delete" title="删除" icon="delete" onClick={this.handleDelete} />)
         }
-        return result;
-    }
-
-    extraRender = () => {
-        const model = this.props.model
-        const canNotify = moment(model.appointmentTimeEnd) > moment()
-        if (canNotify) {
-            return (
-                <Button onClick={this.handleNotify} type="primary">
-                    <Icon type="bell" />
-                    发送预约通知
-                    </Button>
-            )
-        } else {
-            return (
-                <Button onClick={this.handleRedirectToResultPage} >
-                    <Icon type="profile" />查看选房结果
-                </Button>
-            );
-        }
+        return <Button.Group>{result}</Button.Group>
     }
 
     render() {
         const model = this.props.model
         return (
             <Card title={model.name}
-                actions={this.getActions()}
                 style={{ marginTop: "16px" }}
                 extra={this.extraRender()}
             >
                 <p>楼盘：{this.housesRender()}</p>
-                <p>预约时间：{moment(model.appointmentTimeStart).format('YYYY-MM-DD HH:mm')} - {moment(model.appointmentTimeEnd).format('YYYY-MM-DD HH:mm')}</p>
+                <p>预约开始：{moment(model.appointmentTimeStart).format('YYYY-MM-DD HH:mm')} </p>
+                <p>预约结束：{moment(model.appointmentTimeEnd).format('YYYY-MM-DD HH:mm')} </p>
                 <p>选房日期：{moment(model.chooseTime).format('YYYY-MM-DD')}</p>
+                <p>选房地点：{model.chooseAddress}</p>
             </Card>
         )
     }

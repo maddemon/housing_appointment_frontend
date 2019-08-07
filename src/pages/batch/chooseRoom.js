@@ -67,9 +67,21 @@ export default class ChooseRoomPage extends Component {
                 }
             />
         }
+        if (!selectedHouse) {
+            return <Result
+                status="提醒"
+                title="该批次还没有选择楼盘，请返回管理界面选择"
+                extra={
+                    <Button type="primary" key="console" onClick={() => {
+                        this.props.history.push('/batch/index')
+                    }}>返回</Button>
+                }
+            />
+        }
         if (loading) {
             return null
         }
+
         return (
             <div>
                 <PageHeader title="选房" />

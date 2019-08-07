@@ -31,7 +31,7 @@ export default class PrimaryLayout extends Component {
             <DocumentTitle title={this.props.stores.globalStore.title}>
                 <Router>
                     <Switch>
-                        <Route exact path="/" component={HomePage} />
+                        <PrivateRoute exact path="/" component={HomePage} />
                         <Route exact path="/batch/chooseResult" component={ChooseResultPage} />
                         <Route exact path="/user/login" component={UserLoginPage} />
                         <PrivateRoute exact path="/my/appointments" component={MyAppointmentsPage} />
@@ -56,13 +56,8 @@ export default class PrimaryLayout extends Component {
 
 @inject('stores')
 @observer
-class PrivateRoute extends Component {
+class MainLayoutRoute extends Component {
     render() {
-        const authenticated = this.props.stores.userStore.authenticated();
-        if (!authenticated) {
-            const returnUrl = `${this.props.location.pathname}${this.props.location.search}`
-            return <Redirect to={`/user/login?returnUrl=${returnUrl}`} />
-        }
         return (
             <Layout hasSider={false}>
                 <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
@@ -77,6 +72,24 @@ class PrivateRoute extends Component {
                     </div>
                 </Content>
             </Layout>
+
+        )
+    }
+}
+
+@inject('stores')
+@observer
+class PrivateRoute extends Component {
+    render() {
+        const authenticated = this.props.stores.userStore.authenticated();
+        if (!authenticated) {
+            const returnUrl = `${this.props.location.pathname}${this.props.location.search}`
+            return <Redirect to={`/user/login?returnUrl=${returnUrl}`} />
+        }
+        return (
+            <MainLayoutRoute>
+                 <Route {...this.props}></Route>
+            </MainLayoutRoute>
         )
     }
 }

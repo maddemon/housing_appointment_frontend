@@ -29,16 +29,19 @@ export default class ChoosePermitPage extends Component {
     handleSearch = (key) => {
         this.setState({ searchKey: key })
     }
+    handlePressEnter = (e) => {
+        this.handleSearch(e.target.value)
+    }
 
     render() {
         const { selectedModel, permits, loading } = this.props.stores.batchStore
         return (
             <div>
                 <PageHeader title="选房" />
-                {selectedModel ?
+                {selectedModel && selectedModel.uuid ?
                     <Row>
                         <Row type="flex" justify="center">
-                            <Search size="large" onSearch={this.handleSearch} onPressEnter={this.handleSearch} placeholder="输入准购证号查询" enterButton style={{ width: '50%' }}></Search>
+                            <Search size="large" onSearch={this.handleSearch} onPressEnter={this.handlePressEnter} placeholder="输入准购证号查询" enterButton style={{ width: '50%' }}></Search>
                         </Row>
                         <Spin spinning={loading}>
                             {permits.filter(e => e.permitCode.indexOf(this.state.searchKey) > -1).map(item => <PermitItem key={item.permitCode} model={item} onClick={this.handleItemClick} />)}
@@ -67,7 +70,7 @@ class PermitItem extends Component {
         const enabled = model.users.filter(e => e.flag === '3').length > 0;
         return (
             <Button disabled={!enabled} onClick={this.handleClick}>
-                {model.permitCode}
+                准购证：{model.permitCode}
             </Button>
             // <Col span={6}>
             //     <Card size="small" title={model.permitCode} extra={canBeChoose ? <Button type="primary" size="small" onClick={this.handleClick}>选房</Button> : <Button disabled={true}>已选完</Button>} >
