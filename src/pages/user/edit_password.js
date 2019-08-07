@@ -5,9 +5,6 @@ import Modal from '../shared/modal'
 @inject('stores')
 @observer
 export default class EditPasswordModal extends Component {
-    componentWillMount() {
-        this.props.stores.globalStore.setTitle('修改密码');
-    }
 
     handleSubmit = async (values) => {
         if (values.newpassword !== values.repassword) {

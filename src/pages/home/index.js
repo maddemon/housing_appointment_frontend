@@ -10,20 +10,23 @@ export default class HomePage extends Component {
     state = { searchKey: '', pageIndex: 1, pageSize: 20 }
 
     async componentWillMount() {
-        const identity = this.props.stores.userStore.current();
         let redirectUrl = ''
-        switch (identity.role) {
-            case 'admin':
-                redirectUrl = '/batch/index'
-                break;
-            case 'user':
-                redirectUrl = '/my/quotas'
-                break;
-            case 'jiansheju':
-                redirectUrl = '/permit/statistic'
-                break;
-            default:
-                break;
+        
+        const identity = this.props.stores.userStore.current();
+        if (identity) {
+            switch (identity.role) {
+                case 'admin':
+                    redirectUrl = '/batch/index'
+                    break;
+                case 'user':
+                    redirectUrl = '/my/quotas'
+                    break;
+                case 'jiansheju':
+                    redirectUrl = '/permit/statistic'
+                    break;
+                default:
+                    break;
+            }
         }
 
         if (redirectUrl) {

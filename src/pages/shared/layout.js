@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { HashRouter as Router, Route, Redirect, Switch, } from "react-router-dom";
 import { inject, observer } from 'mobx-react';
 import DocumentTitle from 'react-document-title';
-import { Layout, Breadcrumb } from 'antd';
+import { Layout, Breadcrumb, Result, Button, Icon } from 'antd';
 import TopNavbar from '../shared/_header';
 import UserLoginPage from '../user/login';
 import UserIndexPage from '../user';
@@ -29,41 +29,26 @@ export default class PrimaryLayout extends Component {
     render() {
         return (
             <DocumentTitle title={this.props.stores.globalStore.title}>
-                <Layout hasSider={false}>
-                    <Router>
-                        <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
-                            <TopNavbar />
-                        </Header>
-                        <Content style={{ padding: '0 50px', marginTop: 64 }}>
-                            <Breadcrumb style={{ margin: '16px 0' }}>
-                                {(this.props.stores.globalStore.breadcrumb || []).map((name, i) => <Breadcrumb.Item key={i}>{name}</Breadcrumb.Item>)}
-                            </Breadcrumb>
-                            <div style={{ background: '#fff', padding: 24, minHeight: 380 }}>
-                                <Switch>
-                                    <Route exact path="/" component={HomePage} />
-                                    <PrivateRoute exact path="/my/appointments" component={MyAppointmentsPage} />
-                                    <PrivateRoute exact path="/my/quotas" component={MyQuotasPage} />
-                                    <PrivateRoute exact path="/appointment/make" component={MakeAppointmentPage} />
-                                    <PrivateRoute exact path="/houses/index" component={HousesIndexPage} />
-                                    <PrivateRoute exact path="/batch/chooseRoom" component={ChooseRoomPage} />
-                                    <PrivateRoute exact path="/batch/choosePermit" component={ChooseUserPage} />
-                                    <Route exact path="/batch/chooseResult" component={ChooseResultPage} />
-                                    <PrivateRoute exact path="/batch/index" component={BatchIndexPage} />
-                                    <PrivateRoute exact path="/permit/index" component={PermitIndexPage} />
-                                    <PrivateRoute exact path="/permit/statistic" component={PermitStatisticPage} />
-                                    <PrivateRoute exact path="/appointment/index" component={AppointmentIndexPage} />
-                                    <PrivateRoute exact path="/user/index" component={UserIndexPage} />
-                                    <PrivateRoute exact path="/user/editpassword" component={UserEditPasswordPage} />
-                                    <Route exact path="/user/login" component={UserLoginPage} />
-                                    <Route component={NoMatch} />
-                                </Switch>
-                            </div>
-                        </Content>
-                        <Footer>
-                            &copy;2019
-                        </Footer>
-                    </Router >
-                </Layout>
+                <Router>
+                    <Switch>
+                        <Route exact path="/" component={HomePage} />
+                        <Route exact path="/batch/chooseResult" component={ChooseResultPage} />
+                        <Route exact path="/user/login" component={UserLoginPage} />
+                        <PrivateRoute exact path="/my/appointments" component={MyAppointmentsPage} />
+                        <PrivateRoute exact path="/my/quotas" component={MyQuotasPage} />
+                        <PrivateRoute exact path="/appointment/make" component={MakeAppointmentPage} />
+                        <PrivateRoute exact path="/houses/index" component={HousesIndexPage} />
+                        <PrivateRoute exact path="/batch/chooseRoom" component={ChooseRoomPage} />
+                        <PrivateRoute exact path="/batch/choosePermit" component={ChooseUserPage} />
+                        <PrivateRoute exact path="/batch/index" component={BatchIndexPage} />
+                        <PrivateRoute exact path="/permit/index" component={PermitIndexPage} />
+                        <PrivateRoute exact path="/permit/statistic" component={PermitStatisticPage} />
+                        <PrivateRoute exact path="/appointment/index" component={AppointmentIndexPage} />
+                        <PrivateRoute exact path="/user/index" component={UserIndexPage} />
+                        <PrivateRoute exact path="/user/editpassword" component={UserEditPasswordPage} />
+                        <Route component={NoMatch} />
+                    </Switch>
+                </Router >
             </DocumentTitle>
         );
     }
@@ -79,18 +64,32 @@ class PrivateRoute extends Component {
             return <Redirect to={`/user/login?returnUrl=${returnUrl}`} />
         }
         return (
-            <Route {...this.props}></Route>
+            <Layout hasSider={false}>
+                <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
+                    <TopNavbar />
+                </Header>
+                <Content style={{ padding: '0 50px', marginTop: 64 }}>
+                    <Breadcrumb style={{ margin: '16px 0' }}>
+                        {(this.props.stores.globalStore.breadcrumb || []).map((name, i) => <Breadcrumb.Item key={i}>{name}</Breadcrumb.Item>)}
+                    </Breadcrumb>
+                    <div style={{ background: '#fff', padding: 24, minHeight: 380 }}>
+                        <Route {...this.props}></Route>
+                    </div>
+                </Content>
+            </Layout>
         )
     }
 }
 
-function NoMatch({ location }) {
+function NoMatch({ location, history }) {
     return (
-        <div>
-            <h1>404</h1>
-            <h3>
-                未能找到路径 <code>{location.pathname}</code>
-            </h3>
-        </div>
+        <Result status="404"
+            title="页面未找到"
+            subTitle={`未能找到路径 ${location.pathname}`}
+            extra={<Button size="large" type="primary" onClick={() => {
+                history.push("/")
+            }} ><Icon type="left" />返回首页</Button>}
+        >
+        </Result>
     );
 }

@@ -35,7 +35,7 @@ export default class ChooseResultPage extends Component {
     render() {
         const batch = this.props.stores.batchStore.selectedModel
         if (!batch.uuid) {
-            return <Result status="404" title="未找到批次" >请从批次管理点击进入</Result>
+            return <Result status="404" title="未找到批次" subTitle="请从批次管理点击进入" ></Result>
         }
         const houses = this.props.stores.batchStore.houses
         return (

@@ -87,25 +87,22 @@ class SharedForm extends Component {
                 <Form layout={layout}
                     onSubmit={this.handleSubmit}
                     style={style}>
-                    {items.map((item, key) =>
-                        item.title ?
-                            <Form.Item
-                                key={item.name || key}
-                                label={this.labelRender(item)}
-                                extra={item.extra}
-                                {...(item.layout ? item.layout : formItemLayout)}
-                            >
-                                {item.before}
-                                {this.controlRender(item)}
-                                {item.after}
-                            </Form.Item>
-                            : <span key={item.name || key}>{item.before} {this.controlRender(item)} {item.after}</span>
+                    {items.map((item, key) => {
+                        const itemLayout = item.title ? (item.layout || formItemLayout) : {}
+                        return <Form.Item
+                            key={item.name || key}
+                            label={this.labelRender(item)}
+                            extra={item.extra}
+                            {...itemLayout}
+                        >
+                            {item.before}
+                            {this.controlRender(item)}
+                            {item.after}
+                        </Form.Item>
+                    }
                     )}
                     <Row>
-                        <Col span={formItemLayout.labelCol.span}></Col>
-                        <Col span={formItemLayout.wrapperCol.span}>
-                            {buttons.map((item, key) => <span key={key}> {item} </span>)}
-                        </Col>
+                    {buttons.map((item, key) => <span key={key}> {item} </span>)}
                     </Row>
                 </Form>
             </Spin>

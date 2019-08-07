@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import { Icon, Button, Row, Col, Tabs, Input, message } from 'antd'
+import { Icon, Button, Row, Col, Tabs, Input, message, Layout } from 'antd'
 import { inject, observer } from 'mobx-react';
 import { QueryString } from '../../common/utils'
+import Config from '../../common/config'
 import ShareForm from '../shared/form'
 @inject('stores')
 @observer
@@ -42,6 +43,7 @@ export default class UserLoginPage extends Component {
     }
 
     handleSubmit = async (formData) => {
+        console.log(formData)
         const response = await this.props.stores.userStore.login(formData)
         if (response && response.status === '200') {
             const query = QueryString.parseJSON(this.props.location.seach)
@@ -70,72 +72,79 @@ export default class UserLoginPage extends Component {
 
     render() {
         return (
-            <Row className="login">
-                <Col xs={24} sm={24} md={8} lg={{ span: 6, offset: 9 }}>
-                    <Tabs>
-                        <Tabs.TabPane tab="用户登录" key="member">
-                            <ShareForm
-                                loading={this.props.stores.userStore.loading}
-                                onSubmit={this.handleSubmit}
-                                items={[
-                                    {
-                                        title: '手机号',
-                                        name: 'account',
-                                        placeholder: '请输入手机号',
-                                        size: 'large',
-                                        rules: [{ required: true, message: '此项没有填写', }],
-                                        render: <Input onChange={this.handleMobileChange}></Input>
-                                    },
-                                    {
-                                        title: '验证码',
-                                        name: 'code',
-                                        placeholder: '短信验证码',
-                                        size: 'large',
-                                        rules: [{ required: true, message: '此项没有填写', }],
-                                        after: (
-                                            <Button type="primary" onClick={this.handleVerifyCodeClick} disabled={this.state.seconds > 0}>
-                                                {this.getVerifyCodeButtonText()}
-                                            </Button>
-                                        )
-                                    }
-                                ]}
-                                buttons={[
-                                    <Button size="large" loading={this.props.stores.userStore.loading} type="primary" htmlType="submit" block>
-                                        <Icon type="login" />登录
+            <div className="container login-page">
+                <div className="top">
+                    <div className="header">
+                        <img alt="logo" className="logo" src="/images/logo.jpg" />
+                        <span className="title">{Config.SystemName}</span>
+                    </div>
+                </div>
+                <Row className="login">
+                    <Col xs={{ span: 20, offset: 2 }} sm={{ span: 16, offset: 4 }} md={{ span: 12, offset: 6 }} lg={{ span: 6, offset: 9 }} xl={{ span: 4, offset: 10 }}>
+                        <Tabs animated={false}>
+                            <Tabs.TabPane tab="用户登录" key="member">
+                                <ShareForm
+                                    loading={this.props.stores.userStore.loading}
+                                    onSubmit={this.handleSubmit}
+                                    items={[
+                                        {
+                                            name: 'account',
+                                            rules: [{ required: true, message: '此项没有填写', }],
+                                            render: <Input size="large" onChange={this.handleMobileChange} placeholder="手机号" />
+                                        },
+                                        {
+                                            name: 'code',
+                                            rules: [{ required: true, message: '此项没有填写', }],
+                                            render: <Row gutter={12}>
+                                                <Col span={12}>
+                                                    <Input size="large" placeholder="短信验证码" />
+                                                </Col>
+                                                <Col span={12}>
+                                                    <Button size="large" block onClick={this.handleVerifyCodeClick} disabled={this.state.seconds > 0}>
+                                                        {this.getVerifyCodeButtonText()}
+                                                    </Button>
+                                                </Col>
+                                            </Row>
+                                        }
+                                    ]}
+                                    buttons={[
+                                        <Button size="large" 
+                                        loading={this.props.stores.userStore.loading} 
+                                        type="primary" htmlType="submit" block>
+                                            <Icon type="login" />登录
                                     </Button>
-                                ]}
-                            />
-                        </Tabs.TabPane>
-                        <Tabs.TabPane tab="管理登录" key="manager">
-                            <ShareForm
-                                loading={this.props.stores.userStore.loading}
-                                onSubmit={this.handleSubmit}
-                                items={[
-                                    {
-                                        title: '用户名',
-                                        name: 'account',
-                                        placeholder: '请输入账号名称',
-                                        size: 'large',
-                                        rules: [{ required: true, message: '此项没有填写', }]
-                                    },
-                                    {
-                                        title: '密码',
-                                        name: 'password',
-                                        placeholder: '请输入账号密码',
-                                        size: 'large',
-                                        rules: [{ required: true, message: '此项没有填写', }],
-                                    }
-                                ]}
-                                buttons={[
-                                    <Button size="large" loading={this.props.stores.userStore.loading} type="primary" htmlType="submit" block>
-                                        <Icon type="login" />登录
-                                    </Button>
-                                ]}
-                            />
-                        </Tabs.TabPane>
-                    </Tabs>
-                </Col>
-            </Row >
+                                    ]}
+                                />
+                            </Tabs.TabPane>
+                            <Tabs.TabPane tab="管理登录" key="manager">
+                                <ShareForm
+                                    loading={this.props.stores.userStore.loading}
+                                    onSubmit={this.handleSubmit}
+                                    items={[
+                                        {
+                                            name: 'account',
+                                            placeholder: '用户名',
+                                            size: 'large',
+                                            rules: [{ required: true, message: '此项没有填写', }]
+                                        },
+                                        {
+                                            name: 'password',
+                                            placeholder: '密码',
+                                            size: 'large',
+                                            rules: [{ required: true, message: '此项没有填写', }],
+                                        }
+                                    ]}
+                                    buttons={[
+                                        <Button size="large" loading={this.props.stores.userStore.loading} type="primary" htmlType="submit" block>
+                                            <Icon type="login" />登录
+                                        </Button>
+                                    ]}
+                                />
+                            </Tabs.TabPane>
+                        </Tabs>
+                    </Col>
+                </Row >
+            </div>
         );
     }
 }

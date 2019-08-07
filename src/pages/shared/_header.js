@@ -69,7 +69,7 @@ class TopNavbar extends Component {
             )
         } else {
             result = result.concat([
-                <Menu.Item key="/user/login"><Icon type="user" />登录</Menu.Item>,
+                <Menu.Item key="/user/login"><Icon type="login" /> 登录</Menu.Item>,
             ]);
         }
         return result;
