@@ -9,20 +9,21 @@ import ImportButton from '../shared/import_button'
 @observer
 export default class HousesIndexPage extends Component {
 
-    state = { pageIndex: 1, pageSize: 20 }
     async componentWillMount() {
         this.props.stores.globalStore.setTitle('楼盘管理');
+        this.loadList(this.props)
     }
 
     loadList = async (props) => {
         props = props || this.props;
         let query = QueryString.parseJSON(props.location.search)
-        await this.setState({ pageIndex: query.page || 1 });
-        await this.props.stores.housesStore.getList(this.state.pageIndex, this.state.pageSize)
+        await this.props.stores.housesStore.getList(query.page || 1)
     }
 
     async componentWillReceiveProps(nextProps) {
-        await this.loadList(nextProps)
+        if (this.props.location.search !== nextProps.location.search) {
+            await this.loadList(nextProps)
+        }
     }
 
     handlePageChange = page => {
@@ -66,6 +67,7 @@ export default class HousesIndexPage extends Component {
 
     render() {
         const { list, page, loading, importUrl } = this.props.stores.housesStore
+        console.log(importUrl)
         return (
             <Row>
                 <PageHeader title="楼盘管理" />
@@ -81,7 +83,7 @@ export default class HousesIndexPage extends Component {
                             action={importUrl}
                             onChange={this.handleUpload}
                         />
-                        <a href="/templates/楼盘导入模板.xslx"><Icon type="download" />下载导入模板</a>
+                        <a href="/downloads/楼盘导入模板.xlsx"><Icon type="download" />下载导入模板</a>
                     </Button.Group>
                 </div>
                 <Table

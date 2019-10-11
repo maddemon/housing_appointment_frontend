@@ -7,20 +7,22 @@ import { QueryString } from '../../common/utils'
 @observer
 export default class PermitIndexPage extends Component {
 
-    state = { subList: {}, searchKey: '', pageIndex: 1, pageSize: 20 }
+    state = { subList: {} }
 
     async componentWillMount() {
         this.props.stores.globalStore.setTitle('准购证管理');
+        this.loadList(this.props)
     }
 
     async componentWillReceiveProps(nextProps) {
-        await this.loadList(nextProps)
+        if (this.props.location.search !== nextProps.location.search) {
+            await this.loadList(nextProps)
+        }
     }
 
     loadList = async (props) => {
         let query = QueryString.parseJSON(props.location.search)
-        await this.setState({ searchKey: query.searchKey || '', pageIndex: query.page || 1 });
-        await this.props.stores.permitStore.getList(this.state.searchKey, this.state.pageIndex, this.state.pageSize);
+        await this.props.stores.permitStore.getList(query.key || '', query.page || 1);
     }
 
     operateColumnRender = (text, item) => {
@@ -40,7 +42,7 @@ export default class PermitIndexPage extends Component {
         this.props.history.push(`/permit/index?key=${value}`)
     }
 
-    handleRedirectToStatistics = ()=>{
+    handleRedirectToStatistics = () => {
         this.props.history.push(`/permit/statistic`)
     }
 
@@ -50,7 +52,7 @@ export default class PermitIndexPage extends Component {
             const list = this.props.stores.quotaStore.list
             let subList = this.state.subList;
             subList[permit.code] = list;
-            await this.setState({ subList })
+            this.setState({ subList })
         }
     }
 
@@ -96,6 +98,7 @@ export default class PermitIndexPage extends Component {
 
     render() {
         const { list, page, loading } = this.props.stores.permitStore
+        console.log('permit/index')
         return (
             <Row>
                 <PageHeader title="准购证管理" extra={
@@ -107,7 +110,7 @@ export default class PermitIndexPage extends Component {
                 <Table
                     bordered={true}
                     loading={loading}
-                    rowKey={Math.random}
+                    rowKey="code"
                     columns={[
                         { dataIndex: "code", title: "准购证号", },
                         { dataIndex: "agency", title: "动迁机构", },

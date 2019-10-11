@@ -9,12 +9,18 @@ class PermitStore {
     @observable loading = false;
     @observable statistic = []
 
-    @action async getList(searchKey, pageIndex, pageSize) {
+    @observable subList = {}
+
+    pageSize = 20;
+
+    @action async getList(searchKey, pageIndex) {
         this.loading = true;
-        const response = await api.permit.list(searchKey, pageIndex, pageSize);
+
+        const response = await api.permit.list(searchKey, pageIndex, this.pageSize);
         if (response && response.data) {
             this.page = {
-                pageSize: pageSize,
+                searchKey: searchKey,
+                pageSize: this.pageSize,
                 pageIndex: pageIndex,
                 total: response.data.total
             };

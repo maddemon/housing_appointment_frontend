@@ -1,15 +1,12 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Row, PageHeader, Icon, Button, Table, Modal, message } from 'antd'
+import { Row, PageHeader, Icon, Button, Input, Table, Modal, message } from 'antd'
 import { QueryString } from '../../common/utils'
 import EditModal from './edit'
 
 @inject('stores')
 @observer
 export default class UserIndexPage extends Component {
-
-    state = { pageIndex: 1, pageSize: 20 }
-
     async componentWillMount() {
         await this.props.stores.globalStore.setTitle('用户管理');
     }
@@ -20,8 +17,7 @@ export default class UserIndexPage extends Component {
 
     loadList = async (props) => {
         const query = QueryString.parseJSON(props.location.search)
-        await this.setState({ searchKey: query.searchKey || '', pageIndex: query.page || 1 });
-        await this.props.stores.userStore.getList(this.state.pageIndex, this.state.pageSize)
+        await this.props.stores.userStore.getList(query.key || '', query.page || 1)
     }
 
     handleDelete = (uuid) => {
@@ -47,6 +43,10 @@ export default class UserIndexPage extends Component {
         this.props.history.push(`/user/index?page=${page}`)
     }
 
+    handleSearch = (value) => {
+        this.props.history.push(`/user/index?key=${value}`)
+    }
+
     operateColumnRender = (text, item) => {
         let buttons = [
             <Button key="btnReset" onClick={() => this.handleResetPassword(item.uuid)}>
@@ -59,13 +59,13 @@ export default class UserIndexPage extends Component {
     handleSubmit = (result) => {
         if (result.status === '200') {
             message.success(result.message)
-            this.props.stores.userStore.getList(this.state.pageIndex, this.state.pageSize)
+            this.loadList(this.props)
         }
     }
 
     handleUpload = (result) => {
         if (result.status === '200') {
-            this.props.stores.userStore.getList(this.state.pageIndex, this.state.pageSize)
+            this.loadList(this.props)
         }
     }
 
@@ -73,7 +73,7 @@ export default class UserIndexPage extends Component {
         const { loading, list, page } = this.props.stores.userStore
         return (
             <Row>
-                <PageHeader title="用户管理" />
+                <PageHeader title="用户管理" extra={<Input.Search onSearch={this.handleSearch} />} />
                 <div className="toolbar">
                     <Button.Group>
                         <EditModal title="添加用户" trigger={<Button type="primary"><Icon type="plus" /> 添加用户</Button>} onSubmit={this.handleSubmit} />

@@ -14,8 +14,8 @@ const api = {
         edit: (data) => {
             return $.post('user/edit', null, data)
         },
-        list: (pageIndex, pageSize) => {
-            return $.get('user/list', { pageIndex, pageSize })
+        list: (key, pageIndex, pageSize) => {
+            return $.get('user/list', { queryWord: key, pageIndex, pageSize })
         },
         resetPassword: (userUuid) => {
             return $.get('user/reset', { userUuid })
@@ -95,8 +95,8 @@ const api = {
         }
     },
     permit: {
-        list: (searchKey, pageIndex, pageSize) => {
-            return $.get('permit/permit', { searchKey, pageIndex, pageSize })
+        list: (key, pageIndex, pageSize) => {
+            return $.get('permit/permit', { key, pageIndex, pageSize })
         },
         statistic: () => {
             return $.get('permit/statistical')

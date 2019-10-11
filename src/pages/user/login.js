@@ -75,7 +75,7 @@ export default class UserLoginPage extends Component {
             <div className="container login-page">
                 <div className="top">
                     <div className="header">
-                        <img alt="logo" className="logo" src="/images/logo.jpg" />
+                        <img alt="logo" className="logo" src="/images/logo.png" />
                         <span className="title">{Config.SystemName}</span>
                     </div>
                 </div>
@@ -108,9 +108,9 @@ export default class UserLoginPage extends Component {
                                         }
                                     ]}
                                     buttons={[
-                                        <Button size="large" 
-                                        loading={this.props.stores.userStore.loading} 
-                                        type="primary" htmlType="submit" block>
+                                        <Button size="large"
+                                            loading={this.props.stores.userStore.loading}
+                                            type="primary" htmlType="submit" block>
                                             <Icon type="login" />登录
                                     </Button>
                                     ]}
@@ -131,6 +131,7 @@ export default class UserLoginPage extends Component {
                                             name: 'password',
                                             placeholder: '密码',
                                             size: 'large',
+                                            type: 'password',
                                             rules: [{ required: true, message: '此项没有填写', }],
                                         }
                                     ]}

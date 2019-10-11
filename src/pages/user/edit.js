@@ -21,24 +21,9 @@ export default class UserEditModal extends Component {
         const model = this.props.model || {}
         return [
             { name: 'uuid', defaultValue: model.uuid, type: "hidden" },
-            {
-                title: '证件类型',
-                name: 'cardType',
-                defaultValue: model.cardType || '1',
-                type: 'select',
-                rules: [{ required: true }],
-                props: {
-                    options: [
-                        { text: '身份证', value: 1 },
-                        { text: '军官证', value: 2 },
-                        { text: '护照', value: 3 }
-                    ]
-                }
-            },
             { title: '证件号码', name: 'cardNumber', defaultValue: model.cardNumber, rules: [{ required: true, message: '请填写证件号码' }], },
             { title: '姓名', name: 'name', defaultValue: model.name, rules: [{ required: true, message: '请填写姓名' }], },
             { title: '手机', name: 'phone', defaultValue: model.phone, rules: [{ required: true , message: '请填写手机号码'}], },
-            { title: '优先级', name: 'priority', defaultValue: model.priority, rules: [{ required: true, message: '请填写优先级' }], },
         ];
     }
 

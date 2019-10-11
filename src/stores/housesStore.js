@@ -7,6 +7,7 @@ class HousesStore {
     @observable page = null;
     @observable loading = false;
     @observable model = {}
+    pageSize = 20
 
     @action selectModel(model) {
         this.model = model;
@@ -25,9 +26,9 @@ class HousesStore {
         this.loading = false
     }
 
-    @action async getList(batchId, pageIndex, pageSize) {
+    @action async getList(pageIndex) {
         this.loading = true;
-        const response = await api.houses.list(batchId, pageIndex, pageSize)
+        const response = await api.houses.list(pageIndex, this.pageSize)
         if (response && response.data) {
             this.page = {
                 pageSize: response.data.pageSize,

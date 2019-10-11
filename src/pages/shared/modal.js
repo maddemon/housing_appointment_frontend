@@ -15,7 +15,7 @@ export default class FormModal extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.visible !== this.state.visible) {
+        if (nextProps.visible !== undefined && nextProps.visible !== this.state.visible) {
             this.setState({ visible: nextProps.visible })
         }
     }

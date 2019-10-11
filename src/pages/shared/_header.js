@@ -61,7 +61,7 @@ class TopNavbar extends Component {
                     break;
             }
             result = result.concat([
-                <SubMenu key="user_menu" title={<><Icon type="user" /> {identity.name}</>}>
+                <SubMenu key="user_menu" title={<><Icon type="user" /> {identity.name} <Icon type="caret-down" /></>}>
                     <Menu.Item key="edit_password"> <Icon type="key" /> 修改密码 </Menu.Item>
                     <Menu.Item key="/user/logout"> <Icon type="poweroff" /> 退出 </Menu.Item>
                 </SubMenu>

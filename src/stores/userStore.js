@@ -41,12 +41,12 @@ class UserStore {
         cookie.remove(Config.CookieName)
     }
 
-    @action async getList(pageIndex, pageSize) {
+    @action async getList(key, pageIndex) {
         this.loading = true;
-        const response = await api.user.list(pageIndex, pageSize);
+        const response = await api.user.list(key, pageIndex, 20);
         if (response && response.data) {
             this.page = {
-                pageSize: pageSize,
+                pageSize: 20,
                 pageIndex: pageIndex,
                 total: response.data.total
             };

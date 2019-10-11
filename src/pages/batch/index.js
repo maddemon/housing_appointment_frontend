@@ -11,10 +11,13 @@ export default class BatchIndexPage extends Component {
     async componentWillMount() {
         this.props.stores.globalStore.setTitle('批次管理');
         this.props.stores.housesStore.getList(1, 99999);
+        this.loadData(this.props)
     }
 
     async componentWillReceiveProps(nextProps) {
-        await this.loadData(nextProps);
+        if (this.props.location.search !== nextProps.location.search) {
+            await this.loadData(nextProps)
+        }
     }
 
     loadData = async (props) => {
@@ -55,6 +58,7 @@ export default class BatchIndexPage extends Component {
 
     render() {
         const { list, loading } = this.props.stores.batchStore
+        console.log('batch/index')
         return (
             <Row>
                 <PageHeader title="批次管理" />
@@ -86,7 +90,7 @@ class BatchItemControl extends Component {
     housesRender = () => {
         const model = this.props.model
         const houses = (this.props.stores.housesStore.list || [])
-        return houses.filter(e => model.housesUuid.includes(e.housesUuid)).map(e => <Tag key={e.uuid}>{e.name}</Tag>)
+        return houses.filter(e => model.housesUuid.includes(e.housesUuid)).map((e,i) => <Tag key={i}>{e.name}</Tag>)
     }
 
     handleRedirectToResultPage = async () => {
@@ -110,7 +114,7 @@ class BatchItemControl extends Component {
         if (canNotify) {
             result.push(<Button key="notify" onClick={this.handleNotify} type="primary" icon="bell" title="发送预约通知" />)
         }
-        else{
+        else {
             result.push(<Button key="result" onClick={this.handleRedirectToResultPage} type="default" icon="file-search" title="查看选房结果" />)
         }
         if (canEdit) {
