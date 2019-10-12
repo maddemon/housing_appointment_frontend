@@ -39,8 +39,8 @@ const api = {
         edit: (data) => {
             return $.put('houses/edit', null, data)
         },
-        delete: (uuid) => {
-            return $.get('houses/delete', { uuid })
+        delete: (housesUuid) => {
+            return $.get('houses/delete', { housesUuid })
         },
         list: (pageIndex, pageSize) => {
             return $.get('houses/housesList', { pageIndex, pageSize })
@@ -75,20 +75,7 @@ const api = {
             return $.get('batch/batchRoom', { batchUuid })
         },
         getUsers: (batchUuid) => {
-            //return $.get('batch/batchUser', { batchUuid })
-            return {
-                "data": [
-                    {
-                        "batchQuotaUuid": "1",
-                        "idCard": "1122334455",
-                        "permitCode": "00161678",
-                        "userName": "langxing",
-                        "flag": "3"
-                    },
-                ],
-                "message": "",
-                "status": "200"
-            }
+            return $.get('batch/batchUser', { batchUuid })          
         },
         chooseRoom: (batchQuotaUuid, roomUuid) => {
             return $.put('batch/chooseRoom', null, { batchQuotaUuid, roomUuid })

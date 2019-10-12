@@ -29,8 +29,7 @@ const UserAppointmentItemControl = (props) => {
     const model = props.model;
     return <Col xxl={12} xl={12} lg={12} md={12} style={{ marginBottom: '16px' }}><Card title={model.batchName}>
         <p>预约时间：{moment(model.reserveTime).format('LLL')}</p>
-        {/* <p>准购证号：{model.permitCode}</p> */}
-        <p>资格证号：{model.quotaCode}</p>
+        <p>资格证号：{model.permitCode}-{model.quotaCode}</p>
         <p>房屋地址：{model.houseAddress}</p>
         <p>选房时间：{moment(model.chooseTime).format('L')}</p>
         <p>选房地点：{model.chooseAddress}</p>

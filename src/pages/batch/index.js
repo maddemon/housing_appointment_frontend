@@ -117,9 +117,9 @@ class BatchItemControl extends Component {
         else {
             result.push(<Button key="result" onClick={this.handleRedirectToResultPage} type="default" icon="file-search" title="查看选房结果" />)
         }
-        if (canEdit) {
+        //if (canEdit) {
             result.push(<EditModal key="edit" model={model} trigger={<Button icon="edit" title="修改" />} onSubmit={this.props.onSubmit} />)
-        }
+        //}
         if (canDelete) {
             result.push(<Button key="delete" title="删除" icon="delete" onClick={this.handleDelete} />)
         }

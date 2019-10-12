@@ -70,7 +70,7 @@ class QuotaItem extends Component {
                 <Button onClick={this.handleItemClick}
                     style={{ width: '100%', height: '100px', marginTop: '10px' }}
                     disabled={quota.disabled}>
-                    <h3>资格证号:{quota.quotaCode}</h3>
+                    <h3>资格证号:{quota.permitCode}-{quota.quotaCode}</h3>
                     <small>
                         <Tag color={quota.disabled ? "gray" : "green"}>
                             {quota.my ? '我' : quota.userName}的

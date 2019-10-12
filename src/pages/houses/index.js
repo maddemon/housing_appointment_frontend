@@ -42,7 +42,7 @@ export default class HousesIndexPage extends Component {
             title: "确认",
             content: "你确定要删除该楼盘吗？",
             onOk: async () => {
-                const result = await this.props.stores.housesStore.delete(item.uuid);
+                const result = await this.props.stores.housesStore.delete(item.housesUuid);
                 if (result.status === '200') {
                     message.success(result.message);
                     this.loadList()
