@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Row, Col, Button, PageHeader, Alert, Icon, Card, Tag, message, Modal, Spin, Statistic } from 'antd'
+import { Row, Col, Button, PageHeader, Alert, Icon, Card, Tag, message, Modal, Spin, Statistic, Result, Paragraph, Text } from 'antd'
 import AppointmentStepsControl from './_steps'
 import moment from 'moment'
 
@@ -32,7 +32,7 @@ export default class MakeAppointmentPage extends Component {
         avaliables = (avaliables || []).filter(e => moment(e.appointmentTimeEnd) > moment());
         return (
             <>
-                <PageHeader title="预约选房" tags={<Tag color="red">已选购房证{quota.quotaCode}</Tag>} onBack={this.handleBack} />
+                <PageHeader title="预约选房" tags={<Tag color="red">已选购房证 {quota.permitCode}-{quota.quotaCode}</Tag>} onBack={this.handleBack} />
                 <AppointmentStepsControl step={this.state.step} />
                 <Spin spinning={loading}>
                     {avaliables.length === 0 ?
@@ -45,7 +45,7 @@ export default class MakeAppointmentPage extends Component {
                                 </Col>)}
                             </Row>
                             :
-                            <SelectedBatchControl model={this.state.selectedBatch} />
+                            <SelectedBatchControl batch={this.state.selectedBatch} quota={quota} />
                     }
                 </Spin>
             </>
@@ -54,11 +54,17 @@ export default class MakeAppointmentPage extends Component {
 }
 
 const SelectedBatchControl = props => {
-    const { model } = props
+    const { batch, quota } = props
+
     return (
-        <Card hoverable={false} title={`您已预约${model.name}`}        >
-            <BatchDetailControl model={model} />
-        </Card>
+        <Result
+            status="success"
+            title={`您已经预约了${batch.name}在线选房`}
+            subTitle={`系统将在${moment(batch.appointmentTimeEnd).add(1, "days").format('ll')}发送入围通知短信，请留意您的短信，方便查看是否入选。`}
+        >
+            <BatchDetailControl model={batch}></BatchDetailControl>
+        </Result>
+
     )
 }
 
@@ -115,13 +121,15 @@ class BatchItemControl extends Component {
             cancelText: "再想想",
             content: <div>
                 <p>已选批次：{batch.name}</p>
-                <p>已选购房证：{quota.quotaUuid}</p>
+                <p>已选购房证：{quota.permitCode}-{quota.quotaCode}</p>
                 <p>当前日期：{moment().format('LL')}</p>
+                <p style={{ color: 'red' }}>系统将在{moment(batch.appointmentTimeEnd).add(1, "days").format('ll')}发送入围通知短信，请留意您的短信，方便查看是否入选。</p>
             </div>,
             onOk: async () => {
                 const result = await this.props.stores.appointmentStore.make(batch.uuid, quota.quotaUuid)
                 if (result.status === '200') {
                     message.success("预约成功");
+
                     this.props.handleClick(batch);
                 }
                 else {
