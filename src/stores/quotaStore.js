@@ -8,16 +8,16 @@ class QuotaStore {
     @observable selectedModel = null;
     @observable loading = false;
 
-    @action async getList(permitUuid, pageIndex, pageSize) {
+    @action async getList(permitId, pageIndex, pageSize) {
         this.loading = true;
-        const response = await api.quota.list(permitUuid, pageIndex, pageSize);
-        if (response && response.data) {
+        const response = await api.quota.list(permitId, pageIndex, pageSize);
+        if (response.status === 200) {
             this.page = {
                 pageSize: pageSize,
                 pageIndex: pageIndex,
-                total: response.data.total
+                total: response.page.total
             };
-            this.list = response.data.list;
+            this.list = response.list;
         }
         this.loading = false;
     }
@@ -33,9 +33,9 @@ class QuotaStore {
         return result;
     }
 
-    @action async delete(uuids) {
+    @action async delete(ids) {
         this.loading = true;
-        const result = await api.quota.delete(uuids)
+        const result = await api.quota.delete(ids)
         this.loading = false;
         return result;
     }

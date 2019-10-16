@@ -59,7 +59,7 @@ export default class HomePage extends Component {
             />
             {/* <Table
                 loading={loading}
-                rowKey="uuid"
+                rowKey="id"
                 columns={[
                     { dataIndex: "userName", title: "用户" },
                     { dataIndex: "reserveDate", title: "预约时间" },

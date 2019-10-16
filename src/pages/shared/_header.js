@@ -37,22 +37,22 @@ class TopNavbar extends Component {
         ];
         if (identity) {
             switch (identity.role) {
-                case 'user':
+                case '1':
                     result = result.concat([
                         <Menu.Item key="/my/quotas" ><Icon type="ordered-list" />预约选房</Menu.Item>,
                         <Menu.Item key="/my/appointments" ><Icon type="calendar" />我的预约</Menu.Item>
                     ]);
                     break;
-                case 'admin':
+                case '3':
                     result = result.concat([
                         <Menu.Item key="/batch/index" ><Icon type="import" />批次管理</Menu.Item>,
-                        <Menu.Item key="/houses/index" ><Icon type="build" />楼盘管理</Menu.Item>,
+                        <Menu.Item key="/house/index" ><Icon type="build" />楼盘管理</Menu.Item>,
                         <Menu.Item key="/permit/index" ><Icon type="switcher" />准购证管理 </Menu.Item>,
                         <Menu.Item key="/batch/choosePermit" ><Icon type="select" />选房</Menu.Item>,
                         <Menu.Item key="/user/index" ><Icon type="usergroup-add" />用户管理</Menu.Item>,
                     ]);
                     break;
-                case 'jiansheju':
+                case '2':
                     result = result.concat([
                         <Menu.Item key="/permit/statistic" ><Icon type="bar-chart" />发证情况</Menu.Item>,
                     ])

@@ -7,7 +7,7 @@ class BatchStore {
     @observable loading = false;
     @observable selectedModel = {}
     @observable rooms = []
-    @observable houses = []
+    @observable house = []
     @observable permits = []
     @observable selectedPermit = null;
     @observable selectedHouse = null;
@@ -27,19 +27,19 @@ class BatchStore {
     @action async getAvaliables() {
         this.loading = true;
         const response = await api.batch.avaliables()
-        if (response && response.data) {
+        if (response.status === 200) {
 
-            this.avaliables = response.data.list
+            this.avaliables = response.list
         }
         this.loading = false;
-        return response.data.list
+        return response.list
     }
 
     @action async getList() {
         this.loading = true;
         const response = await api.batch.list()
-        if (response && response.data) {
-            this.list = response.data.list
+        if (response.status === 200) {
+            this.list = response.list
         }
         this.loading = false;
         return this.list
@@ -47,20 +47,14 @@ class BatchStore {
 
     @action async save(data) {
         this.loading = true;
-        let result = null;
-        if (data.uuid) {
-            result = await api.batch.edit(data)
-        }
-        else {
-            result = await api.batch.add(data)
-        }
+        let result =  await api.batch.save(data)
         this.loading = false;
         return result;
     }
 
-    @action async delete(batchUuid) {
+    @action async delete(batchId) {
         this.loading = true;
-        const result = await api.batch.delete(batchUuid)
+        const result = await api.batch.delete(batchId)
         this.loading = false;
         return result;
     }
@@ -72,16 +66,16 @@ class BatchStore {
         return result;
     }
 
-    @action async getRooms(batchUuid) {
-        const response = await api.batch.getRooms(batchUuid);
-        if (response && response.data) {
-            this.rooms = response.data
+    @action async getRooms(batchId) {
+        const response = await api.batch.getRooms(batchId);
+        if (response.status === 200) {
+            this.rooms = response
         }
     }
 
-    @action async getHouses(batchUuid) {
+    @action async getHouses(batchId) {
         this.loading = true;
-        await this.getRooms(batchUuid);
+        await this.getRooms(batchId);
         let list = [];
         this.rooms.map(room => {
             let house = list.find(e => e.name === room.name);
@@ -107,16 +101,16 @@ class BatchStore {
             floor.rooms.push(room);
             return room;
         });
-        this.houses = list;
+        this.house = list;
         this.loading = false;
     }
 
-    @action async getPermits(batchUuid) {
+    @action async getPermits(batchId) {
         this.loading = true;
-        const response = await api.batch.getUsers(batchUuid);
-        if (response && response.data) {
+        const response = await api.batch.getPermits(batchId);
+        if (response.status === 200) {
             let list = []
-            response.data.map(user => {
+            response.list.map(user => {
                 let item = list.find(e => e.permitCode === user.permitCode);
                 if (!item) {
                     item = { permitCode: user.permitCode, users: [] }
@@ -137,11 +131,11 @@ class BatchStore {
     }
     @action selectHouse(name) {
         if (!name) {
-            if (this.houses.length > 0) {
-                this.selectedHouse = this.houses[0]
+            if (this.house.length > 0) {
+                this.selectedHouse = this.house[0]
             }
         } else {
-            this.selectedHouse = this.houses.find(e => e.name === name)
+            this.selectedHouse = this.house.find(e => e.name === name)
         }
     }
     @action selectBuilding(name) {
@@ -164,7 +158,7 @@ class BatchStore {
         }
     }
     @action async selectRoom(room) {
-        return await api.batch.chooseRoom(this.selectedUser.batchQuotaUuid, room.uuid)
+        return await api.batch.chooseRoom(this.selectedUser.batchQuotaId, room.id)
     }
 }
 

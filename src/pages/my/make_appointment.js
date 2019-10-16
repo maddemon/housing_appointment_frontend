@@ -29,7 +29,7 @@ export default class MakeAppointmentPage extends Component {
             return <h1>没有选择购房证</h1>
         }
         let { avaliables, loading } = this.props.stores.batchStore;
-        avaliables = (avaliables || []).filter(e => moment(e.appointmentTimeEnd) > moment());
+        avaliables = (avaliables || []).filter(e => moment(e.appointmentEndTime) > moment());
         return (
             <>
                 <PageHeader title="预约选房" tags={<Tag color="red">已选购房证 {quota.permitCode}-{quota.quotaCode}</Tag>} onBack={this.handleBack} />
@@ -60,7 +60,7 @@ const SelectedBatchControl = props => {
         <Result
             status="success"
             title={`您已经预约了${batch.name}在线选房`}
-            subTitle={`系统将在${moment(batch.appointmentTimeEnd).add(1, "days").format('ll')}发送入围通知短信，请留意您的短信，方便查看是否入选。`}
+            subTitle={`系统将在${moment(batch.appointmentEndTime).add(1, "days").format('ll')}发送入围通知短信，请留意您的短信，方便查看是否入选。`}
         >
             <BatchDetailControl model={batch}></BatchDetailControl>
         </Result>
@@ -85,8 +85,8 @@ const BatchDetailControl = props => {
         <p>房屋地址：{model.houseAddress}</p>
         <p>选房时间：{moment(model.chooseTime).format('LL')}</p>
         <p>选房地点：{model.chooseAddress}</p>
-        <p>预约开始时间：{moment(model.appointmentTimeStart).format('LLL')}</p>
-        <p>预约截止时间：{moment(model.appointmentTimeEnd).format('LLL')}</p>
+        <p>预约开始时间：{moment(model.appointmentBeginTime).format('LLL')}</p>
+        <p>预约截止时间：{moment(model.appointmentEndTime).format('LLL')}</p>
     </div>
 }
 
@@ -104,7 +104,7 @@ class BatchItemControl extends Component {
 
     getSuccessState = async () => {
         const batch = this.props.model
-        await this.props.stores.appointmentStore.getSuccessState(batch.uuid)
+        await this.props.stores.appointmentStore.getSuccessState(batch.id)
     }
 
 
@@ -123,10 +123,10 @@ class BatchItemControl extends Component {
                 <p>已选批次：{batch.name}</p>
                 <p>已选购房证：{quota.permitCode}-{quota.quotaCode}</p>
                 <p>当前日期：{moment().format('LL')}</p>
-                <p style={{ color: 'red' }}>系统将在{moment(batch.appointmentTimeEnd).add(1, "days").format('ll')}发送入围通知短信，请留意您的短信，方便查看是否入选。</p>
+                <p style={{ color: 'red' }}>系统将在{moment(batch.appointmentEndTime).add(1, "days").format('ll')}发送入围通知短信，请留意您的短信，方便查看是否入选。</p>
             </div>,
             onOk: async () => {
-                const result = await this.props.stores.appointmentStore.make(batch.uuid, quota.quotaUuid)
+                const result = await this.props.stores.appointmentStore.make(batch.id, quota.quotaId)
                 if (result.status === '200') {
                     message.success("预约成功");
 
@@ -140,10 +140,10 @@ class BatchItemControl extends Component {
     }
 
     extraRender = (model) => {
-        if (moment(model.appointmentTimeStart) > moment()) {
+        if (moment(model.appointmentBeginTime) > moment()) {
             return <Tag color="warning">尚未开始</Tag>
         }
-        else if (moment(model.appointmentTimeEnd) < moment()) {
+        else if (moment(model.appointmentEndTime) < moment()) {
             return <Tag color="gray">预约已结束</Tag>
         }
         return <Button type="primary" onClick={this.handleClick}><Icon type="plus" />我要预约</Button>
@@ -151,7 +151,7 @@ class BatchItemControl extends Component {
 
     render() {
         const { model } = this.props
-        const successState = this.props.stores.appointmentStore.successState[model.uuid] || {}
+        const successState = this.props.stores.appointmentStore.successState[model.id] || {}
         return (
             <Card
                 hoverable={false}

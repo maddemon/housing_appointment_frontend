@@ -1,16 +1,16 @@
 import { observable, action } from 'mobx';
 import cookie from 'react-cookies';
 import api from '../common/api';
-import Config from '../common/config';
 
 class UserStore {
     @observable list = [];
     @observable page = {};
     @observable loading = false;
 
+    cookieName = "token";
+
     current() {
-        const sessionId = this.authenticated()
-        const json = window.localStorage.getItem(sessionId);
+        const json = window.localStorage.getItem(this.cookieName);
         if (json) {
             return JSON.parse(json);
         }
@@ -18,39 +18,35 @@ class UserStore {
     }
 
     authenticated() {
-        const sessionId = cookie.load(Config.CookieName)
+        const sessionId = cookie.load(this.cookieName)
         return sessionId
     }
 
     @action async login(formData) {
         this.loading = true;
-        const data = await api.user.login(formData);
-        if (data && data.status === '200') {
-            const user = data.data;
-            cookie.save(Config.CookieName, user.sessionId, { path: '/' })
-            window.localStorage.clear();
-            await window.localStorage.setItem(user.sessionId, JSON.stringify(user))
-        }
+        const user = await api.user.login(formData);
+        cookie.save(this.cookieName, user.token, { path: '/' })
+        window.localStorage.clear();
+        await window.localStorage.setItem(this.cookieName, JSON.stringify(user))
         this.loading = false;
-        return data;
+        return user;
     }
 
     @action async logout() {
-        const sessionId = this.authenticated;
-        await window.localStorage.removeItem(sessionId)
-        cookie.remove(Config.CookieName)
+        await window.localStorage.removeItem(this.cookieName)
+        cookie.remove(this.cookieName)
     }
 
     @action async getList(key, pageIndex) {
         this.loading = true;
         const response = await api.user.list(key, pageIndex, 20);
-        if (response && response.data) {
+        if (response.status === 200) {
             this.page = {
                 pageSize: 20,
                 pageIndex: pageIndex,
-                total: response.data.total
+                total: response.page.total
             };
-            this.list = response.data.list
+            this.list = response.list
         }
         this.loading = false;
         return this.list
@@ -59,7 +55,7 @@ class UserStore {
     @action async save(user) {
         this.loading = true;
         let result = null;
-        if (user.uuid) {
+        if (user.id) {
             result = await api.user.edit(user)
         }
         else {
@@ -68,8 +64,8 @@ class UserStore {
         this.loading = false;
         return result;
     }
-    async delete(uuid) {
-        await api.user.delete(uuid);
+    async delete(id) {
+        await api.user.delete(id);
     }
     async editPassword(oldPassword, newPassword) {
         this.loading = true;
@@ -81,14 +77,9 @@ class UserStore {
         await api.user.sendVerifyCode(mobile)
     }
 
-    async resetPassword(uuid) {
-        await api.user.resetPassword(uuid)
+    async resetPassword(id) {
+        await api.user.resetPassword(id)
     }
-
-    get importUrl() {
-        return api.user.getImportUrl()
-    }
-
 }
 
 const store = new UserStore();

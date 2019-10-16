@@ -14,28 +14,28 @@ class HousesStore {
     }
 
     get importUrl() {
-        return api.houses.getImportUrl();
+        return api.house.getImportUrl();
     }
 
     @action async getAvaliables() {
         this.loading = true;
-        const response = await api.houses.avaliables();
-        if (response && response.data) {
-            this.avaliables = response.data
+        const response = await api.house.avaliables();
+        if (response.status === 200) {
+            this.avaliables = response
         }
         this.loading = false
     }
 
     @action async getList(pageIndex) {
         this.loading = true;
-        const response = await api.houses.list(pageIndex, this.pageSize)
-        if (response && response.data) {
+        const response = await api.house.list(pageIndex, this.pageSize)
+        if (response.status === 200) {
             this.page = {
-                pageSize: response.data.pageSize,
-                pageIndex: response.data.pageNum,
-                total: response.data.total
+                pageSize: response.pageSize,
+                pageIndex: response.pageNum,
+                total: response.page.total
             };
-            this.list = response.data.list
+            this.list = response.list
         }
         this.loading = false;
         return this.list
@@ -44,19 +44,19 @@ class HousesStore {
     @action async save(data) {
         this.loading = true;
         let result = null;
-        if (data.housesUuid) {
-            result = await api.houses.edit(data)
+        if (data.houseId) {
+            result = await api.house.edit(data)
         }
         else {
-            result = await api.houses.add(data)
+            result = await api.house.add(data)
         }
         this.loading = false;
         return result;
     }
 
-    @action async delete(housesUuid) {
+    @action async delete(houseId) {
         this.loading = true;
-        const result = await api.houses.delete(housesUuid)
+        const result = await api.house.delete(houseId)
         this.loading = false;
         return result;
     }

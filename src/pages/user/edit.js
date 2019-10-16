@@ -20,7 +20,7 @@ export default class UserEditModal extends Component {
     getFormItems = () => {
         const model = this.props.model || {}
         return [
-            { name: 'uuid', defaultValue: model.uuid, type: "hidden" },
+            { name: 'id', defaultValue: model.id, type: "hidden" },
             { title: '证件号码', name: 'cardNumber', defaultValue: model.cardNumber, rules: [{ required: true, message: '请填写证件号码' }], },
             { title: '姓名', name: 'name', defaultValue: model.name, rules: [{ required: true, message: '请填写姓名' }], },
             { title: '手机', name: 'phone', defaultValue: model.phone, rules: [{ required: true , message: '请填写手机号码'}], },

@@ -10,7 +10,7 @@ export default class BatchIndexPage extends Component {
 
     async componentWillMount() {
         this.props.stores.globalStore.setTitle('批次管理');
-        this.props.stores.housesStore.getList(1, 99999);
+        this.props.stores.houseStore.getList(1, 99999);
         this.loadData(this.props)
     }
 
@@ -35,7 +35,7 @@ export default class BatchIndexPage extends Component {
             title: "确认",
             content: "你确定要删除该批次吗？",
             onOk: async () => {
-                const result = await this.props.stores.batchStore.delete(item.uuid);
+                const result = await this.props.stores.batchStore.delete(item.id);
                 if (result.status === '200') {
                     message.success(result.message);
                     await this.loadData()
@@ -48,7 +48,7 @@ export default class BatchIndexPage extends Component {
             title: "摇号通知",
             content: "你确定要发送通知短信吗？",
             onOk: async () => {
-                const result = await this.props.stores.batchStore.notify(item.uuid)
+                const result = await this.props.stores.batchStore.notify(item.id)
                 if (result.status === '200') {
                     message.success(result.message)
                 }
@@ -68,7 +68,7 @@ export default class BatchIndexPage extends Component {
                     </Button.Group>
                 </div>
                 <Row gutter={16}>
-                    {list.map(item => <Col key={item.uuid} xxl={8} xl={8} lg={8} md={12} xs={24}>
+                    {list.map(item => <Col key={item.id} xxl={8} xl={8} lg={8} md={12} xs={24}>
                         <BatchItemControl
                             model={item}
                             history={this.props.history}
@@ -87,10 +87,10 @@ export default class BatchIndexPage extends Component {
 @inject('stores')
 class BatchItemControl extends Component {
 
-    housesRender = () => {
+    houseRender = () => {
         const model = this.props.model
-        const houses = (this.props.stores.housesStore.list || [])
-        return houses.filter(e => model.housesUuid.includes(e.housesUuid)).map((e,i) => <Tag key={i}>{e.name}</Tag>)
+        const house = (this.props.stores.houseStore.list || [])
+        return house.filter(e => model.houseId.includes(e.houseId)).map((e,i) => <Tag key={i}>{e.name}</Tag>)
     }
 
     handleRedirectToResultPage = async () => {
@@ -107,9 +107,9 @@ class BatchItemControl extends Component {
 
     extraRender = () => {
         const model = this.props.model
-        const canNotify = moment(model.appointmentTimeEnd) > moment()
+        const canNotify = moment(model.appointmentEndTime) > moment()
         const canEdit = moment(model.chooseTime) > moment()
-        const canDelete = moment(model.appointmentTimeStart) > moment()
+        const canDelete = moment(model.appointmentBeginTime) > moment()
         var result = []
         if (canNotify) {
             result.push(<Button key="notify" onClick={this.handleNotify} type="primary" icon="bell" title="发送预约通知" />)
@@ -133,9 +133,9 @@ class BatchItemControl extends Component {
                 style={{ marginTop: "16px" }}
                 extra={this.extraRender()}
             >
-                <p>楼盘：{this.housesRender()}</p>
-                <p>预约开始：{moment(model.appointmentTimeStart).format('YYYY-MM-DD HH:mm')} </p>
-                <p>预约结束：{moment(model.appointmentTimeEnd).format('YYYY-MM-DD HH:mm')} </p>
+                <p>楼盘：{this.houseRender()}</p>
+                <p>预约开始：{moment(model.appointmentBeginTime).format('YYYY-MM-DD HH:mm')} </p>
+                <p>预约结束：{moment(model.appointmentEndTime).format('YYYY-MM-DD HH:mm')} </p>
                 <p>选房日期：{moment(model.chooseTime).format('YYYY-MM-DD')}</p>
                 <p>选房地点：{model.chooseAddress}</p>
             </Card>

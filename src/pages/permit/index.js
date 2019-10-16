@@ -7,8 +7,6 @@ import { QueryString } from '../../common/utils'
 @observer
 export default class PermitIndexPage extends Component {
 
-    state = { subList: {} }
-
     async componentWillMount() {
         this.props.stores.globalStore.setTitle('准购证管理');
         this.loadList(this.props)
@@ -27,7 +25,7 @@ export default class PermitIndexPage extends Component {
 
     operateColumnRender = (text, item) => {
         let buttons = [
-            <Button key="btnDelete" onClick={() => this.handleDelete(item.uuid)} type="danger" title="删除">
+            <Button key="btnDelete" onClick={() => this.handleDelete(item.id)} type="danger" title="删除">
                 <Icon type="delete" />
             </Button>,
         ];
@@ -46,30 +44,20 @@ export default class PermitIndexPage extends Component {
         this.props.history.push(`/permit/statistic`)
     }
 
-    handleExpand = async (expanded, permit) => {
-        if (expanded) {
-            await this.props.stores.quotaStore.getList(permit.uuid, 1, 9999)
-            const list = this.props.stores.quotaStore.list
-            let subList = this.state.subList;
-            subList[permit.code] = list;
-            this.setState({ subList })
-        }
-    }
-
     quotaRowRender = (record, index, indent, expanded) => {
         if (!expanded) {
             return null
         }
         return <Table
             bordered={false}
-            rowKey="uuid"
+            rowKey="id"
             pagination={false}
-            dataSource={this.state.subList[record.code] || []}
+            dataSource={record.quotas || []}
             columns={[
                 { dataIndex: 'quotaCode', title: '购房证编号' },
-                { dataIndex: 'userName', title: "购房人" },
+                { dataIndex: 'user', title: "购房人" },
                 {
-                    dataIndex: 'quotaStatus', title: "状态", render: (text, item) => {
+                    dataIndex: 'statusText', title: "状态", render: (text, item) => {
                         //购房证状态  -1 尾批  0未预约 1（等待他人预约） 2 已预约 3 已入围 4 预约成功 5 已选房 8 备选
                         switch (text) {
                             case "-1":
@@ -112,16 +100,15 @@ export default class PermitIndexPage extends Component {
                     loading={loading}
                     rowKey="code"
                     columns={[
-                        { dataIndex: "code", title: "准购证号", },
+                        { dataIndex: "permitCode", title: "准购证号", },
                         { dataIndex: "agency", title: "动迁机构", },
                         { dataIndex: "town", title: "镇街" },
-                        { dataIndex: "quotaNum", title: "限购套数" },
+                        { dataIndex: "number", title: "限购套数" },
                         { dataIndex: "remark", title: "备注" },
                     ]}
                     dataSource={list}
                     pagination={{ ...page, size: 5, onChange: this.handlePageChange, }}
                     expandedRowRender={this.quotaRowRender}
-                    onExpand={this.handleExpand}
                 ></Table>
             </Row>
         )

@@ -43,9 +43,8 @@ export default class UserLoginPage extends Component {
     }
 
     handleSubmit = async (formData) => {
-        console.log(formData)
-        const response = await this.props.stores.userStore.login(formData)
-        if (response && response.status === '200') {
+        const user = await this.props.stores.userStore.login(formData)
+        if (user.token) {
             const query = QueryString.parseJSON(this.props.location.seach)
             this.props.history.push(query.returnUrl || '/')
         }
@@ -88,7 +87,7 @@ export default class UserLoginPage extends Component {
                                     onSubmit={this.handleSubmit}
                                     items={[
                                         {
-                                            name: 'account',
+                                            name: 'name',
                                             rules: [{ required: true, message: '此项没有填写', }],
                                             render: <Input size="large" onChange={this.handleMobileChange} placeholder="手机号" />
                                         },
@@ -122,7 +121,7 @@ export default class UserLoginPage extends Component {
                                     onSubmit={this.handleSubmit}
                                     items={[
                                         {
-                                            name: 'account',
+                                            name: 'name',
                                             placeholder: '用户名',
                                             size: 'large',
                                             rules: [{ required: true, message: '此项没有填写', }]

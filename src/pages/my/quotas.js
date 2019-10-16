@@ -46,7 +46,7 @@ class PermitItem extends Component {
 
         return (
             <Card title={`准购证号：${model.code}`} style={{ marginBottom: '10px' }}>
-                {model.quotas.map(item => <QuotaItem key={item.quotaUuid} model={item} onClick={this.props.onClick} />)}
+                {model.quotas.map(item => <QuotaItem key={item.quotaId} model={item} onClick={this.props.onClick} />)}
             </Card>
         )
     }
@@ -66,7 +66,7 @@ class QuotaItem extends Component {
         const item = this.props.model;
         const quota = new Quota(item);
         return (
-            <Col xxl={12} xl={12} lg={12} key={quota.uuid + Math.random()}>
+            <Col xxl={12} xl={12} lg={12} key={quota.id + Math.random()}>
                 <Button onClick={this.handleItemClick}
                     style={{ width: '100%', height: '100px', marginTop: '10px' }}
                     disabled={quota.disabled}>

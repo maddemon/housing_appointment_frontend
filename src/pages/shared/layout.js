@@ -6,7 +6,7 @@ import { Layout, Breadcrumb, Result, Button, Icon } from 'antd';
 import TopNavbar from '../shared/_header';
 import UserLoginPage from '../user/login';
 import UserIndexPage from '../user';
-import HousesIndexPage from '../houses'
+import HousesIndexPage from '../house'
 import BatchIndexPage from '../batch';
 import PermitIndexPage from '../permit';
 import PermitStatisticPage from '../permit/statistic';
@@ -37,7 +37,7 @@ export default class PrimaryLayout extends Component {
                         <PrivateRoute exact path="/my/appointments" component={MyAppointmentsPage} />
                         <PrivateRoute exact path="/my/quotas" component={MyQuotasPage} />
                         <PrivateRoute exact path="/appointment/make" component={MakeAppointmentPage} />
-                        <PrivateRoute exact path="/houses/index" component={HousesIndexPage} />
+                        <PrivateRoute exact path="/house/index" component={HousesIndexPage} />
                         <PrivateRoute exact path="/batch/chooseRoom" component={ChooseRoomPage} />
                         <PrivateRoute exact path="/batch/choosePermit" component={ChooseUserPage} />
                         <PrivateRoute exact path="/batch/index" component={BatchIndexPage} />

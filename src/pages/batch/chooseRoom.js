@@ -16,8 +16,8 @@ export default class ChooseRoomPage extends Component {
         if (!selectedUser) {
             this.props.history.push('/batch/choosePermit')
         }
-        if (selectedModel && selectedModel.uuid) {
-            await this.props.stores.batchStore.getHouses(selectedModel.uuid);
+        if (selectedModel && selectedModel.id) {
+            await this.props.stores.batchStore.getHouses(selectedModel.id);
         }
     }
 
@@ -55,8 +55,8 @@ export default class ChooseRoomPage extends Component {
     }
     render() {
         const batch = this.props.stores.batchStore.selectedModel;
-        let { loading, houses, selectedPermit, selectedUser, selectedHouse, selectedBuilding } = this.props.stores.batchStore;
-        if (!batch.uuid) {
+        let { loading, house, selectedPermit, selectedUser, selectedHouse, selectedBuilding } = this.props.stores.batchStore;
+        if (!batch.id) {
             return <Result
                 status="提醒"
                 title="没有选择批次，请从批次管理-选房进入"
@@ -86,14 +86,14 @@ export default class ChooseRoomPage extends Component {
             <div>
                 <PageHeader title="选房" />
                 <Card title={`第①步：请选择下面的购房人 ↓`}>
-                    {selectedPermit.users.map(item => <Button key={item.batchQuotaUuid} type={selectedUser && selectedUser.batchQuotaUuid === item.batchQuotaUuid ? "primary" : ""} onClick={() => {
+                    {selectedPermit.users.map(item => <Button key={item.batchQuotaId} type={selectedUser && selectedUser.batchQuotaId === item.batchQuotaId ? "primary" : ""} onClick={() => {
                         this.props.stores.batchStore.selectUser(item)
                     }}>{item.userName}</Button>)}
                 </Card>
                 <Card title={<>
                     <span>第②步：筛选房屋 -> </span>
                     <Select key="ddl-house" onChange={this.handleHouseChange} defaultValue={selectedHouse.name} placeholder="请选择楼盘" style={{ width: '200px' }}>
-                        {houses.map(e => <Select.Option key={e.name}>{e.name}</Select.Option>)}
+                        {house.map(e => <Select.Option key={e.name}>{e.name}</Select.Option>)}
                     </Select>
                     <Select key="ddl-building" onChange={this.handleBuildingChange} defaultValue={selectedBuilding.name} style={{ width: '200px' }}>
                         {selectedHouse.buildings.map(e => <Select.Option key={e.name}>{e.name}</Select.Option>)}
@@ -104,7 +104,7 @@ export default class ChooseRoomPage extends Component {
                             <h3>{unit.name}</h3>
                             <Row className="floors">
                                 {unit.floors.map(floor => <Row key={floor.name} className="rooms">
-                                    {floor.rooms.map(room => <Col key={room.roomUuid} span={parseInt(24 / floor.rooms.length)} >
+                                    {floor.rooms.map(room => <Col key={room.roomId} span={parseInt(24 / floor.rooms.length)} >
                                         <RoomItemControl model={room} onClick={this.handleChooseRoom} />
                                     </Col>)}
                                 </Row>)}

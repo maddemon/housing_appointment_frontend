@@ -20,12 +20,12 @@ export default class UserIndexPage extends Component {
         await this.props.stores.userStore.getList(query.key || '', query.page || 1)
     }
 
-    handleDelete = (uuid) => {
+    handleDelete = (id) => {
         Modal.confirm({
             title: "确认",
             content: "你确定要删除该用户吗？",
             onOk: async () => {
-                const result = await this.props.stores.userStore.delete(uuid)
+                const result = await this.props.stores.userStore.delete(id)
                 if (result && result.status === '200') {
                     message.success("删除完成");
                     this.loadData()
@@ -34,8 +34,8 @@ export default class UserIndexPage extends Component {
         })
     }
 
-    handleResetPassword = async (uuid) => {
-        await this.props.stores.userStore.resetPassword(uuid)
+    handleResetPassword = async (id) => {
+        await this.props.stores.userStore.resetPassword(id)
         message.success("密码重置完成")
     }
 
@@ -49,7 +49,7 @@ export default class UserIndexPage extends Component {
 
     operateColumnRender = (text, item) => {
         let buttons = [
-            <Button key="btnReset" onClick={() => this.handleResetPassword(item.uuid)}>
+            <Button key="btnReset" onClick={() => this.handleResetPassword(item.id)}>
                 <Icon type="key" />重置密码</Button>,
             <EditModal key="btnEdit" model={item} trigger={<Button title="修改"><Icon type="edit" /></Button>} onSubmit={this.handleSubmit} />,
         ];
@@ -71,6 +71,7 @@ export default class UserIndexPage extends Component {
 
     render() {
         const { loading, list, page } = this.props.stores.userStore
+        console.log(list)
         return (
             <Row>
                 <PageHeader title="用户管理" extra={<Input.Search onSearch={this.handleSearch} />} />
@@ -81,12 +82,11 @@ export default class UserIndexPage extends Component {
                 </div>
                 <Table
                     bordered={true}
-                    rowKey="uuid"
+                    rowKey="id"
                     loading={loading}
                     columns={[
                         { dataIndex: "name", title: "姓名", width: 150 },
-                        { dataIndex: "cardType", title: "证件类型", width: 120 },
-                        { dataIndex: "cardNumber", title: "证件号码", width: 200 },
+                        { dataIndex: "idCard", title: "证件号码", width: 120 },
                         { dataIndex: "phone", title: "手机号", width: 200 },
                         { title: "操作", render: this.operateColumnRender, width: 200 },
                     ]}

@@ -17,14 +17,14 @@ class PermitStore {
         this.loading = true;
 
         const response = await api.permit.list(searchKey, pageIndex, this.pageSize);
-        if (response && response.data) {
+        if (response.status === 200) {
             this.page = {
                 searchKey: searchKey,
                 pageSize: this.pageSize,
                 pageIndex: pageIndex,
-                total: response.data.total
+                total: response.page.total
             };
-            this.list = response.data.list;
+            this.list = response.list;
         }
         this.loading = false;
         return this.list
@@ -32,8 +32,8 @@ class PermitStore {
     @action async getStatistic() {
         this.loading = true;
         const response = await api.permit.statistic();
-        if (response && response.data) {
-            this.statistic = response.data;
+        if (response.status === 200) {
+            this.statistic = response;
         }
         this.loading = false;
         return this.list
@@ -45,13 +45,13 @@ class PermitStore {
         /*
             "my": true,
             "permitCode": "string",
-            "permitUuid": "string",
+            "permitId": "string",
             "state": "string",
             "userName": "string"
         */
-        if (response && response.data) {
+        if (response.status === 200) {
             let permits = []
-            response.data.map(item => {
+            response.map(item => {
                 let permit = permits.find(e => e.code === item.permitCode);
                 if (!permit) {
                     permit = { code: item.permitCode, quotas: [] }
@@ -69,7 +69,7 @@ class PermitStore {
     @action async save(data) {
         this.loading = true;
         let result = null;
-        if (data.uuid) {
+        if (data.id) {
             result = await api.permit.edit(data)
         }
         else {
@@ -79,27 +79,13 @@ class PermitStore {
         return result;
     }
 
-    @action async delete(uuid) {
+    @action async delete(id) {
         this.loading = true;
-        const result = await api.permit.delete(uuid)
+        const result = await api.permit.delete(id)
         this.loading = false;
         return result;
     }
 
-    @action async expanded(uuid) {
-        this.loading = true;
-        const response = await api.quota.list(uuid, 1, 100);
-        if (response && response.data) {
-            this.page = {
-                pageSize: response.data.pageSize,
-                pageIndex: response.data.pageNum,
-                total: response.data.total
-            };
-            this.expandedRows[uuid] = response.data.list;
-        }
-        this.loading = false;
-        return this.list
-    }
 }
 
 const store = new PermitStore();

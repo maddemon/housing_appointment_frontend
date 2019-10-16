@@ -7,7 +7,7 @@ import moment from 'moment'
 @inject('stores')
 @observer
 export default class AppointmentIndexPage extends Component {
-    state = { batchUuid: '', pageIndex: 1, pageSize: 20 }
+    state = { batchId: '', pageIndex: 1, pageSize: 20 }
     async componentWillMount() {
         this.props.stores.globalStore.setTitle('预约管理');
     }
@@ -19,8 +19,8 @@ export default class AppointmentIndexPage extends Component {
     loadList = async (props) => {
         props = props || this.props
         let query = QueryString.parseJSON(props.location.search)
-        await this.setState({ batchUuid: query.batchUuid || '', pageIndex: query.page || 1 });
-        await this.props.stores.appointmentStore.getList(this.state.batchUuid, this.state.pageIndex, this.state.pageSize);
+        await this.setState({ batchId: query.batchId || '', pageIndex: query.page || 1 });
+        await this.props.stores.appointmentStore.getList(this.state.batchId, this.state.pageIndex, this.state.pageSize);
     }
 
     handlePageChange = page => {
@@ -32,7 +32,7 @@ export default class AppointmentIndexPage extends Component {
     }
 
     handleExportClick = () => {
-        window.open('/house/reserve/reserveExcel?batchUuid=' + this.state.batchUuid)
+        window.open('/house/reserve/reserveExcel?batchId=' + this.state.batchId)
     }
 
     // handleImport = async (response) => {
@@ -62,12 +62,12 @@ export default class AppointmentIndexPage extends Component {
                 </div>
                 <Table
                     loading={loading}
-                    rowKey="uuid"
+                    rowKey="id"
                     columns={[
-                        { dataIndex: "batchUuid", title: "批次名称" },
+                        { dataIndex: "batchId", title: "批次名称" },
                         { dataIndex: "reserveTime", title: "预约时间", render: (text) => moment(text).format('LLL') },
-                        { dataIndex: "quotaUuid", title: "所用购房证" },
-                        { dataIndex: "userUuid", title: "预约用户" },
+                        { dataIndex: "quotaId", title: "所用购房证" },
+                        { dataIndex: "userId", title: "预约用户" },
                         { dataIndex: "chooseResult", title: "选房结果" },
                         { title: "操作", render: this.operateColumnRender, },
                     ]}

@@ -17,7 +17,7 @@ export default class HousesIndexPage extends Component {
     loadList = async (props) => {
         props = props || this.props;
         let query = QueryString.parseJSON(props.location.search)
-        await this.props.stores.housesStore.getList(query.page || 1)
+        await this.props.stores.houseStore.getList(query.page || 1)
     }
 
     async componentWillReceiveProps(nextProps) {
@@ -27,7 +27,7 @@ export default class HousesIndexPage extends Component {
     }
 
     handlePageChange = page => {
-        this.props.history.push(`/houses/index?page=${page}`)
+        this.props.history.push(`/house/index?page=${page}`)
     }
 
     handleSubmit = async result => {
@@ -42,7 +42,7 @@ export default class HousesIndexPage extends Component {
             title: "确认",
             content: "你确定要删除该楼盘吗？",
             onOk: async () => {
-                const result = await this.props.stores.housesStore.delete(item.housesUuid);
+                const result = await this.props.stores.houseStore.delete(item.houseId);
                 if (result.status === '200') {
                     message.success(result.message);
                     this.loadList()
@@ -66,7 +66,7 @@ export default class HousesIndexPage extends Component {
     }
 
     render() {
-        const { list, page, loading, importUrl } = this.props.stores.housesStore
+        const { list, page, loading, importUrl } = this.props.stores.houseStore
         console.log(importUrl)
         return (
             <Row>
@@ -89,7 +89,7 @@ export default class HousesIndexPage extends Component {
                 <Table
                     bordered={true}
                     loading={loading}
-                    rowKey="uuid"
+                    rowKey="id"
                     columns={[
                         { dataIndex: "name", title: "名称", },
                         { dataIndex: "status", title: "楼盘状态", width: 100 },

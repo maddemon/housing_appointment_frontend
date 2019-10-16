@@ -42,7 +42,7 @@ export default class QuotaIndexPage extends Component {
 
     operateColumnRender = (text, item) => {
         let buttons = [
-            <Button key="btnDelete" onClick={() => this.handleDelete(item.uuid)} type="danger" title="删除">
+            <Button key="btnDelete" onClick={() => this.handleDelete(item.id)} type="danger" title="删除">
                 <Icon type="delete" />
             </Button>,
         ];
@@ -79,7 +79,7 @@ export default class QuotaIndexPage extends Component {
                 <Table
                     loading={loading}
                     rowSelection={{ selectedRowKeys, onChange: this.handleSelectChange }}
-                    rowKey="uuid"
+                    rowKey="id"
                     columns={[
                         { dataIndex: "priority", title: "优先级", },
                         { dataIndex: "userName", title: "用户", },

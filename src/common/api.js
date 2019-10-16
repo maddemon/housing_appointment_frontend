@@ -2,134 +2,98 @@ import $ from './utils'
 const api = {
     user: {
         login: (data) => {
-            let path = "user/login";
-            if (data.code && !data.password) {
-                path = "user/phoneLogin";
-            }
-            return $.post(path, null, data)
+            return $.get("user/login", data)
         },
-        add: (user) => {
-            return $.post('user/add', null, user)
+        save: (user) => {
+            return $.post('user/save', null, user)
         },
-        edit: (data) => {
-            return $.post('user/edit', null, data)
+        list: (searchKey, pageIndex, pageSize) => {
+            return $.get('user/list', { searchKey, pageIndex, pageSize })
         },
-        list: (key, pageIndex, pageSize) => {
-            return $.get('user/list', { queryWord: key, pageIndex, pageSize })
+        resetPassword: (id) => {
+            return $.get('user/resetPassword', { id })
         },
-        resetPassword: (userUuid) => {
-            return $.get('user/reset', { userUuid })
-        },
-        editPassword: (passwordOld, passwordNew) => {
-            return $.post('user/changePassword', null, { passwordOld, passwordNew })
-        },
-        getImportUrl: () => {
-            return '/house/user/addByExcel'
+        editPassword: (oldPassword, newPassword) => {
+            return $.post('user/changePassword', null, { oldPassword, newPassword })
         },
         sendVerifyCode: (phone) => {
             return $.get('user/getVerifyCode', { phone })
-        },
-        import: (file) => {
-            let formData = new FormData();
-            formData.append('file', file);
-            return $.post('user/addByExcel', null, formData)
         }
     },
-    houses: {
+    house: {
         edit: (data) => {
-            return $.put('houses/edit', null, data)
+            return $.put('house/edit', null, data)
         },
-        delete: (housesUuid) => {
-            return $.get('houses/delete', { housesUuid })
+        delete: (houseId) => {
+            return $.get('house/delete', { houseId })
         },
         list: (pageIndex, pageSize) => {
-            return $.get('houses/housesList', { pageIndex, pageSize })
-        },
-        avaliables: () => {
-            return $.get('houses/houses')
+            return $.get('house/list', { pageIndex, pageSize })
         },
         getImportUrl: () => {
-            return '/house/houses/add'
+            return '/api/house/import'
         }
     },
     batch: {
-        add: (data) => {
+        save: (data) => {
             return $.post('batch/add', null, data)
         },
-        edit: (data) => {
-            return $.post('batch/edit', null, data)
-        },
-        delete: (uuid) => {
-            return $.get('batch/delete', { uuid })
+        delete: (id) => {
+            return $.get('batch/delete', { id })
         },
         list: () => {
             return $.get('batch/list', { pageIndex: 1, pageSize: 999 })
         },
         avaliables: () => {
-            return $.get('batch/batchAvaliable', { pageIndex: 1, pageSize: 999 })
+            return $.get('batch/list', { avaliable: true, pageIndex: 1, pageSize: 999 })
         },
-        successAppointment: (batchUuid) => {
-            return $.get('batch/successAppointment', { batchUuid })
+        successAppointment: (batchId) => {
+            return $.get('room/batchStatus', { batchId })
         },
-        getRooms: (batchUuid) => {
-            return $.get('batch/batchRoom', { batchUuid })
+        getRooms: (batchId) => {
+            return $.get('room/list', { batchId })
         },
-        getUsers: (batchUuid) => {
-            return $.get('batch/batchUser', { batchUuid })          
+        getPermits: (batchId) => {
+            return $.get('permit/list', { batchId })
         },
-        chooseRoom: (batchQuotaUuid, roomUuid) => {
-            return $.put('batch/chooseRoom', null, { batchQuotaUuid, roomUuid })
+        chooseRoom: (appointmentId, roomId) => {
+            return $.put('room/choose', null, { appointmentId, roomId })
         }
     },
     permit: {
         list: (key, pageIndex, pageSize) => {
-            return $.get('permit/permit', { key, pageIndex, pageSize })
+            return $.get('permit/list', { key, pageIndex, pageSize })
         },
         statistic: () => {
             return $.get('permit/statistical')
         },
-        add: (data) => {
-            return $.post('permit/permit', null, data)
+        save: (data) => {
+            return $.post('permit/save', null, data)
         },
-        edit: (data) => {
-            return $.put('permit/permit', data)
-        },
-        delete: (permitUuid) => {
-            return $.get('permit/delete', { permitUuid })
+        delete: (permitId) => {
+            return $.get('permit/delete', { permitId })
         },
         userPermits: () => {
             return $.get('quota/userQuota')
         }
     },
     quota: {
-        delete: (quotaUuid) => {
-            return $.post('quota/delete', null, { quotaUuid })
+        delete: (quotaId) => {
+            return $.post('quota/delete', null, { quotaId })
         },
-        list: (permitUuid, pageIndex, pageSize) => {
-            return $.get('quota/list', { permitUuid, pageIndex, pageSize })
+        list: (permitId, pageIndex, pageSize) => {
+            return $.get('quota/list', { permitId, pageIndex, pageSize })
         },
-        userQuotas: () => {
-            return $.get('quota/userQuota')
-        },
-        getImportUrl: () => {
-            return '/house/quota/add';
-        }
     },
-    reserve: {
-        history: (userUuid, pageIndex, pageSize) => {
-            return $.get('reserve/history', { userUuid, pageIndex, pageSize })
+    appointment: {
+        history: () => {
+            return $.get('appointment/list')
         },
-        reserve: (batchUuid, quotaUuid) => {
-            return $.post('reserve/reserve', null, { batchUuid, quotaUuid })
+        make: (batchId, quotaId) => {
+            return $.post('appointment/make', null, { batchId, quotaId })
         },
-        results: (queryWord, pageIndex, pageSize) => {
-            return $.get('reserve/result', { queryWord, pageIndex, pageSize })
-        },
-        list: (batchUuid, pageIndex, pageSize) => {
-            return $.get('reserve/reserveList', { batchUuid, pageIndex, pageSize })
-        },
-        import: (batchUuid, file) => {
-            return $.post('reserve/reserveExcel', { batchUuid }, file)
+        list: (batchId, pageIndex, pageSize) => {
+            return $.get('appointment/list', { batchId, pageIndex, pageSize })
         }
     }
 }

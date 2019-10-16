@@ -24,9 +24,9 @@ export default class ChooseResultPage extends Component {
             await this.props.stores.batchStore.selectModel()
         }
         if (batch) {
-            await this.props.stores.batchStore.getHouses(batch.uuid);
+            await this.props.stores.batchStore.getHouses(batch.id);
             const timer = setInterval(async () => {
-                await this.props.stores.batchStore.getHouses(batch.uuid);
+                await this.props.stores.batchStore.getHouses(batch.id);
             }, 5000);
             this.setState({ timer })
         }
@@ -34,16 +34,16 @@ export default class ChooseResultPage extends Component {
 
     render() {
         const batch = this.props.stores.batchStore.selectedModel
-        if (!batch.uuid) {
+        if (!batch.id) {
             return <Result status="404" title="未找到批次" subTitle="请从批次管理点击进入" ></Result>
         }
-        const houses = this.props.stores.batchStore.houses
+        const house = this.props.stores.batchStore.house
         return (
             <Row>
                 <PageHeader title={`${batch.name}选房结果`} />
-                <Row className="houses" gutter={16}>
-                    {houses.map(house => (
-                        <Col key={house.name} span={24 / houses.length}>
+                <Row className="house" gutter={16}>
+                    {house.map(house => (
+                        <Col key={house.name} span={24 / house.length}>
                             <Card title={house.name}>
                                 <Row className="buildings">
                                     {house.buildings.map(building => (
@@ -58,7 +58,7 @@ export default class ChooseResultPage extends Component {
                                                                 <Col key={floor.name}>
                                                                     <Button.Group className="rooms">
                                                                         {floor.rooms.map(room => (
-                                                                            <Button key={room.roomUuid} disabled={room.userUuid}>{room.room}</Button>
+                                                                            <Button key={room.roomId} disabled={room.userId}>{room.room}</Button>
                                                                         ))}
                                                                     </Button.Group>
                                                                 </Col>

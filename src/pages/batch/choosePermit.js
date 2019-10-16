@@ -17,7 +17,7 @@ export default class ChoosePermitPage extends Component {
         await this.props.stores.batchStore.selectModel();
         const batch = this.props.stores.batchStore.selectedModel;
         if (batch) {
-            await this.props.stores.batchStore.getPermits(batch.uuid)
+            await this.props.stores.batchStore.getPermits(batch.id)
         }
     }
 
@@ -38,7 +38,7 @@ export default class ChoosePermitPage extends Component {
         return (
             <div>
                 <PageHeader title="选房" />
-                {selectedModel && selectedModel.uuid ?
+                {selectedModel && selectedModel.id ?
                     <Row>
                         <Row type="flex" justify="center">
                             <Search size="large" onSearch={this.handleSearch} onPressEnter={this.handlePressEnter} placeholder="输入准购证号查询" enterButton style={{ width: '50%' }}></Search>
@@ -74,7 +74,7 @@ class PermitItem extends Component {
             </Button>
             // <Col span={6}>
             //     <Card size="small" title={model.permitCode} extra={canBeChoose ? <Button type="primary" size="small" onClick={this.handleClick}>选房</Button> : <Button disabled={true}>已选完</Button>} >
-            //         {model.users.map(user => <Tag key={user.batchQuotaUuid}>{user.userName}</Tag>)}
+            //         {model.users.map(user => <Tag key={user.batchQuotaId}>{user.userName}</Tag>)}
             //     </Card>
             // </Col>
         );

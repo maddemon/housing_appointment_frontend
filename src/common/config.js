@@ -1,9 +1,9 @@
 const config = {
     SystemName: '临安市在线预约选房系统',
-    Version: '0.1.0',
+    Version: '2.0',
     Host: '',
-    ApiPath: '/house/',
-    CookieName: 'auth',
+    ApiPath: '/api/',
+    CookieName: 'token',
 }
 
 export {

@@ -58,7 +58,7 @@ async function request(path, query, data, httpMethod) {
     }
     if (data === null || (typeof data === 'object' && Object.keys(data).length > 0)) {
         options.headers = {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json"
         }
     }
     try {
@@ -76,18 +76,22 @@ async function request(path, query, data, httpMethod) {
             default:
                 break;
         }
-        if (response.status === 404) {
-            throwException({ message: "接口不存在" })
-            return;
+        switch (response.status) {
+            case 200:
+            case 204:
+                return { status: response.status, ...await response.json() }
+            case 404:
+                throwException({ message: "接口不存在" })
+                break;
+            case 401:
+                throwException({ message: "权限不足" })
+                break;
+            default:
+                var error = await response.json();
+                console.log(response)
+                throwException({ message: error.message })
+                break;
         }
-        const responseJson = await response.json();
-        if (responseJson.status !== '200') {
-            if (responseJson.status === '1100' || responseJson.status === '403') {
-                userStore.logout()
-            }
-            throwException(responseJson);
-        }
-        return responseJson;
     } catch (err) {
         throwException(err)
     }
