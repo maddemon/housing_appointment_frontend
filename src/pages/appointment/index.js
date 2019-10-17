@@ -24,7 +24,7 @@ export default class AppointmentIndexPage extends Component {
     }
 
     handlePageChange = page => {
-        this.props.history.push(`/user/index?page=${page}`)
+        this.props.history.push(`/user/index?pageIndex=${page}`)
     }
 
     operateColumnRender = (text, item) => {
@@ -72,7 +72,7 @@ export default class AppointmentIndexPage extends Component {
                         { title: "操作", render: this.operateColumnRender, },
                     ]}
                     dataSource={list || []}
-                    pagination={{ ...page, size: 5, onChange: this.handlePageChange, }}
+                    pagination={{ ...page, current: page.pageIndex, size: 5, onChange: this.handlePageChange, }}
                 ></Table>
             </Row>
         )

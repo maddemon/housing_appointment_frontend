@@ -1,11 +1,9 @@
 import { observable, action } from 'mobx'
 import api from '../common/api'
-class BatchStore {
+import StoreBase from './storeBase'
+class BatchStore extends StoreBase {
 
-    @observable list = [];
-    @observable avaliables = [];
-    @observable loading = false;
-    @observable selectedModel = {}
+   
     @observable rooms = []
     @observable house = []
     @observable permits = []
@@ -13,6 +11,19 @@ class BatchStore {
     @observable selectedHouse = null;
     @observable selectedBuilding = null;
     @observable selectedUser = null
+
+    constructor() {
+        super()
+        this.getListFunc = (parameter) => {
+            return api.batch.list(parameter);
+        };
+        this.saveModelFunc = (model) => {
+            return api.batch.save(model)
+        };
+        this.deleteFunc = (id)=>{
+            return api.batch.delete(id)
+        }
+    }
 
     @action async selectModel(model) {
         if(!model){
@@ -27,36 +38,12 @@ class BatchStore {
     @action async getAvaliables() {
         this.loading = true;
         const response = await api.batch.avaliables()
-        if (response.status === 200) {
+        if (response && response.ok) {
 
             this.avaliables = response.list
         }
         this.loading = false;
         return response.list
-    }
-
-    @action async getList() {
-        this.loading = true;
-        const response = await api.batch.list()
-        if (response.status === 200) {
-            this.list = response.list
-        }
-        this.loading = false;
-        return this.list
-    }
-
-    @action async save(data) {
-        this.loading = true;
-        let result =  await api.batch.save(data)
-        this.loading = false;
-        return result;
-    }
-
-    @action async delete(batchId) {
-        this.loading = true;
-        const result = await api.batch.delete(batchId)
-        this.loading = false;
-        return result;
     }
 
     @action async notify() {
@@ -68,7 +55,7 @@ class BatchStore {
 
     @action async getRooms(batchId) {
         const response = await api.batch.getRooms(batchId);
-        if (response.status === 200) {
+        if (response && response.ok) {
             this.rooms = response
         }
     }
@@ -108,7 +95,7 @@ class BatchStore {
     @action async getPermits(batchId) {
         this.loading = true;
         const response = await api.batch.getPermits(batchId);
-        if (response.status === 200) {
+        if (response && response.ok) {
             let list = []
             response.list.map(user => {
                 let item = list.find(e => e.permitCode === user.permitCode);

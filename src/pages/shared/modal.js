@@ -28,7 +28,8 @@ export default class FormModal extends Component {
                 return false;
             }
             else {
-                if (await this.props.onSubmit(values) !== false) {
+                const result = await this.props.onSubmit(values)
+                if (result !== false) {
                     this.hideModal();
                     this.form.resetFields();
                 }

@@ -33,7 +33,7 @@ export default class PermitIndexPage extends Component {
     }
 
     handlePageChange = page => {
-        this.props.history.push(`/permit/index?page=${page}`)
+        this.props.history.push(`/permit/index?pageIndex=${page}`)
     }
 
     handleSearch = (value) => {
@@ -56,30 +56,7 @@ export default class PermitIndexPage extends Component {
             columns={[
                 { dataIndex: 'quotaCode', title: '购房证编号' },
                 { dataIndex: 'user', title: "购房人" },
-                {
-                    dataIndex: 'statusText', title: "状态", render: (text, item) => {
-                        //购房证状态  -1 尾批  0未预约 1（等待他人预约） 2 已预约 3 已入围 4 预约成功 5 已选房 8 备选
-                        switch (text) {
-                            case "-1":
-                                return "尾批";
-                            case "1":
-                                return "等待他人预约";
-                            case "2":
-                                return "已预约";
-                            case "3":
-                                return "已入围";
-                            case "4":
-                                return "预约成功";
-                            case "5":
-                                return "已选房";
-                            case "8":
-                                return "备选";
-                            case "0":
-                            default:
-                                return "未预约";
-                        }
-                    }
-                }
+                { dataIndex: 'statusText', title: "状态" }
             ]}
         />
     }
@@ -107,7 +84,7 @@ export default class PermitIndexPage extends Component {
                         { dataIndex: "remark", title: "备注" },
                     ]}
                     dataSource={list}
-                    pagination={{ ...page, size: 5, onChange: this.handlePageChange, }}
+                    pagination={{ ...page, current: page.pageIndex, size: 5, onChange: this.handlePageChange, }}
                     expandedRowRender={this.quotaRowRender}
                 ></Table>
             </Row>

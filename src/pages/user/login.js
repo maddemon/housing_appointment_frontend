@@ -43,8 +43,8 @@ export default class UserLoginPage extends Component {
     }
 
     handleSubmit = async (formData) => {
-        const user = await this.props.stores.userStore.login(formData)
-        if (user.token) {
+        const response = await this.props.stores.userStore.login(formData)
+        if (response && response.ok) {
             const query = QueryString.parseJSON(this.props.location.seach)
             this.props.history.push(query.returnUrl || '/')
         }

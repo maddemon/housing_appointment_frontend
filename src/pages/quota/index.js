@@ -37,7 +37,7 @@ export default class QuotaIndexPage extends Component {
     }
 
     handlePageChange = page => {
-        this.props.history.push(`/quota/index?page=${page}`)
+        this.props.history.push(`/quota/index?pageIndex=${page}`)
     }
 
     operateColumnRender = (text, item) => {
@@ -87,7 +87,7 @@ export default class QuotaIndexPage extends Component {
                         //{ title: "操作", render: this.operateColumnRender, width: 100 },
                     ]}
                     dataSource={list}
-                    pagination={{ ...page, size: 5, onChange: this.handlePageChange, }}
+                    pagination={{ ...page, current: page.pageIndex, size: 5, onChange: this.handlePageChange, }}
                 ></Table>
             </Row>
         )

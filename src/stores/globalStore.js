@@ -6,7 +6,7 @@ class GlobalStore {
     @observable breadcrumb = null;
 
     @action setTitle(title) {
-        this.title = title + ' ' + Config.SystemName;
+        this.title = title + ' - ' + Config.SystemName;
         this.breadcrumb = ['首页'].concat(title.split());
     }
     @action setBreadcrumb(title) {

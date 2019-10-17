@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { PageHeader, Icon, Button, Row, Col, message, Modal, Tag, Card, Spin } from 'antd'
+import { PageHeader, Icon, Button, Row, Col, message, Modal, Tag, Card, Spin, Table } from 'antd'
 import moment from 'moment'
 import EditModal from './edit'
 
@@ -10,7 +10,7 @@ export default class BatchIndexPage extends Component {
 
     async componentWillMount() {
         this.props.stores.globalStore.setTitle('批次管理');
-        this.props.stores.houseStore.getList(1, 99999);
+        this.props.stores.houseStore.getList({ pageSize: 999 });
         this.loadData(this.props)
     }
 
@@ -24,9 +24,9 @@ export default class BatchIndexPage extends Component {
         await this.props.stores.batchStore.getList()
     }
 
-    handleSubmit = async result => {
-        if (result.status === '200') {
-            message.success(result.message);
+    handleSubmitForm = async result => {
+        if (result.ok) {
+            message.success("操作完成");
             await this.loadData()
         }
     }
@@ -36,80 +36,49 @@ export default class BatchIndexPage extends Component {
             content: "你确定要删除该批次吗？",
             onOk: async () => {
                 const result = await this.props.stores.batchStore.delete(item.id);
-                if (result.status === '200') {
-                    message.success(result.message);
+                if (result.ok) {
+                    message.success("操作完成");
                     await this.loadData()
                 }
             },
         })
     }
+
     handleNotify = (item) => {
         Modal.confirm({
             title: "摇号通知",
             content: "你确定要发送通知短信吗？",
             onOk: async () => {
                 const result = await this.props.stores.batchStore.notify(item.id)
-                if (result.status === '200') {
+                if (result.ok) {
                     message.success(result.message)
                 }
             },
         })
     }
 
-    render() {
-        const { list, loading } = this.props.stores.batchStore
-        console.log('batch/index')
-        return (
-            <Row>
-                <PageHeader title="批次管理" />
-                <div className="toolbar">
-                    <Button.Group>
-                        <EditModal title="添加批次" trigger={<Button type="primary"><Icon type="plus" /> 添加批次</Button>} onSubmit={this.handleSubmit} />
-                    </Button.Group>
-                </div>
-                <Row gutter={16}>
-                    {list.map(item => <Col key={item.id} xxl={8} xl={8} lg={8} md={12} xs={24}>
-                        <BatchItemControl
-                            model={item}
-                            history={this.props.history}
-                            onSubmit={this.handleSubmit}
-                            onDelete={this.handleDelete}
-                            onNotify={this.handleNotify}
-                        />
-                    </Col>)}
-                </Row>
-            </Row >
-        )
-    }
-}
-
-@observer
-@inject('stores')
-class BatchItemControl extends Component {
-
-    houseRender = () => {
-        const model = this.props.model
-        const house = (this.props.stores.houseStore.list || [])
-        return house.filter(e => model.houseId.includes(e.houseId)).map((e,i) => <Tag key={i}>{e.name}</Tag>)
+    houseColumnRender = (text, item) => {
+        return item.houses.map((item, key) => <Tag key={key}>{item.name}</Tag>)
     }
 
-    handleRedirectToResultPage = async () => {
-        await this.props.stores.batchStore.selectModel(this.props.model)
-        this.props.history.push('/batch/chooseResult')
+    chooseColumnRender = (text, item) => {
+        return <span className="date">{moment(item.chooseBeginDate).format('ll')} - {moment(item.chooseEndDate).format('ll')}</span>
     }
 
-    handleDelete = () => {
-        this.props.onDelete(this.props.model)
-    }
-    handleNotify = () => {
-        this.props.onNotify(this.props.model)
+    appointmentColumnRender = (text, item) => {
+        return <span className="date">{moment(item.appointmentBeginDate).format('ll')} - {moment(item.appointmentEndDate).format('ll')}</span>
     }
 
-    extraRender = () => {
-        const model = this.props.model
-        const canNotify = moment(model.appointmentEndTime) > moment()
-        const canEdit = moment(model.chooseTime) > moment()
-        const canDelete = moment(model.appointmentBeginTime) > moment()
+    nameColumnRender = (text, item) => {
+        if (item.last) {
+            return <span>{text} <Tag>尾批</Tag></span>
+        }
+        return <span>{text}</span>
+    }
+    operateColumnRender = (text, item) => {
+        const canNotify = moment(item.appointmentEndTime) > moment()
+        const canEdit = moment(item.chooseTime) > moment()
+        const canDelete = moment(item.appointmentBeginTime) > moment()
         var result = []
         if (canNotify) {
             result.push(<Button key="notify" onClick={this.handleNotify} type="primary" icon="bell" title="发送预约通知" />)
@@ -118,27 +87,43 @@ class BatchItemControl extends Component {
             result.push(<Button key="result" onClick={this.handleRedirectToResultPage} type="default" icon="file-search" title="查看选房结果" />)
         }
         //if (canEdit) {
-            result.push(<EditModal key="edit" model={model} trigger={<Button icon="edit" title="修改" />} onSubmit={this.props.onSubmit} />)
+        result.push(<EditModal key="edit" model={item} trigger={<Button icon="edit" title="修改" />} onSubmit={this.handleSubmitForm} />)
         //}
-        if (canDelete) {
-            result.push(<Button key="delete" title="删除" icon="delete" onClick={this.handleDelete} />)
-        }
+        //if (canDelete) {
+        result.push(<Button key="delete" title="删除" icon="delete" onClick={this.handleDelete} />)
+        //}
         return <Button.Group>{result}</Button.Group>
     }
 
     render() {
-        const model = this.props.model
+        const { list, loading, page } = this.props.stores.batchStore
         return (
-            <Card title={model.name}
-                style={{ marginTop: "16px" }}
-                extra={this.extraRender()}
-            >
-                <p>楼盘：{this.houseRender()}</p>
-                <p>预约开始：{moment(model.appointmentBeginTime).format('YYYY-MM-DD HH:mm')} </p>
-                <p>预约结束：{moment(model.appointmentEndTime).format('YYYY-MM-DD HH:mm')} </p>
-                <p>选房日期：{moment(model.chooseTime).format('YYYY-MM-DD')}</p>
-                <p>选房地点：{model.chooseAddress}</p>
-            </Card>
+            <Row>
+                <PageHeader title="批次管理" />
+                <div className="toolbar">
+                    <Button.Group>
+                        <EditModal title="添加批次" trigger={<Button type="primary"><Icon type="plus" /> 添加批次</Button>} onSubmit={this.handleSubmitForm} />
+                    </Button.Group>
+                </div>
+                <Row gutter={16}>
+                    <Table
+                        bordered={true}
+                        loading={loading}
+                        rowKey="id"
+                        columns={[
+                            { dataIndex: 'id', title: '编号', width: 75 },
+                            { dataIndex: "name", title: "批次名称", render: this.nameColumnRender },
+                            { title: "楼盘", render: this.houseColumnRender },
+                            { dataIndex: "appointmentBeginTime", title: "预约时段", render: this.appointmentColumnRender },
+                            { dataIndex: "chooseBeginDate", title: "选房时段", render: this.chooseColumnRender },
+                            { dateIndex: "chooseAddress", title: '选房地点' },
+                            { dataIndex: "操作", render: this.operateColumnRender }
+                        ]}
+                        dataSource={list}
+                        pagination={{ ...page, current: page.pageIndex, size: 5, onChange: this.handlePageChange, }}
+                    ></Table>
+                </Row>
+            </Row >
         )
     }
 }

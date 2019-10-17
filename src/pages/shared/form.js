@@ -36,12 +36,15 @@ class SharedForm extends Component {
                 case "date":
                     item.render = <DatePicker size={item.size} showTime={false} onChange={item.onChange} placeholder={item.placeholder} />
                     break;
+                case "rangedate":
+                    item.render = <DatePicker.RangePicker size={item.size} showTime={false} onChange={item.onChange} ></DatePicker.RangePicker>
+                    break;
                 case "datetime":
                     item.render = <DatePicker size={item.size} showTime={true} onChange={item.onChange} placeholder={item.placeholder} />
                     break;
                 case "select":
                     item.render = <Select size={item.size}>
-                        {item.props.options.map(option => <Select.Option key={option.value}>{option.text}</Select.Option>)}
+                        {item.options.map(option => <Select.Option key={option.value}>{option.text}</Select.Option>)}
                     </Select>
                     break;
                 case "file":
@@ -88,6 +91,9 @@ class SharedForm extends Component {
                     onSubmit={this.handleSubmit}
                     style={style}>
                     {items.map((item, key) => {
+                        if (item.type === "hidden") {
+                            return <span key={key}> {this.controlRender(item)}</span>
+                        }
                         const itemLayout = item.title ? (item.layout || formItemLayout) : {}
                         return <Form.Item
                             key={item.name || key}
@@ -102,7 +108,7 @@ class SharedForm extends Component {
                     }
                     )}
                     <Row>
-                    {buttons.map((item, key) => <span key={key}> {item} </span>)}
+                        {buttons.map((item, key) => <span key={key}> {item} </span>)}
                     </Row>
                 </Form>
             </Spin>

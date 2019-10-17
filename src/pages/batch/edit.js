@@ -11,14 +11,18 @@ export default class BatchEditModal extends Component {
     state = { selectedHouses: (this.props.model || {}).house || [] }
 
     handleSubmit = async (data) => {
-        data.appointmentBeginTime = data.appointmentBeginTime.format('YYYY-MM-DD HH:mm:ss')
-        data.appointmentEndTime = data.appointmentEndTime.format('YYYY-MM-DD HH:mm:ss')
-        data.chooseTime = data.chooseTime.format('YYYY-MM-DD HH:mm:ss')
+        data.BatchHouses = data.houseId.map(houseId => { return { houseId: houseId } });
+        data.appointmentBeginTime = data.appointmentTime[0].format('YYYY-MM-DD 09:00:00')
+        data.appointmentEndTime = data.appointmentTime[1].format('YYYY-MM-DD 18:00:00')
+
+        data.chooseBeginDate = data.chooseDate[0].format('YYYY-MM-DD')
+        data.chooseEndDate = data.chooseDate[1].format('YYYY-MM-DD')
+
         const result = await this.props.stores.batchStore.save(data);
         if (this.props.onSubmit) {
             this.props.onSubmit(result)
         }
-        return result.status === '200';
+        return result && result.ok;
     }
 
     handleChooseHouses = (selectedItems) => {
@@ -27,28 +31,26 @@ export default class BatchEditModal extends Component {
 
     getFormItems = () => {
         const model = this.props.model || {}
-        let house = this.props.stores.houseStore.list;
+        let houses = this.props.stores.houseStore.list;
         if (!model.id) {
-            house = house.filter(e => e.remainingRoomsCount > 0);
+            houses = houses.filter(e => e.remainingRoomsCount > 0);
         }
         return [
-            { name: 'id', defaultValue: model.id, type: "hidden" },
-            { title: '名称', name: 'name', defaultValue: model.name, rules: [{ required: true, message: '请填写批次名称' }], },
+            { name: 'id', defaultValue: model.id || '0', type: "hidden" },
             {
                 title: '楼盘',
                 name: 'houseId',
-                defaultValue: model.houseId || [],
+                defaultValue: (model.houses || []).map(item => item.houseID.toString()),
                 rules: [{ required: true, message: '请选择楼盘' }],
                 render: <Select key="house" mode="multiple" placeholder="请选择楼盘" onChange={this.handleChooseHouses}>
-                    {house.map(item => <Select.Option key={item.houseId} >{item.name}</Select.Option>)}
+                    {houses.map(item => <Select.Option key={item.id} >{item.name}</Select.Option>)}
                 </Select>
             },
-            { title: '房屋地址', name: 'houseAddress', defaultValue: model.houseAddress, rules: [{ required: true, message: '请填写房屋地址' }], },
+            { title: '名称', name: 'name', defaultValue: model.name, rules: [{ required: true, message: '请填写批次名称' }], },
             { title: '选房地址', name: 'chooseAddress', defaultValue: model.chooseAddress, rules: [{ required: true, message: '请填写选房地址' }], },
-            { title: '选房开始日期', name: 'chooseBeginDate', defaultValue: moment(model.chooseTime), type: "date", rules: [{ required: true, message: '请选择选房日期' }], },
-            { title: '选房截止日期', name: 'chooseEndDate', defaultValue: moment(model.chooseTime), type: "date", rules: [{ required: true, message: '请选择选房日期' }], },
-            { title: '预约开始时间', name: 'appointmentBeginTime', defaultValue: moment(model.appointmentBeginTime), type: "datetime", rules: [{ required: true, message: '请选择预约开始时间' }], },
-            { title: '预约截止时间', name: 'appointmentEndTime', defaultValue: moment(model.appointmentEndTime), type: "datetime", rules: [{ required: true, message: '请选择预约结束时间' }], },
+            { title: '预约时段', name: 'appointmentTime', defaultValue: [moment(model.appointmentBeginTime), moment(model.appointmentEndTime)], type: "rangedate", rules: [{ required: true, message: '请选择预约开始时间' }], },
+            { title: '选房时段', name: 'chooseDate', defaultValue: [moment(model.chooseBeginDate), moment(model.chooseEndDate)], type: "rangedate", rules: [{ required: true, message: '请选择选房日期' }], },
+            { title: '是否尾盘', name: 'Last', defaultValue: 'false', type: "select", options: [{ value: 'true', text: "是" }, { value: 'false', text: "否" }] }
         ];
     }
 

@@ -7,8 +7,8 @@ const api = {
         save: (user) => {
             return $.post('user/save', null, user)
         },
-        list: (searchKey, pageIndex, pageSize) => {
-            return $.get('user/list', { searchKey, pageIndex, pageSize })
+        list: (parameter) => {
+            return $.get('user/list', parameter)
         },
         resetPassword: (id) => {
             return $.get('user/resetPassword', { id })
@@ -21,14 +21,14 @@ const api = {
         }
     },
     house: {
-        edit: (data) => {
-            return $.put('house/edit', null, data)
+        save: (data) => {
+            return $.post('house/save', null, data)
         },
-        delete: (houseId) => {
-            return $.get('house/delete', { houseId })
+        delete: (id) => {
+            return $.get('house/delete', { id })
         },
-        list: (pageIndex, pageSize) => {
-            return $.get('house/list', { pageIndex, pageSize })
+        list: (parameter) => {
+            return $.get('house/list', parameter)
         },
         getImportUrl: () => {
             return '/api/house/import'
@@ -36,16 +36,13 @@ const api = {
     },
     batch: {
         save: (data) => {
-            return $.post('batch/add', null, data)
+            return $.post('batch/save', null, data)
         },
         delete: (id) => {
             return $.get('batch/delete', { id })
         },
-        list: () => {
-            return $.get('batch/list', { pageIndex: 1, pageSize: 999 })
-        },
-        avaliables: () => {
-            return $.get('batch/list', { avaliable: true, pageIndex: 1, pageSize: 999 })
+        list: (parameter) => {
+            return $.get('batch/list', parameter)
         },
         successAppointment: (batchId) => {
             return $.get('room/batchStatus', { batchId })
@@ -61,8 +58,8 @@ const api = {
         }
     },
     permit: {
-        list: (key, pageIndex, pageSize) => {
-            return $.get('permit/list', { key, pageIndex, pageSize })
+        list: (parameter) => {
+            return $.get('permit/list', parameter)
         },
         statistic: () => {
             return $.get('permit/statistical')
@@ -78,11 +75,11 @@ const api = {
         }
     },
     quota: {
-        delete: (quotaId) => {
-            return $.post('quota/delete', null, { quotaId })
+        delete: (id) => {
+            return $.get('quota/delete', { id })
         },
-        list: (permitId, pageIndex, pageSize) => {
-            return $.get('quota/list', { permitId, pageIndex, pageSize })
+        list: (parameter) => {
+            return $.get('quota/list', parameter)
         },
     },
     appointment: {
@@ -92,8 +89,8 @@ const api = {
         make: (batchId, quotaId) => {
             return $.post('appointment/make', null, { batchId, quotaId })
         },
-        list: (batchId, pageIndex, pageSize) => {
-            return $.get('appointment/list', { batchId, pageIndex, pageSize })
+        list: (parameter) => {
+            return $.get('appointment/list', parameter)
         }
     }
 }

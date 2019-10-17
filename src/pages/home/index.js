@@ -67,7 +67,7 @@ export default class HomePage extends Component {
                     { dataIndex: "chooseResult", title: "选房结果" },
                 ]}
                 dataSource={resultList || []}
-                pagination={{ ...page, size: 5, onChange: this.handlePageChange, }}
+                pagination={{ ...page, current: page.pageIndex, size: 5, onChange: this.handlePageChange, }}
             ></Table> */}
         </Row>
     }

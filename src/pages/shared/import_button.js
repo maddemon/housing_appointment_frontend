@@ -17,8 +17,7 @@ export default class ImportButton extends Component {
                 this.setState({ uploading: true })
                 return;
             case 'done':
-                const response = file.response
-                message.success(response.message)
+                message.success("上传完成")
                 if (this.props.onChange) {
                     this.props.onChange(file.response)
                 }
@@ -38,6 +37,7 @@ export default class ImportButton extends Component {
                 showUploadList={false}
                 onChange={this.handleUpload}
                 withCredentials={true}
+                accept={this.props.accept}
             >
                 <Tooltip title={this.props.tooltip}>
                     <Button type="success" loading={this.state.uploading}><Icon type="import" /> {this.props.text}</Button>

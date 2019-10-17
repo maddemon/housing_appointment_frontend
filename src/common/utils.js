@@ -25,9 +25,8 @@ const QueryString = {
 }
 
 function throwException(res) {
-    //alert(res.message);
     try {
-        message.warn(res.message)
+        message.warn(res.exceptionMessage || res.message)
     }
     catch (ex) {
         message.warn('未知错误')
@@ -76,25 +75,32 @@ async function request(path, query, data, httpMethod) {
             default:
                 break;
         }
+        var result = { ok: response.ok, status: response.status }
         switch (response.status) {
             case 200:
+                result.data = await response.json();
+                return result;
             case 204:
-                return { status: response.status, ...await response.json() }
+                return result;
+            case 405:
+                result.message = "接口不支持当前请求方式";
+                break;
             case 404:
-                throwException({ message: "接口不存在" })
+                result.message = "接口不存在";
                 break;
             case 401:
-                throwException({ message: "权限不足" })
+                result.message = "权限不足";
+                await userStore.logout();
                 break;
             default:
-                var error = await response.json();
-                console.log(response)
-                throwException({ message: error.message })
+                Object.assign(result, await response.json())
                 break;
         }
+        throwException(result);
     } catch (err) {
         throwException(err)
     }
+    return result;
 }
 
 

@@ -1,11 +1,18 @@
 import { observable, action } from 'mobx';
 import cookie from 'react-cookies';
 import api from '../common/api';
+import StoreBase from './storeBase'
+class UserStore extends StoreBase {
 
-class UserStore {
-    @observable list = [];
-    @observable page = {};
-    @observable loading = false;
+    constructor() {
+        super()
+        this.getListFunc = (parameter) => {
+            return api.user.list(parameter);
+        };
+        this.saveModelFunc = (model) => {
+            return api.user.save(model)
+        };
+    }
 
     cookieName = "token";
 
@@ -24,12 +31,15 @@ class UserStore {
 
     @action async login(formData) {
         this.loading = true;
-        const user = await api.user.login(formData);
-        cookie.save(this.cookieName, user.token, { path: '/' })
-        window.localStorage.clear();
-        await window.localStorage.setItem(this.cookieName, JSON.stringify(user))
+        const response = await api.user.login(formData);
+        if (response && response.ok) {
+            const user = response.data;
+            cookie.save(this.cookieName, user.token, { path: '/' })
+            window.localStorage.clear();
+            await window.localStorage.setItem(this.cookieName, JSON.stringify(user))
+        }
         this.loading = false;
-        return user;
+        return response;
     }
 
     @action async logout() {
@@ -37,36 +47,7 @@ class UserStore {
         cookie.remove(this.cookieName)
     }
 
-    @action async getList(key, pageIndex) {
-        this.loading = true;
-        const response = await api.user.list(key, pageIndex, 20);
-        if (response.status === 200) {
-            this.page = {
-                pageSize: 20,
-                pageIndex: pageIndex,
-                total: response.page.total
-            };
-            this.list = response.list
-        }
-        this.loading = false;
-        return this.list
-    }
 
-    @action async save(user) {
-        this.loading = true;
-        let result = null;
-        if (user.id) {
-            result = await api.user.edit(user)
-        }
-        else {
-            result = await api.user.add(user)
-        }
-        this.loading = false;
-        return result;
-    }
-    async delete(id) {
-        await api.user.delete(id);
-    }
     async editPassword(oldPassword, newPassword) {
         this.loading = true;
         const result = await api.user.editPassword(oldPassword, newPassword)
@@ -82,5 +63,4 @@ class UserStore {
     }
 }
 
-const store = new UserStore();
-export default store;
+export default new UserStore();

@@ -1,32 +1,35 @@
 import { observable, action } from 'mobx'
 import api from '../common/api'
-class AppointmentStore {
+import StoreBase from './storeBase'
 
-    @observable list = [];
-    @observable myList = [];
+class AppointmentStore extends StoreBase {
+
     @observable resultList = [];
-    @observable loading = false;
     @observable successState = {}
 
-    @action async getList(batchId, pageIndex, pageSize) {
+    constructor() {
+        super();
+        this.getListFunc = (parameter) => {
+            return api.appointment.list(parameter);
+        };
+        this.saveModelFunc = (model) => {
+            return api.appointment.save(model)
+        };
+        this.deleteFunc = (id)=>{
+            return api.appointment.delete(id)
+        };
+    }
+
+    @action async getList(parameter) {
         this.loading = true;
-        const response = await api.appointment.list(batchId, pageIndex, pageSize);
+        const response = await api.appointment.list(parameter);
         if (response) {
             this.list = response.list;
+            this.page = response.page
         }
         this.loading = false;
         return this.list
     }
-
-    @action async getMyList() {
-        this.loading = true;
-        const response = await api.appointment.history();
-        if (response.status === 200) {
-            this.myList = response.list || []
-        }
-        this.loading = false;
-    }
-
 
     @action async make(batchId, quotaId) {
         this.loading = true;
@@ -44,7 +47,7 @@ class AppointmentStore {
 
     @action async getSuccessState(batchId) {
         const response = await api.batch.successAppointment(batchId);
-        if (response.status === 200) {
+        if (response && response.ok) {
             this.successState[batchId] = response
             return this.successState[batchId]
         }

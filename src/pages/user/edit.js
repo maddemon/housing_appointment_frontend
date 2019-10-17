@@ -14,16 +14,16 @@ export default class UserEditModal extends Component {
         if (this.props.onSubmit) {
             this.props.onSubmit(result)
         }
-        return result.status === '200';
+        return result.status === 204;
     }
 
     getFormItems = () => {
         const model = this.props.model || {}
         return [
             { name: 'id', defaultValue: model.id, type: "hidden" },
-            { title: '证件号码', name: 'cardNumber', defaultValue: model.cardNumber, rules: [{ required: true, message: '请填写证件号码' }], },
+            { title: '证件号码', name: 'idCard', defaultValue: model.idCard, rules: [{ required: true, message: '请填写证件号码' }], },
             { title: '姓名', name: 'name', defaultValue: model.name, rules: [{ required: true, message: '请填写姓名' }], },
-            { title: '手机', name: 'phone', defaultValue: model.phone, rules: [{ required: true , message: '请填写手机号码'}], },
+            { title: '手机', name: 'phone', defaultValue: model.phone, rules: [{ required: true, message: '请填写手机号码' }], },
         ];
     }
 

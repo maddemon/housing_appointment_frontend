@@ -7,17 +7,20 @@ import EditModal from './edit'
 @inject('stores')
 @observer
 export default class UserIndexPage extends Component {
-    async componentWillMount() {
-        await this.props.stores.globalStore.setTitle('用户管理');
+    componentWillMount() {
+        this.props.stores.globalStore.setTitle('用户管理');
+        this.loadList(this.props)
     }
 
-    async  componentWillReceiveProps(nextProps) {
-        await this.loadList(nextProps)
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.location.search !== this.props.location.search) {
+            this.loadList(nextProps)
+        }
     }
 
-    loadList = async (props) => {
+    loadList = (props) => {
         const query = QueryString.parseJSON(props.location.search)
-        await this.props.stores.userStore.getList(query.key || '', query.page || 1)
+        this.props.stores.userStore.getList(query)
     }
 
     handleDelete = (id) => {
@@ -34,13 +37,15 @@ export default class UserIndexPage extends Component {
         })
     }
 
-    handleResetPassword = async (id) => {
-        await this.props.stores.userStore.resetPassword(id)
+    handleResetPassword = (id) => {
+        this.props.stores.userStore.resetPassword(id)
         message.success("密码重置完成")
     }
 
     handlePageChange = page => {
-        this.props.history.push(`/user/index?page=${page}`)
+        const parameter = this.props.stores.userStore.parameter || {}
+        parameter.pageIndex = page
+        this.props.history.push(`/user/index?${QueryString.stringify(parameter)}`)
     }
 
     handleSearch = (value) => {
@@ -57,24 +62,23 @@ export default class UserIndexPage extends Component {
     }
 
     handleSubmit = (result) => {
-        if (result.status === '200') {
-            message.success(result.message)
+        if (result.ok) {
+            message.success("操作成功")
             this.loadList(this.props)
         }
     }
 
     handleUpload = (result) => {
-        if (result.status === '200') {
+        if (result.ok) {
             this.loadList(this.props)
         }
     }
 
     render() {
-        const { loading, list, page } = this.props.stores.userStore
-        console.log(list)
+        const { loading, list, page, parameter } = this.props.stores.userStore;
         return (
             <Row>
-                <PageHeader title="用户管理" extra={<Input.Search onSearch={this.handleSearch} />} />
+                <PageHeader title="用户管理" extra={<Input.Search onSearch={this.handleSearch} defaultValue={parameter.key}  />} />
                 <div className="toolbar">
                     <Button.Group>
                         <EditModal title="添加用户" trigger={<Button type="primary"><Icon type="plus" /> 添加用户</Button>} onSubmit={this.handleSubmit} />
@@ -91,7 +95,7 @@ export default class UserIndexPage extends Component {
                         { title: "操作", render: this.operateColumnRender, width: 200 },
                     ]}
                     dataSource={list}
-                    pagination={{ ...page, size: 5, onChange: this.handlePageChange, }}
+                    pagination={{ ...page, current: page.pageIndex, size: 5, onChange: this.handlePageChange, }}
                 ></Table>
             </Row>
         )
