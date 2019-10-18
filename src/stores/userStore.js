@@ -12,19 +12,21 @@ class UserStore extends StoreBase {
     cookieName = "token";
 
     current() {
-        const json = window.localStorage.getItem(this.cookieName);
-        if (json) {
-            return JSON.parse(json);
+        const sessionId = cookie.load(this.cookieName)
+        if (sessionId) {
+            const json = window.localStorage.getItem(this.cookieName);
+            if (json) {
+                return JSON.parse(json);
+            }
         }
         return null;
     }
 
-    authenticated() {
-        const sessionId = cookie.load(this.cookieName)
-        return sessionId
+    isCurrentUser(userId) {
+        return this.current.id === userId;
     }
 
-    async login(formData) {
+    login(formData) {
         return this.invokeApi(() => api.user.login(formData), (response) => {
             const user = response.data;
             cookie.save(this.cookieName, user.token, { path: '/' })
@@ -38,15 +40,15 @@ class UserStore extends StoreBase {
         cookie.remove(this.cookieName)
     }
 
-
-    async editPassword(oldPassword, newPassword) {
+    editPassword(oldPassword, newPassword) {
         return this.invokeApi(() => api.user.editPassword(oldPassword, newPassword))
     }
-    async  sendVerifyCode(mobile) {
+
+    sendVerifyCode(mobile) {
         return this.invokeApi(() => api.user.sendVerifyCode(mobile))
     }
 
-    async resetPassword(id) {
+    resetPassword(id) {
         return this.invokeApi(() => api.user.resetPassword(id))
     }
 }

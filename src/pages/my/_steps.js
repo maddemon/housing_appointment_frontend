@@ -6,8 +6,8 @@ export default class AppointmentSteps extends Component {
         return (
             <Row>
                 <Steps current={current} style={{ margin: '10px auto', width: '90%' }}>
-                    <Steps.Step title="选择购房资格" description="选择购房资格" />
                     <Steps.Step title="选择批次" description="选择你要预约的批次" />
+                    <Steps.Step title="选择购房资格" description="选择购房资格" />
                     <Steps.Step title="预约完成" description="提交预约申请" />
                 </Steps>
                 <Divider />

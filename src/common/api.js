@@ -78,6 +78,9 @@ const api = {
         }
     },
     quota: {
+        getModel: (id) => {
+            return $.get('quota/GetUserQuota', { id })
+        },
         delete: (id) => {
             return $.get('quota/delete', { id })
         },

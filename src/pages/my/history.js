@@ -7,17 +7,17 @@ import moment from 'moment'
 @observer
 export default class UserAppointmentsPage extends Component {
     async componentWillMount() {
-        this.props.stores.globalStore.setTitle('我的预约');
-        await this.props.stores.appointmentStore.getMyList();
+        this.props.stores.globalStore.setTitle('预约记录');
+        await this.props.stores.appointmentStore.getList();
     }
     render() {
-        const { myList, loading } = this.props.stores.appointmentStore;
+        const { list, loading } = this.props.stores.appointmentStore;
         return (
             <div>
                 <PageHeader title="我的预约" subTitle="查询您的预约记录" />
                 <Spin spinning={loading}>
                     <Row gutter={16}>
-                        {(myList || []).map((item, i) => <UserAppointmentItemControl key={i} model={item} />)}
+                        {(list || []).map((item, i) => <UserAppointmentItemControl key={i} model={item} />)}
                     </Row>
                 </Spin>
             </div>

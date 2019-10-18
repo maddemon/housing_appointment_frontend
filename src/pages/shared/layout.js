@@ -11,9 +11,10 @@ import BatchIndexPage from '../batch';
 import PermitIndexPage from '../permit';
 import PermitStatisticPage from '../permit/statistic';
 import AppointmentIndexPage from '../appointment';
-import MyAppointmentsPage from '../my/appointments';
+import AppointmentStep1Page from '../my/step1';
+import AppointmentStep2Page from '../my/step2';
 import MyQuotasPage from '../my/quotas';
-import MakeAppointmentPage from '../my/make_appointment';
+import AppointmentHistoryPage from '../my/history';
 import UserEditPasswordPage from '../user/edit_password';
 import ChooseRoomPage from '../batch/chooseRoom';
 import ChooseUserPage from '../batch/choosePermit';
@@ -34,9 +35,10 @@ export default class PrimaryLayout extends Component {
                         <PrivateRoute exact path="/" component={HomePage} />
                         <Route exact path="/batch/chooseResult" component={ChooseResultPage} />
                         <Route exact path="/user/login" component={UserLoginPage} />
-                        <PrivateRoute exact path="/my/appointments" component={MyAppointmentsPage} />
+                        <PrivateRoute exact path="/my/history" component={AppointmentHistoryPage} />
                         <PrivateRoute exact path="/my/quotas" component={MyQuotasPage} />
-                        <PrivateRoute exact path="/appointment/make" component={MakeAppointmentPage} />
+                        <PrivateRoute exact path="/appointment/step1" component={AppointmentStep1Page} />
+                        <PrivateRoute exact path="/appointment/step2" component={AppointmentStep2Page} />
                         <PrivateRoute exact path="/house/index" component={HousesIndexPage} />
                         <PrivateRoute exact path="/batch/chooseRoom" component={ChooseRoomPage} />
                         <PrivateRoute exact path="/batch/choosePermit" component={ChooseUserPage} />
@@ -56,7 +58,7 @@ export default class PrimaryLayout extends Component {
 
 @inject('stores')
 @observer
-class MainLayoutRoute extends Component {
+class AdminLayout extends Component {
     render() {
         return (
             <Layout hasSider={false}>
@@ -77,19 +79,41 @@ class MainLayoutRoute extends Component {
     }
 }
 
+@observer
+class UserLayout extends Component {
+    render() {
+        return (
+            <Layout hasSider={false}>
+                <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
+                    <TopNavbar />
+                </Header>
+                <Content style={{ padding: '0 5px', marginTop: 64 }}>
+                    <Route {...this.props}></Route>
+                </Content>
+            </Layout>
+
+        )
+    }
+}
+
 @inject('stores')
 @observer
 class PrivateRoute extends Component {
     render() {
-        const authenticated = this.props.stores.userStore.authenticated();
-        if (!authenticated) {
+        const user = this.props.stores.userStore.current();
+        if (!user) {
             const returnUrl = `${this.props.location.pathname}${this.props.location.search}`
             return <Redirect to={`/user/login?returnUrl=${returnUrl}`} />
         }
+        if (user.role === 'user') {
+            return <UserLayout>
+                <Route {...this.props}></Route>
+            </UserLayout>
+        }
         return (
-            <MainLayoutRoute>
-                 <Route {...this.props}></Route>
-            </MainLayoutRoute>
+            <AdminLayout>
+                <Route {...this.props}></Route>
+            </AdminLayout>
         )
     }
 }

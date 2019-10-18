@@ -8,6 +8,7 @@ class QuotaStore extends StoreBase {
         this.invokeListApi = (parameter) => api.quota.list(parameter);
         this.invokeSaveApi = (model) => api.quota.save(model)
         this.invokeDeleteApi = (id) => api.quota.delete(id);
+        this.invokeGetModelApi = (id) => api.quota.getModel(id);
     }
 }
 

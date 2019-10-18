@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react'
 import { Row, Col, Button, PageHeader, Alert, Icon, Card, Tag, message, Modal, Spin, Statistic, Result } from 'antd'
 import AppointmentStepsControl from './_steps'
 import moment from 'moment'
+import { QueryString } from '../../common/utils'
 
 @inject('stores')
 @observer
@@ -10,9 +11,16 @@ export default class MakeAppointmentPage extends Component {
 
     state = { step: 1, selectedBatch: null, pageIndex: 1, pageSize: 100 }
 
-    componentWillMount() {
+    async componentWillMount() {
         this.props.stores.globalStore.setTitle('预约选房');
-        this.props.stores.batchStore.getAvaliables();
+        await this.loadList()
+    }
+
+    loadList = async (props) => {
+        props = props || this.props
+        const query = QueryString.parseJSON(props.location.search)
+        await this.props.stores.quotaStore.getModel(query.userQuotaId)
+        await this.props.stores.batchStore.getAvaliables()
     }
 
     handleBack = () => {
@@ -24,12 +32,12 @@ export default class MakeAppointmentPage extends Component {
     }
 
     render() {
-        const quota = this.props.stores.quotaStore.selectedModel;
+        const quota = this.props.stores.quotaStore.model;
         if (!quota) {
             return <h1>没有选择购房证</h1>
         }
-        let { avaliables, loading } = this.props.stores.batchStore;
-        avaliables = (avaliables || []).filter(e => moment(e.appointmentEndTime) > moment());
+        const { avaliables, loading } = this.props.stores.batchStore;
+
         return (
             <>
                 <PageHeader title="预约选房" tags={<Tag color="red">已选购房证 {quota.permitCode}-{quota.quotaCode}</Tag>} onBack={this.handleBack} />
@@ -110,7 +118,7 @@ class BatchItemControl extends Component {
 
     handleClick = () => {
         const batch = this.props.model
-        const quota = this.props.stores.quotaStore.selectedModel;
+        const quota = this.props.stores.quotaStore.model;
         if (!quota) {
             message.warning("没有选择购房证");
             return;

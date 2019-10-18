@@ -68,3 +68,22 @@ button.ant-btn.room {
     border: none;
     margin-bottom: 25px;
 }
+.anticon.nav-phone-icon {
+    position: absolute;
+    top: 0;
+    right: 0px;
+    z-index: 1;
+    display: none;
+    width: 60px;
+    height: 64px;
+    cursor: pointer;
+    color: #fff;
+    margin-left: 15px;
+    padding: 24px 10px;
+}
+
+@media only screen and (max-width: 767.99px){
+    .anticon.nav-phone-icon {
+        display: block;
+    }
+}

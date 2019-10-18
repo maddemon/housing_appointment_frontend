@@ -3,6 +3,7 @@ import api from '../common/api'
 import StoreBase from './storeBase'
 class BatchStore extends StoreBase {
 
+    @observable avaliables = []
 
     @observable rooms = []
     @observable house = []
@@ -20,19 +21,9 @@ class BatchStore extends StoreBase {
         this.invokeDeleteApi = (id) => api.batch.delete(id);
     }
 
-    @action async selectModel(model) {
-        if (!model) {
-            if (this.avaliables.length === 0) {
-                await this.getAvaliables();
-            }
-            model = this.avaliables[0]
-        }
-        this.selectedModel = model;
-    }
-
-    @action getAvaliables() {
-        return this.invokeApi(() => api.batch.avaliables(), (response) => {
-            this.avaliables = response.list
+    @action async getAvaliables() {
+        return await this.invokeApi(() => api.batch.list({ canAppointment: 1 }), (response) => {
+            this.avaliables = response.data.list
         });
     }
 
