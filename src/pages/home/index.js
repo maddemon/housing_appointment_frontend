@@ -19,7 +19,7 @@ export default class HomePage extends Component {
                     redirectUrl = '/batch/index'
                     break;
                 case 'user':
-                    redirectUrl = '/appointment/step1'
+                    redirectUrl = '/my/batch'
                     break;
                 case 'jiansheju':
                     redirectUrl = '/permit/statistic'

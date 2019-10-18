@@ -39,8 +39,8 @@ class TopNavbar extends Component {
             switch (identity.role) {
                 case 'user':
                     result = result.concat([
-                        <Menu.Item key="/appointment/step1" ><Icon type="form" />预约选房</Menu.Item>,
-                        <Menu.Item key="/my/quotas" ><Icon type="book" />我的购房证</Menu.Item>,
+                        <Menu.Item key="/my/batch" ><Icon type="form" />预约选房</Menu.Item>,
+                        <Menu.Item key="/my/permit" ><Icon type="book" />我的购房证</Menu.Item>,
                         <Menu.Item key="/my/history" ><Icon type="calendar" />预约记录</Menu.Item>
                     ]);
                     break;

@@ -40,7 +40,7 @@ export default class BatchEditModal extends Component {
             {
                 title: '楼盘',
                 name: 'houseId',
-                defaultValue: (model.houses || []).map(item => item.houseID.toString()),
+                defaultValue: (model.houses || []).map(item => item.id.toString()),
                 rules: [{ required: true, message: '请选择楼盘' }],
                 render: <Select key="house" mode="multiple" placeholder="请选择楼盘" onChange={this.handleChooseHouses}>
                     {houses.map(item => <Select.Option key={item.id} >{item.name}</Select.Option>)}

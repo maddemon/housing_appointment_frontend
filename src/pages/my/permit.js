@@ -56,7 +56,7 @@ class UserQuotaPage extends Component {
 
         return (
             <>
-                <PageHeader title="预约选房" />
+                <PageHeader title="我的准购证" />
                 <Spin spinning={loading}>
                     <Row gutter={{ xs: 8, sm: 16, md: 24 }}>
                         {(list || []).length === 0 ? <Empty description="暂无可用购房证"></Empty> :

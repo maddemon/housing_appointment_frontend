@@ -11,10 +11,10 @@ import BatchIndexPage from '../batch';
 import PermitIndexPage from '../permit';
 import PermitStatisticPage from '../permit/statistic';
 import AppointmentIndexPage from '../appointment';
-import AppointmentStep1Page from '../my/step1';
-import AppointmentStep2Page from '../my/step2';
-import MyQuotasPage from '../my/quotas';
-import AppointmentHistoryPage from '../my/history';
+import MyBatchPage from '../my/batch';
+import MyAppointmentPage from '../my/appointment';
+import MyPermitPage from '../my/permit';
+import MyHistoryPage from '../my/history';
 import UserEditPasswordPage from '../user/edit_password';
 import ChooseRoomPage from '../batch/chooseRoom';
 import ChooseUserPage from '../batch/choosePermit';
@@ -35,10 +35,10 @@ export default class PrimaryLayout extends Component {
                         <PrivateRoute exact path="/" component={HomePage} />
                         <Route exact path="/batch/chooseResult" component={ChooseResultPage} />
                         <Route exact path="/user/login" component={UserLoginPage} />
-                        <PrivateRoute exact path="/my/history" component={AppointmentHistoryPage} />
-                        <PrivateRoute exact path="/my/quotas" component={MyQuotasPage} />
-                        <PrivateRoute exact path="/appointment/step1" component={AppointmentStep1Page} />
-                        <PrivateRoute exact path="/appointment/step2" component={AppointmentStep2Page} />
+                        <PrivateRoute exact path="/my/history" component={MyHistoryPage} />
+                        <PrivateRoute exact path="/my/permit" component={MyPermitPage} />
+                        <PrivateRoute exact path="/my/batch" component={MyBatchPage} />
+                        <PrivateRoute exact path="/my/appointment" component={MyAppointmentPage} />
                         <PrivateRoute exact path="/house/index" component={HousesIndexPage} />
                         <PrivateRoute exact path="/batch/chooseRoom" component={ChooseRoomPage} />
                         <PrivateRoute exact path="/batch/choosePermit" component={ChooseUserPage} />

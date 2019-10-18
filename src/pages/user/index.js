@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
 import { Row, PageHeader, Icon, Button, Input, Table, Modal, message } from 'antd'
+import moment from 'moment'
 import { QueryString } from '../../common/utils'
 import EditModal from './edit'
 
@@ -78,7 +79,7 @@ export default class UserIndexPage extends Component {
         const { loading, list, page, parameter } = this.props.stores.userStore;
         return (
             <Row>
-                <PageHeader title="用户管理" extra={<Input.Search onSearch={this.handleSearch} defaultValue={parameter.key}  />} />
+                <PageHeader title="用户管理" extra={<Input.Search onSearch={this.handleSearch} defaultValue={parameter.key} />} />
                 <div className="toolbar">
                     <Button.Group>
                         <EditModal title="添加用户" trigger={<Button type="primary"><Icon type="plus" /> 添加用户</Button>} onSubmit={this.handleSubmit} />
@@ -89,9 +90,11 @@ export default class UserIndexPage extends Component {
                     rowKey="id"
                     loading={loading}
                     columns={[
+                        { dataIndex: 'id', title: '编号', width: 75 },
                         { dataIndex: "name", title: "姓名", width: 150 },
-                        { dataIndex: "idCard", title: "证件号码", width: 120 },
                         { dataIndex: "phone", title: "手机号", width: 200 },
+                        { dataIndex: "idCard", title: "证件号码", },
+                        { dataIndex: "createTime", title: "创建日期", width: 200, render: (text) => moment(text).format('lll') },
                         { title: "操作", render: this.operateColumnRender, width: 200 },
                     ]}
                     dataSource={list}
