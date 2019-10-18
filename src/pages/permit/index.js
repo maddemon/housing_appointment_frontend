@@ -1,35 +1,37 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Row, PageHeader, Icon, Button, Table, Input } from 'antd'
+import { Row, PageHeader, Icon, Button, Table, Input, Tag } from 'antd'
 import { QueryString } from '../../common/utils'
 
 @inject('stores')
 @observer
 export default class PermitIndexPage extends Component {
 
-    async componentWillMount() {
+    componentWillMount() {
         this.props.stores.globalStore.setTitle('准购证管理');
         this.loadList(this.props)
     }
 
-    async componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps(nextProps) {
         if (this.props.location.search !== nextProps.location.search) {
-            await this.loadList(nextProps)
+            this.loadList(nextProps)
         }
     }
 
-    loadList = async (props) => {
+    loadList = (props) => {
         let query = QueryString.parseJSON(props.location.search)
-        await this.props.stores.permitStore.getList(query.key || '', query.page || 1);
+        this.props.stores.permitStore.getList(query);
     }
 
     operateColumnRender = (text, item) => {
-        let buttons = [
+        return <Button.Group>
+            <Button key="btnEdit">
+                <Icon type="edit" />
+            </Button>
             <Button key="btnDelete" onClick={() => this.handleDelete(item.id)} type="danger" title="删除">
                 <Icon type="delete" />
-            </Button>,
-        ];
-        return buttons;
+            </Button>
+        </Button.Group>
     }
 
     handlePageChange = page => {
@@ -48,17 +50,44 @@ export default class PermitIndexPage extends Component {
         if (!expanded) {
             return null
         }
+
         return <Table
             bordered={false}
             rowKey="id"
             pagination={false}
             dataSource={record.quotas || []}
             columns={[
-                { dataIndex: 'quotaCode', title: '购房证编号' },
-                { dataIndex: 'user', title: "购房人" },
+                { dataIndex: 'quotaCode', title: '购房证编号', width: 160 },
+                { dataIndex: 'user', title: "购房人", width: 200 },
                 { dataIndex: 'statusText', title: "状态" }
             ]}
         />
+    }
+
+    quotaColumnRender = (text, record) => {
+        return record.quotas.map((item, key) => {
+            let color = "#2db7f5";
+            switch (item.status) {
+                default:
+                    color = "#999";
+                    break;
+                case 1://等待他人
+                    color = "#2db7f5";
+                    break;
+                case 2://已预约
+                    color = "#108ee9";
+                    break;
+                case 3:
+                case 4://已入围
+                case 5://已选房
+                    color = "#87d068";
+                    break;
+                case -1://放弃、尾批
+                    color = "#f50";
+                    break;
+            }
+            return <Tag color={color} key={key}>{item.quotaCode} {item.user} ({item.statusText})</Tag>
+        });
     }
 
     render() {
@@ -75,17 +104,18 @@ export default class PermitIndexPage extends Component {
                 <Table
                     bordered={true}
                     loading={loading}
-                    rowKey="code"
+                    rowKey="id"
                     columns={[
                         { dataIndex: "permitCode", title: "准购证号", },
                         { dataIndex: "agency", title: "动迁机构", },
                         { dataIndex: "town", title: "镇街" },
-                        { dataIndex: "number", title: "限购套数" },
+                        { dataIndex: "quotaNumber", title: "限购套数" },
+                        { dataIndex: 'quotas', title: '实发套数', render: this.quotaColumnRender },
                         { dataIndex: "remark", title: "备注" },
+                        { title: '操作', render: this.operateColumnRender }
                     ]}
                     dataSource={list}
-                    pagination={{ ...page, current: page.pageIndex, size: 5, onChange: this.handlePageChange, }}
-                    expandedRowRender={this.quotaRowRender}
+                    pagination={{ ...page, size: 5, onChange: this.handlePageChange, }}
                 ></Table>
             </Row>
         )

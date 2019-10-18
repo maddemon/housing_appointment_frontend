@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Icon, Button, Row, Col, Tabs, Input, message, Layout } from 'antd'
+import { Icon, Button, Row, Col, Tabs, Input, message } from 'antd'
 import { inject, observer } from 'mobx-react';
 import { QueryString } from '../../common/utils'
 import Config from '../../common/config'

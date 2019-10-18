@@ -1,14 +1,11 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Row, PageHeader, Table, Input } from 'antd'
-import { QueryString } from '../../common/utils'
+import { Row, PageHeader, Table } from 'antd'
 const { Column, ColumnGroup } = Table;
 
 @inject('stores')
 @observer
 export default class PermitStatisticPage extends Component {
-
-    state = { searchKey: '', pageIndex: 1, pageSize: 20 }
 
     componentWillMount() {
         this.props.stores.globalStore.setTitle('准购证管理发放情况');

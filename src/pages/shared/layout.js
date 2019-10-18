@@ -21,7 +21,7 @@ import ChooseResultPage from '../batch/chooseResult';
 import HomePage from '../home';
 import 'moment/locale/zh-cn'
 
-const { Header, Content, Footer } = Layout;
+const { Header, Content } = Layout;
 
 @inject('stores')
 @observer

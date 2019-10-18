@@ -9,9 +9,9 @@ class AppointmentStore extends StoreBase {
 
     constructor() {
         super();
-        this.getListFunc = (parameter) => api.appointment.list(parameter);
-        this.saveModelFunc = (model) => api.appointment.save(model);
-        this.deleteFunc = (id) => api.appointment.delete(id);
+        this.invokeListApi = (parameter) => api.appointment.list(parameter);
+        this.invokeSaveApi = (model) => api.appointment.save(model);
+        this.invokeDeleteApi = (id) => api.appointment.delete(id);
     }
 
     @action make(batchId, userQuotaId) {

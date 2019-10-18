@@ -14,9 +14,10 @@ class BatchStore extends StoreBase {
 
     constructor() {
         super()
-        this.getListFunc = (parameter) => api.batch.list(parameter);
-        this.saveModelFunc = (model) => api.batch.save(model);
-        this.deleteFunc = (id) => api.batch.delete(id);
+        this.invokeListApi = (parameter) => api.batch.list(parameter);
+        this.invokeSaveApi = (model) => api.batch.save(model);
+        this.invokeGetModelApi = (id) => api.batch.getModel(id);
+        this.invokeDeleteApi = (id) => api.batch.delete(id);
     }
 
     @action async selectModel(model) {

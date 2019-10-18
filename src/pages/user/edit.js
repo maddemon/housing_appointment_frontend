@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, message } from 'antd'
+import { Button } from 'antd'
 import Modal from '../shared/modal'
 import { inject, observer } from 'mobx-react'
 

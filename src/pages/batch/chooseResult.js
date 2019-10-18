@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Row, PageHeader, Input, Tag, Button, Card, Spin, Col, Result, Table } from 'antd'
-const { ColumnGroup, Column } = Table
+import { Row, PageHeader, Button, Card, Col, Result } from 'antd'
 @inject('stores')
 @observer
 export default class ChooseResultPage extends Component {

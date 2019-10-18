@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { PageHeader, Icon, Button, Row, Col, message, Modal, Tag, Card, Spin, Table } from 'antd'
+import { PageHeader, Icon, Button, Row, message, Modal, Tag, Table } from 'antd'
 import moment from 'moment'
 import EditModal from './edit'
 
@@ -30,6 +30,7 @@ export default class BatchIndexPage extends Component {
             await this.loadData()
         }
     }
+
     handleDelete = async item => {
         Modal.confirm({
             title: "确认",
@@ -57,6 +58,15 @@ export default class BatchIndexPage extends Component {
         })
     }
 
+    handleRedirectToAppointmentPage = (batchId) => {
+        this.props.history.push('/appointment/index?batchId=' + batchId)
+    }
+    handleRedirectToChoosePage = (batchId) => {
+        this.props.history.push('/batch/choose?batchId=' + batchId)
+    }
+    handleRedirectToResultPage = (batchId) => {
+        this.props.history.push('/batch/chooseResult?batchId=' + batchId)
+    }
     houseColumnRender = (text, item) => {
         return item.houses.map((item, key) => <Tag key={key}>{item.name}</Tag>)
     }
@@ -77,21 +87,23 @@ export default class BatchIndexPage extends Component {
     }
     operateColumnRender = (text, item) => {
         const canNotify = moment(item.appointmentEndTime) > moment()
-        const canEdit = moment(item.chooseTime) > moment()
+        const canChoose = moment(item.chooseBeginDate) <= moment() && moment(item.chooseEndDate) >= moment();
+        const canViewResult = moment(item.chooseBeginDate) <= moment();
+        const canEdit = moment(item.chooseEndDate) > moment()
         const canDelete = moment(item.appointmentBeginTime) > moment()
         var result = []
-        if (canNotify) {
-            result.push(<Button key="notify" onClick={this.handleNotify} type="primary" icon="bell" title="发送预约通知" />)
-        }
-        else {
-            result.push(<Button key="result" onClick={this.handleRedirectToResultPage} type="default" icon="file-search" title="查看选房结果" />)
-        }
-        //if (canEdit) {
-        result.push(<EditModal key="edit" model={item} trigger={<Button icon="edit" title="修改" />} onSubmit={this.handleSubmitForm} />)
-        //}
-        //if (canDelete) {
-        result.push(<Button key="delete" title="删除" icon="delete" onClick={this.handleDelete} />)
-        //}
+        //if (canNotify) 
+            result.push(<Button key="btnNotify" onClick={this.handleNotify} type="primary"><Icon type="bell"/>预约通知</Button>)
+        //else 
+            result.push(<Button key="btnAppointment" onClick={() => this.handleRedirectToAppointmentPage(item.id)}><Icon type="clock-circle" />预约管理</Button>)
+        //if (canChoose) 
+            result.push(<Button key="btnChoose" onClick={() => this.handleRedirectToChoosePage(item.id)} type="primary"><Icon type="check" />选房</Button>)
+        //if (canViewResult) 
+            result.push(<Button key="btnResult" onClick={() => this.handleRedirectToResultPage(item.id)} type="default"><Icon type="file-search" />选房结果</Button>)
+        //if (canEdit) 
+            result.push(<EditModal key="edit" model={item} trigger={<Button icon="edit" title="修改" />} onSubmit={this.handleSubmitForm} />)
+        //if (canDelete) 
+            result.push(<Button key="delete" title="删除" icon="delete" onClick={this.handleDelete} />)
         return <Button.Group>{result}</Button.Group>
     }
 
@@ -120,7 +132,7 @@ export default class BatchIndexPage extends Component {
                             { dataIndex: "操作", render: this.operateColumnRender }
                         ]}
                         dataSource={list}
-                        pagination={{ ...page, current: page.pageIndex, size: 5, onChange: this.handlePageChange, }}
+                        pagination={{ ...page, size: 5, onChange: this.handlePageChange, }}
                     ></Table>
                 </Row>
             </Row >

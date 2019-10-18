@@ -7,9 +7,10 @@ export default class StoreBase {
     @observable parameter = {}
     @observable model = null;
 
-    getListFunc = null;
-    saveModelFunc = null;
-    deleteFunc = null
+    invokeListApi = null;
+    invokeGetModelApi = null;
+    invokeSaveApi = null;
+    invokeDeleteApi = null
 
     async invokeApi(invoke, success) {
         this.loading = true;
@@ -23,8 +24,8 @@ export default class StoreBase {
         return response
     }
 
-    @action async getList(parameter) {
-        return await this.invokeApi(() => this.getListFunc(parameter),
+    @action getList(parameter) {
+        return this.invokeApi(() => this.invokeListApi(parameter),
             (response) => {
                 if (response.data.list) {
                     this.page = response.data.page
@@ -38,18 +39,24 @@ export default class StoreBase {
         )
     }
 
-    @action async save(model) {
-        return await this.invokeApi(() => this.saveModelFunc(model))
+    @action save(model) {
+        return this.invokeApi(() => this.invokeSaveApi(model))
     }
 
-    @action async delete(id) {
-        return await this.invokeApi(() => this.deleteFunc(id))
+    @action delete(id) {
+        return this.invokeApi(() => this.invokeDeleteApi(id))
     }
 
     @action getModel(id) {
-        const model = (this.list || []).find(e => e.id === id);
-        this.model = model;
-        return model;
+        if (this.invokeGetModelApi) {
+            return this.invokeApi(() => this.invokeGetModelApi(id), response => {
+                this.model = response.data
+            })
+        } else {
+            const model = (this.list || []).find(e => e.id.toString() === id.toString());
+            this.model = model;
+            return model;
+        }
     }
 
     @action selectModel(model) {

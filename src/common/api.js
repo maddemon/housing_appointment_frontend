@@ -35,6 +35,9 @@ const api = {
         }
     },
     batch: {
+        getModel: (id) => {
+            return $.get('batch/getmodel', { id })
+        },
         save: (data) => {
             return $.post('batch/save', null, data)
         },

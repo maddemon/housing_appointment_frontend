@@ -7,9 +7,9 @@ class PermitStore extends StoreBase {
     @observable statistic = []
     constructor() {
         super()
-        this.getListFunc = (parameter) => api.permit.list(parameter);
-        this.saveModelFunc = (model) => api.permit.save(model);
-        this.deleteFunc = (id) => api.permit.delete(id)
+        this.invokeListApi = (parameter) => api.permit.list(parameter);
+        this.invokeSaveApi = (model) => api.permit.save(model);
+        this.invokeDeleteApi = (id) => api.permit.delete(id)
     }
 
     @action async getStatistic() {

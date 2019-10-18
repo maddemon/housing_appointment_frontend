@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Row, Col, Button, PageHeader, Alert, Icon, Card, Tag, message, Modal, Spin, Statistic, Result, Paragraph, Text } from 'antd'
+import { Row, Col, Button, PageHeader, Alert, Icon, Card, Tag, message, Modal, Spin, Statistic, Result } from 'antd'
 import AppointmentStepsControl from './_steps'
 import moment from 'moment'
 
@@ -54,7 +54,7 @@ export default class MakeAppointmentPage extends Component {
 }
 
 const SelectedBatchControl = props => {
-    const { batch, quota } = props
+    const { batch } = props
 
     return (
         <Result

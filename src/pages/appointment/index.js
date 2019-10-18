@@ -8,18 +8,19 @@ import moment from 'moment'
 @observer
 export default class AppointmentIndexPage extends Component {
 
-    async componentWillMount() {
+    componentWillMount() {
         this.props.stores.globalStore.setTitle('预约管理');
     }
 
-    async componentWillReceiveProps(nextProps) {
-        await this.loadList(nextProps);
+    componentWillReceiveProps(nextProps) {
+        this.loadList(nextProps);
     }
 
     loadList = async (props) => {
         props = props || this.props
         const query = QueryString.parseJSON(props.location.search)
         await this.props.stores.appointmentStore.getList(query);
+        await this.props.stores.batchStore.getModel(query.batchId)
     }
 
     handlePageChange = page => {
@@ -76,7 +77,7 @@ export default class AppointmentIndexPage extends Component {
                         { title: "操作", render: this.operateColumnRender, },
                     ]}
                     dataSource={list || []}
-                    pagination={{ ...page, current: page.pageIndex, size: 5, onChange: this.handlePageChange, }}
+                    pagination={{ ...page, size: 5, onChange: this.handlePageChange, }}
                 ></Table>
             </Row>
         )

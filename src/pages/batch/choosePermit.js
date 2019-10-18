@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Row, PageHeader, Input, Tag, Button, Card, Spin, Col, Result } from 'antd'
+import { Row, PageHeader, Input,  Button, Spin, Result } from 'antd'
 const { Search } = Input;
 
 @inject('stores')

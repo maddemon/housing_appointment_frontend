@@ -5,8 +5,8 @@ class UserStore extends StoreBase {
 
     constructor() {
         super()
-        this.getListFunc = (parameter) => api.user.list(parameter);
-        this.saveModelFunc = (model) => api.user.save(model);
+        this.invokeListApi = (parameter) => api.user.list(parameter);
+        this.invokeSaveApi = (model) => api.user.save(model);
     }
 
     cookieName = "token";

@@ -5,9 +5,9 @@ class HousesStore extends StoreBase {
 
     constructor() {
         super()
-        this.getListFunc = (parameter) => api.house.list(parameter);
-        this.saveModelFunc = (model) => api.house.save(model);
-        this.deleteFunc = (id) => api.house.delete(id);
+        this.invokeListApi = (parameter) => api.house.list(parameter);
+        this.invokeSaveApi = (model) => api.house.save(model);
+        this.invokeDeleteApi = (id) => api.house.delete(id);
     }
 
     get importUrl() {

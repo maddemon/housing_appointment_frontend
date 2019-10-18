@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Spin, Form, Tooltip, Icon, Row, Col, Input, Upload, Button, DatePicker, Select, Radio, Checkbox, AutoComplete } from 'antd'
+import { Spin, Form, Tooltip, Icon, Row,  Input, Upload, Button, DatePicker, Select} from 'antd'
 
 class SharedForm extends Component {
 

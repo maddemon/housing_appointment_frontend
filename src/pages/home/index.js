@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Row, PageHeader, Table, Input } from 'antd';
+import { Row, PageHeader, Input } from 'antd';
 import { QueryString } from '../../common/utils'
 const { Search } = Input;
 
@@ -67,7 +67,7 @@ export default class HomePage extends Component {
                     { dataIndex: "chooseResult", title: "选房结果" },
                 ]}
                 dataSource={resultList || []}
-                pagination={{ ...page, current: page.pageIndex, size: 5, onChange: this.handlePageChange, }}
+                pagination={{ ...page, size: 5, onChange: this.handlePageChange, }}
             ></Table> */}
         </Row>
     }

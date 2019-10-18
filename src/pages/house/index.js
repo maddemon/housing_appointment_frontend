@@ -82,7 +82,7 @@ export default class HousesIndexPage extends Component {
                         { title: "操作", render: this.operateColumnRender, width: 150 },
                     ]}
                     dataSource={list || []}
-                    pagination={{ ...page, current: page.pageIndex, size: 5, onChange: this.handlePageChange, }}
+                    pagination={{ ...page, size: 5, onChange: this.handlePageChange, }}
                 ></Table>
             </Row>
         )

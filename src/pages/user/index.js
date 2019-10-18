@@ -95,7 +95,7 @@ export default class UserIndexPage extends Component {
                         { title: "操作", render: this.operateColumnRender, width: 200 },
                     ]}
                     dataSource={list}
-                    pagination={{ ...page, current: page.pageIndex, size: 5, onChange: this.handlePageChange, }}
+                    pagination={{ ...page, size: 5, onChange: this.handlePageChange, }}
                 ></Table>
             </Row>
         )
