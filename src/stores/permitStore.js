@@ -3,29 +3,18 @@ import api from '../common/api'
 import StoreBase from './storeBase'
 
 class PermitStore extends StoreBase {
-    
+
     @observable statistic = []
     constructor() {
         super()
-        this.getListFunc = (parameter) => {
-            return api.permit.list(parameter);
-        };
-        this.saveModelFunc = (model) => {
-            return api.permit.save(model)
-        };
-        this.deleteFunc = (id)=>{
-            return api.permit.delete(id)
-        }
+        this.getListFunc = (parameter) => api.permit.list(parameter);
+        this.saveModelFunc = (model) => api.permit.save(model);
+        this.deleteFunc = (id) => api.permit.delete(id)
     }
 
     @action async getStatistic() {
-        this.loading = true;
-        const response = await api.permit.statistic();
-        if (response && response.ok) {
-            this.statistic = response.data;
-        }
-        this.loading = false;
-        return this.list
+        return this.invokeApi(() => api.permit.statistic(),
+            (response) => this.statistic = response.data)
     }
 }
 

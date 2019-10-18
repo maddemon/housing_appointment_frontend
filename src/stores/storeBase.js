@@ -11,34 +11,39 @@ export default class StoreBase {
     saveModelFunc = null;
     deleteFunc = null
 
-    @action async getList(parameter) {
+    async invokeApi(invoke, success) {
         this.loading = true;
-        const response = await this.getListFunc(parameter);
-        if (response && response.ok) {
-            if (response.data.list) {
-                this.page = response.data.page
-                this.list = response.data.list
-                this.parameter = parameter
-            }
-            else {
-                this.list = response.data
+        const response = await invoke();
+        if (success) {
+            if (response && response.ok) {
+                success(response)
             }
         }
         this.loading = false;
-        return this.list
+        return response
+    }
+
+    @action async getList(parameter) {
+        return await this.invokeApi(() => this.getListFunc(parameter),
+            (response) => {
+                if (response.data.list) {
+                    this.page = response.data.page
+                    this.list = response.data.list
+                    this.parameter = parameter
+                }
+                else {
+                    this.list = response.data
+                }
+            }
+        )
     }
 
     @action async save(model) {
-        this.loading = true;
-        const result = await this.saveModelFunc(model)
-        this.loading = false;
-        return result;
+        return await this.invokeApi(() => this.saveModelFunc(model))
     }
 
     @action async delete(id) {
-        if (this.deleteFunc) {
-            await this.deleteFunc(id)
-        }
+        return await this.invokeApi(() => this.deleteFunc(id))
     }
 
     @action getModel(id) {

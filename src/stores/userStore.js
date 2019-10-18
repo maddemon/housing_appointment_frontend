@@ -1,4 +1,3 @@
-import { observable, action } from 'mobx';
 import cookie from 'react-cookies';
 import api from '../common/api';
 import StoreBase from './storeBase'
@@ -6,12 +5,8 @@ class UserStore extends StoreBase {
 
     constructor() {
         super()
-        this.getListFunc = (parameter) => {
-            return api.user.list(parameter);
-        };
-        this.saveModelFunc = (model) => {
-            return api.user.save(model)
-        };
+        this.getListFunc = (parameter) => api.user.list(parameter);
+        this.saveModelFunc = (model) => api.user.save(model);
     }
 
     cookieName = "token";
@@ -29,37 +24,30 @@ class UserStore extends StoreBase {
         return sessionId
     }
 
-    @action async login(formData) {
-        this.loading = true;
-        const response = await api.user.login(formData);
-        if (response && response.ok) {
+    async login(formData) {
+        return this.invokeApi(() => api.user.login(formData), (response) => {
             const user = response.data;
             cookie.save(this.cookieName, user.token, { path: '/' })
             window.localStorage.clear();
-            await window.localStorage.setItem(this.cookieName, JSON.stringify(user))
-        }
-        this.loading = false;
-        return response;
+            window.localStorage.setItem(this.cookieName, JSON.stringify(user))
+        })
     }
 
-    @action async logout() {
-        await window.localStorage.removeItem(this.cookieName)
+    logout() {
+        window.localStorage.removeItem(this.cookieName)
         cookie.remove(this.cookieName)
     }
 
 
     async editPassword(oldPassword, newPassword) {
-        this.loading = true;
-        const result = await api.user.editPassword(oldPassword, newPassword)
-        this.loading = false;
-        return result;
+        return this.invokeApi(() => api.user.editPassword(oldPassword, newPassword))
     }
     async  sendVerifyCode(mobile) {
-        await api.user.sendVerifyCode(mobile)
+        return this.invokeApi(() => api.user.sendVerifyCode(mobile))
     }
 
     async resetPassword(id) {
-        await api.user.resetPassword(id)
+        return this.invokeApi(() => api.user.resetPassword(id))
     }
 }
 

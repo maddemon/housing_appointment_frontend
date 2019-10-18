@@ -48,6 +48,7 @@ class TopNavbar extends Component {
                         <Menu.Item key="/batch/index" ><Icon type="import" />批次管理</Menu.Item>,
                         <Menu.Item key="/house/index" ><Icon type="build" />楼盘管理</Menu.Item>,
                         <Menu.Item key="/permit/index" ><Icon type="switcher" />准购证管理 </Menu.Item>,
+                        <Menu.Item key="/appointment/index" ><Icon type="clock-circle" />预约管理 </Menu.Item>,
                         <Menu.Item key="/batch/choosePermit" ><Icon type="select" />选房</Menu.Item>,
                         <Menu.Item key="/user/index" ><Icon type="usergroup-add" />用户管理</Menu.Item>,
                     ]);

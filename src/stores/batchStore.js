@@ -3,7 +3,7 @@ import api from '../common/api'
 import StoreBase from './storeBase'
 class BatchStore extends StoreBase {
 
-   
+
     @observable rooms = []
     @observable house = []
     @observable permits = []
@@ -14,20 +14,14 @@ class BatchStore extends StoreBase {
 
     constructor() {
         super()
-        this.getListFunc = (parameter) => {
-            return api.batch.list(parameter);
-        };
-        this.saveModelFunc = (model) => {
-            return api.batch.save(model)
-        };
-        this.deleteFunc = (id)=>{
-            return api.batch.delete(id)
-        }
+        this.getListFunc = (parameter) => api.batch.list(parameter);
+        this.saveModelFunc = (model) => api.batch.save(model);
+        this.deleteFunc = (id) => api.batch.delete(id);
     }
 
     @action async selectModel(model) {
-        if(!model){
-            if(this.avaliables.length === 0){
+        if (!model) {
+            if (this.avaliables.length === 0) {
                 await this.getAvaliables();
             }
             model = this.avaliables[0]
@@ -35,29 +29,20 @@ class BatchStore extends StoreBase {
         this.selectedModel = model;
     }
 
-    @action async getAvaliables() {
-        this.loading = true;
-        const response = await api.batch.avaliables()
-        if (response && response.ok) {
-
+    @action getAvaliables() {
+        return this.invokeApi(() => api.batch.avaliables(), (response) => {
             this.avaliables = response.list
-        }
-        this.loading = false;
-        return response.list
+        });
     }
 
-    @action async notify() {
-        this.loading = true;
-        const result = await api.batch.notify()
-        this.loading = false;
-        return result;
+    notify(batchId) {
+        return this.invokeApi(() => api.batch.notify(batchId))
     }
 
     @action async getRooms(batchId) {
-        const response = await api.batch.getRooms(batchId);
-        if (response && response.ok) {
-            this.rooms = response
-        }
+        return this.invokeApi(() => api.batch.getRooms(batchId), (response) => {
+            this.rooms = response.data
+        })
     }
 
     @action async getHouses(batchId) {
@@ -137,10 +122,10 @@ class BatchStore extends StoreBase {
     }
     @action async selectUser(user) {
         if (!user) {
-            user =  this.selectedPermit.users.find(e => e.flag === "3");
-            this.selectedUser =user;
+            user = this.selectedPermit.users.find(e => e.flag === "3");
+            this.selectedUser = user;
         }
-        else{
+        else {
             this.selectedUser = user
         }
     }

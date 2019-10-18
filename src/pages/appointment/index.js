@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Row, PageHeader, Icon, Table, Button, Tooltip } from 'antd'
+import { Row, PageHeader, Icon, Table, Button } from 'antd'
 import { QueryString } from '../../common/utils'
 import moment from 'moment'
 
 @inject('stores')
 @observer
 export default class AppointmentIndexPage extends Component {
-    state = { batchId: '', pageIndex: 1, pageSize: 20 }
+
     async componentWillMount() {
         this.props.stores.globalStore.setTitle('预约管理');
     }
@@ -18,9 +18,8 @@ export default class AppointmentIndexPage extends Component {
 
     loadList = async (props) => {
         props = props || this.props
-        let query = QueryString.parseJSON(props.location.search)
-        await this.setState({ batchId: query.batchId || '', pageIndex: query.page || 1 });
-        await this.props.stores.appointmentStore.getList(this.state.batchId, this.state.pageIndex, this.state.pageSize);
+        const query = QueryString.parseJSON(props.location.search)
+        await this.props.stores.appointmentStore.getList(query);
     }
 
     handlePageChange = page => {
@@ -32,7 +31,7 @@ export default class AppointmentIndexPage extends Component {
     }
 
     handleExportClick = () => {
-        window.open('/house/reserve/reserveExcel?batchId=' + this.state.batchId)
+        window.open('/api/appointment/export?batchId=' + this.state.batchId)
     }
 
     // handleImport = async (response) => {
@@ -47,7 +46,7 @@ export default class AppointmentIndexPage extends Component {
         return (
             <Row>
                 <PageHeader title="预约管理"
-                    subTitle={`预约总数:${(page || {}).recordCount || 0} ${batch.name ? `所属批次：${batch.name}` : ''} `}
+                    subTitle={`预约总数:${(page || {}).recordCount || 0} ${batch ? `所属批次：${batch.name}` : ''} `}
                     backIcon={<Icon type="arrow-left" />}
                     extra={<Button.Group>
                         <Button type="primary" onClick={this.handleExportClick}><Icon type="export" />导出预约记录</Button>
@@ -62,13 +61,18 @@ export default class AppointmentIndexPage extends Component {
                 </div>
                 <Table
                     loading={loading}
+                    rowSelection={{
+                        onChange: (selectedRowKeys, selectedRows) => {
+                            console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+                        },
+                    }}
                     rowKey="id"
                     columns={[
-                        { dataIndex: "batchId", title: "批次名称" },
-                        { dataIndex: "reserveTime", title: "预约时间", render: (text) => moment(text).format('LLL') },
-                        { dataIndex: "quotaId", title: "所用购房证" },
-                        { dataIndex: "userId", title: "预约用户" },
-                        { dataIndex: "chooseResult", title: "选房结果" },
+                        { dataIndex: "batchName", title: "批次名称" },
+                        { dataIndex: "createTime", title: "预约时间", render: (text) => moment(text).format('LLL') },
+                        { dataIndex: "code", title: "购房证号" },
+                        { dataIndex: "user", title: "预约用户" },
+                        { dataIndex: "statusText", title: "预约状态" },
                         { title: "操作", render: this.operateColumnRender, },
                     ]}
                     dataSource={list || []}
