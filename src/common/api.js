@@ -92,8 +92,8 @@ const api = {
         history: () => {
             return $.get('appointment/list')
         },
-        make: (batchId, quotaId) => {
-            return $.post('appointment/make', null, { batchId, quotaId })
+        make: (batchId, userQuotaId) => {
+            return $.get('appointment/make', { batchId, userQuotaId })
         },
         list: (parameter) => {
             return $.get('appointment/list', parameter)

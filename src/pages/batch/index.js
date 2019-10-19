@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { PageHeader, Icon, Button, Row, message, Modal, Tag, Table } from 'antd'
+import { PageHeader, Icon, Button, Row, message, Modal, Tag, Table, Card, Descriptions, Pagination } from 'antd'
 import moment from 'moment'
 import EditModal from './edit'
 
@@ -8,26 +8,26 @@ import EditModal from './edit'
 @observer
 export default class BatchIndexPage extends Component {
 
-    async componentWillMount() {
+    componentWillMount() {
         this.props.stores.globalStore.setTitle('批次管理');
         this.props.stores.houseStore.getList({ pageSize: 999 });
         this.loadData(this.props)
     }
 
-    async componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps(nextProps) {
         if (this.props.location.search !== nextProps.location.search) {
-            await this.loadData(nextProps)
+            this.loadData(nextProps)
         }
     }
 
-    loadData = async (props) => {
-        await this.props.stores.batchStore.getList()
+    loadData = (props) => {
+        this.props.stores.batchStore.getList()
     }
 
-    handleSubmitForm = async result => {
+    handleSubmitForm = result => {
         if (result.ok) {
             message.success("操作完成");
-            await this.loadData()
+            this.loadData()
         }
     }
 
@@ -39,7 +39,7 @@ export default class BatchIndexPage extends Component {
                 const result = await this.props.stores.batchStore.delete(item.id);
                 if (result.ok) {
                     message.success("操作完成");
-                    await this.loadData()
+                    this.loadData()
                 }
             },
         })
@@ -76,7 +76,7 @@ export default class BatchIndexPage extends Component {
     }
 
     appointmentColumnRender = (text, item) => {
-        return <span className="date">{moment(item.appointmentBeginDate).format('ll')} - {moment(item.appointmentEndDate).format('ll')}</span>
+        return <span className="date">{moment(item.appointmentBeginTime).format('ll')} - {moment(item.appointmentEndTime).format('ll')}</span>
     }
 
     nameColumnRender = (text, item) => {
@@ -93,22 +93,22 @@ export default class BatchIndexPage extends Component {
         const canDelete = moment(item.appointmentBeginTime) > moment()
         var result = []
         //if (canNotify) 
-            result.push(<Button key="btnNotify" onClick={this.handleNotify} type="primary"><Icon type="bell"/>预约通知</Button>)
+        result.push(<Button key="btnNotify" onClick={this.handleNotify} type="primary"><Icon type="bell" />预约通知</Button>)
         //else 
-            result.push(<Button key="btnAppointment" onClick={() => this.handleRedirectToAppointmentPage(item.id)}><Icon type="clock-circle" />预约管理</Button>)
+        result.push(<Button key="btnAppointment" onClick={() => this.handleRedirectToAppointmentPage(item.id)}><Icon type="clock-circle" />预约管理</Button>)
         //if (canChoose) 
-            result.push(<Button key="btnChoose" onClick={() => this.handleRedirectToChoosePage(item.id)} type="primary"><Icon type="check" />选房</Button>)
+        result.push(<Button key="btnChoose" onClick={() => this.handleRedirectToChoosePage(item.id)} type="primary"><Icon type="check" />选房</Button>)
         //if (canViewResult) 
-            result.push(<Button key="btnResult" onClick={() => this.handleRedirectToResultPage(item.id)} type="default"><Icon type="file-search" />选房结果</Button>)
+        result.push(<Button key="btnResult" onClick={() => this.handleRedirectToResultPage(item.id)} type="default"><Icon type="file-search" />选房结果</Button>)
         //if (canEdit) 
-            result.push(<EditModal key="edit" model={item} trigger={<Button icon="edit" title="修改" />} onSubmit={this.handleSubmitForm} />)
+        result.push(<EditModal key="edit" model={item} trigger={<Button icon="edit" title="修改" />} onSubmit={this.handleSubmitForm} />)
         //if (canDelete) 
-            result.push(<Button key="delete" title="删除" icon="delete" onClick={this.handleDelete} />)
+        result.push(<Button key="delete" title="删除" icon="delete" onClick={this.handleDelete} />)
         return <Button.Group>{result}</Button.Group>
     }
 
     render() {
-        const { list, loading, page } = this.props.stores.batchStore
+        const { list } = this.props.stores.batchStore
         return (
             <Row>
                 <PageHeader title="批次管理" />
@@ -118,22 +118,15 @@ export default class BatchIndexPage extends Component {
                     </Button.Group>
                 </div>
                 <Row gutter={16}>
-                    <Table
-                        bordered={true}
-                        loading={loading}
-                        rowKey="id"
-                        columns={[
-                            { dataIndex: 'id', title: '编号', width: 75 },
-                            { dataIndex: "name", title: "批次名称", render: this.nameColumnRender },
-                            { title: "楼盘", render: this.houseColumnRender },
-                            { dataIndex: "appointmentBeginTime", title: "预约时段", render: this.appointmentColumnRender },
-                            { dataIndex: "chooseBeginDate", title: "选房时段", render: this.chooseColumnRender },
-                            { dateIndex: "chooseAddress", title: '选房地点' },
-                            { dataIndex: "操作", render: this.operateColumnRender }
-                        ]}
-                        dataSource={list}
-                        pagination={{ ...page, size: 5, onChange: this.handlePageChange, }}
-                    ></Table>
+                    {list.map((item) => <Card key={item.id}>
+                        <Descriptions title={this.nameColumnRender(item.name, item)} bordered column={{ md: 2, sm: 1, xs: 1 }}>
+                            <Descriptions.Item label="编号">{item.id}</Descriptions.Item>
+                            <Descriptions.Item label="楼盘">{this.houseColumnRender('', item)}</Descriptions.Item>
+                            <Descriptions.Item label="预约时段">{this.appointmentColumnRender('', item)}</Descriptions.Item>
+                            <Descriptions.Item label="选房地点">{item.chooseAddress}</Descriptions.Item>
+                            <Descriptions.Item label="管理">{this.operateColumnRender('', item)}</Descriptions.Item>
+                        </Descriptions>
+                    </Card>)}
                 </Row>
             </Row >
         )

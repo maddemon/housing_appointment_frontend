@@ -1,6 +1,6 @@
 import { observable, action } from 'mobx'
 import Config from '../common/config'
-class GlobalStore {
+export default class GlobalStore {
 
     @observable title = Config.SystemName;
     @observable breadcrumb = null;
@@ -13,5 +13,3 @@ class GlobalStore {
     }
 
 }
-const globalStore = new GlobalStore();
-export default globalStore;

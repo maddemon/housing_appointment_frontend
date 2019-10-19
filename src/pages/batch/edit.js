@@ -49,7 +49,7 @@ export default class BatchEditModal extends Component {
             { title: '名称', name: 'name', defaultValue: model.name, rules: [{ required: true, message: '请填写批次名称' }], },
             { title: '选房地址', name: 'chooseAddress', defaultValue: model.chooseAddress, rules: [{ required: true, message: '请填写选房地址' }], },
             { title: '预约时段', name: 'appointmentTime', defaultValue: [moment(model.appointmentBeginTime), moment(model.appointmentEndTime)], type: "rangedate", rules: [{ required: true, message: '请选择预约开始时间' }], },
-            { title: '选房时段', name: 'chooseDate', defaultValue: [moment(model.chooseBeginDate), moment(model.chooseEndDate)], type: "rangedate", rules: [{ required: true, message: '请选择选房日期' }], },
+            // { title: '选房时段', name: 'chooseDate', defaultValue: [moment(model.chooseBeginDate), moment(model.chooseEndDate)], type: "rangedate", rules: [{ required: true, message: '请选择选房日期' }], },
             { title: '是否尾盘', name: 'Last', defaultValue: 'false', type: "select", options: [{ value: 'true', text: "是" }, { value: 'false', text: "否" }] }
         ];
     }

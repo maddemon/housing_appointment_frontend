@@ -1,7 +1,7 @@
 import cookie from 'react-cookies';
 import api from '../common/api';
 import StoreBase from './storeBase'
-class UserStore extends StoreBase {
+export default class UserStore extends StoreBase {
 
     constructor() {
         super()
@@ -52,5 +52,3 @@ class UserStore extends StoreBase {
         return this.invokeApi(() => api.user.resetPassword(id))
     }
 }
-
-export default new UserStore();

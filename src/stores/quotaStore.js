@@ -1,7 +1,7 @@
 import api from '../common/api'
 import StoreBase from './storeBase'
 
-class QuotaStore extends StoreBase {
+export default class QuotaStore extends StoreBase {
 
     constructor() {
         super()
@@ -11,5 +11,3 @@ class QuotaStore extends StoreBase {
         this.invokeGetModelApi = (id) => api.quota.getModel(id);
     }
 }
-
-export default new QuotaStore();

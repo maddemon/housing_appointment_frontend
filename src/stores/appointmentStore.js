@@ -2,7 +2,7 @@ import { observable, action } from 'mobx'
 import api from '../common/api'
 import StoreBase from './storeBase'
 
-class AppointmentStore extends StoreBase {
+export default class AppointmentStore extends StoreBase {
 
     @observable resultList = [];
     @observable successState = {}
@@ -18,5 +18,3 @@ class AppointmentStore extends StoreBase {
         return this.invokeApi(() => api.appointment.make(batchId, userQuotaId))
     }
 }
-
-export default new AppointmentStore();

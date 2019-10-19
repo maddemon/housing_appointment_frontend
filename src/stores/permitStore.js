@@ -2,7 +2,7 @@ import { observable, action } from 'mobx'
 import api from '../common/api'
 import StoreBase from './storeBase'
 
-class PermitStore extends StoreBase {
+export default  class PermitStore extends StoreBase {
 
     @observable statistic = []
     constructor() {
@@ -17,6 +17,3 @@ class PermitStore extends StoreBase {
             (response) => this.statistic = response.data)
     }
 }
-
-const store = new PermitStore();
-export default store;

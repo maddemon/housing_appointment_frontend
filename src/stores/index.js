@@ -1,17 +1,17 @@
-import userStore from './userStore'
-import globalStore from './globalStore'
-import houseStore from './houseStore'
-import batchStore from './batchStore'
-import permitStore from './permitStore'
-import quotaStore from './quotaStore'
-import appointmentStore from './appointmentStore'
+import UserStore from './userStore'
+import GlobalStore from './globalStore'
+import HouseStore from './houseStore'
+import BatchStore from './batchStore'
+import PermitStore from './permitStore'
+import QuotaStore from './quotaStore'
+import AppointmentStore from './appointmentStore'
 
 export default {
-    globalStore,
-    userStore,
-    houseStore,
-    batchStore,
-    permitStore,
-    quotaStore,
-    appointmentStore
+    globalStore: new GlobalStore(),
+    userStore: new UserStore(),
+    houseStore: new HouseStore(),
+    batchStore: new BatchStore(),
+    permitStore: new PermitStore(),
+    quotaStore: new QuotaStore(),
+    appointmentStore: new AppointmentStore()
 }

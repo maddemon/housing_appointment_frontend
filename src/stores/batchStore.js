@@ -1,7 +1,7 @@
 import { observable, action } from 'mobx'
 import api from '../common/api'
 import StoreBase from './storeBase'
-class BatchStore extends StoreBase {
+export default class BatchStore extends StoreBase {
 
     @observable avaliables = []
 
@@ -26,6 +26,14 @@ class BatchStore extends StoreBase {
             this.avaliables = response.data.list
         });
     }
+
+    @action async getCurrentModel() {
+        if(this.avaliables.length === 0){
+            await this.getAvaliables();
+        }
+        this.model = this.avaliables.length === 0 ? null : this.avaliables[0]
+    }
+
 
     notify(batchId) {
         return this.invokeApi(() => api.batch.notify(batchId))
@@ -125,6 +133,3 @@ class BatchStore extends StoreBase {
         return await api.batch.chooseRoom(this.selectedUser.batchQuotaId, room.id)
     }
 }
-
-const store = new BatchStore();
-export default store;

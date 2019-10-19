@@ -1,7 +1,7 @@
 import api from '../common/api'
 import StoreBase from './storeBase'
 
-class HousesStore extends StoreBase {
+export default class HousesStore extends StoreBase {
 
     constructor() {
         super()
@@ -14,5 +14,3 @@ class HousesStore extends StoreBase {
         return api.house.getImportUrl();
     }
 }
-
-export default new HousesStore();
