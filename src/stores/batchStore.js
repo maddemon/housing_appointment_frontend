@@ -27,11 +27,16 @@ export default class BatchStore extends StoreBase {
         });
     }
 
-    @action async getCurrentModel() {
-        if(this.avaliables.length === 0){
-            await this.getAvaliables();
+    @action async getModel(id) {
+        if (!id) {
+            if (this.avaliables.length === 0) {
+                await this.getAvaliables();
+            }
+            this.model = this.avaliables.length === 0 ? null : this.avaliables[0]
+        } else {
+            await super.getModel(id)
         }
-        this.model = this.avaliables.length === 0 ? null : this.avaliables[0]
+        return this.model;
     }
 
 

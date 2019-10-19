@@ -11,7 +11,7 @@ export default class NonPermitControl extends Component {
                     title="您还没有准购证"
                 >
                     <div className="desc">
-                        <li>您还没有领取购房资格证</li>
+                        <li>您还没有领取购房准购证</li>
                     </div>
                 </Result>
             </>

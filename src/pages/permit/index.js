@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
 import { Row, PageHeader, Icon, Button, Table, Input, Tag } from 'antd'
 import { QueryString } from '../../common/utils'
+import StatusTag from '../shared/_statusTag'
 
 @inject('stores')
 @observer
@@ -65,29 +66,7 @@ export default class PermitIndexPage extends Component {
     }
 
     quotaColumnRender = (text, record) => {
-        return record.quotas.map((item, key) => {
-            let color = "#2db7f5";
-            switch (item.status) {
-                default:
-                    color = "#999";
-                    break;
-                case 1://等待他人
-                    color = "#2db7f5";
-                    break;
-                case 2://已预约
-                    color = "#108ee9";
-                    break;
-                case 3:
-                case 4://已入围
-                case 5://已选房
-                    color = "#87d068";
-                    break;
-                case -1://放弃、尾批
-                    color = "#f50";
-                    break;
-            }
-            return <Tag color={color} key={key}>{item.quotaCode} {item.user} ({item.statusText})</Tag>
-        });
+        return record.quotas.map((item, key) => <StatusTag key={key} status={item.status} text={`${item.quotaCode} ${item.user} (${item.statusText})`} />);
     }
 
     render() {

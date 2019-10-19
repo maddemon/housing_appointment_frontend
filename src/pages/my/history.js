@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { PageHeader, Card, Spin, Col, Row } from 'antd'
+import { PageHeader, Card, Spin, Row, Descriptions } from 'antd'
 import moment from 'moment'
+import StatusTag from '../shared/_statusTag'
 
 @inject('stores')
 @observer
@@ -16,7 +17,7 @@ export default class UserAppointmentsPage extends Component {
             <div>
                 <PageHeader title="我的预约" subTitle="查询您的预约记录" />
                 <Spin spinning={loading}>
-                    <Row gutter={16}>
+                    <Row gutter={{ xs: 8, sm: 16, md: 24 }}>
                         {(list || []).map((item, i) => <UserAppointmentItemControl key={i} model={item} />)}
                     </Row>
                 </Spin>
@@ -27,12 +28,17 @@ export default class UserAppointmentsPage extends Component {
 
 const UserAppointmentItemControl = (props) => {
     const model = props.model;
-    return <Col xxl={12} xl={12} lg={12} md={12} style={{ marginBottom: '16px' }}><Card title={model.batchName}>
-        <p>预约时间：{moment(model.reserveTime).format('LLL')}</p>
-        <p>资格证号：{model.permitCode}-{model.quotaCode}</p>
-        <p>房屋地址：{model.houseAddress}</p>
-        <p>选房时间：{moment(model.chooseTime).format('L')}</p>
-        <p>选房地点：{model.chooseAddress}</p>
-    </Card>
-    </Col>
+    return (
+        <Card>
+            <Descriptions title={<span>预约编号{model.id}</span>} bordered column={{ md: 2, sm: 1, xs: 1 }}>
+                <Descriptions.Item label="批次名称">{model.batchName}</Descriptions.Item>
+                <Descriptions.Item label="准购证号">{model.code}</Descriptions.Item>
+                <Descriptions.Item label="预约时间：">{moment(model.createTime).format('LLL')}</Descriptions.Item>
+                <Descriptions.Item label="预约状态：">
+                    <StatusTag status={model.status} text={model.statusText} />
+                </Descriptions.Item>
+                <Descriptions.Item label="姓名：">{model.user}</Descriptions.Item>
+            </Descriptions>
+        </Card>
+    )
 }

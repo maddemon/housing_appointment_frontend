@@ -21,12 +21,8 @@ export default class MakeAppointmentPage extends Component {
     loadList = async (props) => {
         props = props || this.props
         const query = QueryString.parseJSON(props.location.search)
-        if (query.batchId) {
-            await this.props.stores.batchStore.getModel(query.batchId);
-        }
-        else {
-            await this.props.stores.batchStore.getCurrentModel();
-        }
+        
+        await this.props.stores.batchStore.getModel(query.batchId);
         this.props.stores.permitStore.getList();
     }
 
