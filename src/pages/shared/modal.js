@@ -1,27 +1,12 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import Form from './form'
-import { Modal } from 'antd'
+import ModalBase from './_modal'
 
-export default class FormModal extends Component {
-
-    state = { visible: false }
-    showModal = (e) => {
-        if (e) e.stopPropagation()
-        this.setState({ visible: true, })
-    }
-    hideModal = () => {
-        this.setState({ visible: false, })
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.visible !== undefined && nextProps.visible !== this.state.visible) {
-            this.setState({ visible: nextProps.visible })
-        }
-    }
-
+export default class FormModal extends ModalBase {
 
     form = null;
+    
     handleSubmit = () => {
         this.form.validateFields(async (err, values) => {
             if (err) {
@@ -37,27 +22,8 @@ export default class FormModal extends Component {
         })
     }
 
-    render() {
-        const { trigger, title, width, height, style } = this.props
-        return (
-            <>
-                {trigger ?
-                    <span onClick={this.showModal}>
-                        {trigger}
-                    </span>
-                    : null}
-                <Modal title={title || ''}
-                    visible={this.state.visible}
-                    width={width}
-                    height={height}
-                    onOk={this.handleSubmit}
-                    onCancel={this.hideModal}
-                    style={style}
-                >
-                    <Form items={this.props.items || []} ref={frm => this.form = frm} loading={this.props.loading} />
-                </Modal>
-            </>
-        )
+    renderBody = () => {
+        return <Form items={this.props.items || []} ref={frm => this.form = frm} loading={this.props.loading} />
     }
 }
 FormModal.propTypes = {

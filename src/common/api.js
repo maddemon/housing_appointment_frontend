@@ -95,8 +95,22 @@ const api = {
         make: (batchId, userQuotaId) => {
             return $.get('appointment/make', { batchId, userQuotaId })
         },
+        confirm: (batchId) => {
+            return $.get('appointment/confirm', { batchId })
+        },
         list: (parameter) => {
             return $.get('appointment/list', parameter)
+        },
+        giveup: (id) => {
+            return $.get('appointment/giveup', { id })
+        }
+    },
+    chooseDate: {
+        save: (formData) => {
+            return $.post('chooseDate/save', null, formData)
+        },
+        list: (batchId) => {
+            return $.get('chooseDate/list', { batchId })
         }
     }
 }

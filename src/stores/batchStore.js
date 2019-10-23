@@ -33,7 +33,8 @@ export default class BatchStore extends StoreBase {
                 await this.getAvaliables();
             }
             this.model = this.avaliables.length === 0 ? null : this.avaliables[0]
-        } else {
+        } 
+        else if(this.model == null || id != this.model.id){
             await super.getModel(id)
         }
         return this.model;

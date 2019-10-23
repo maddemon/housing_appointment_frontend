@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Row, Col, Select, PageHeader, Icon, Table, Button, Input, Tag, Radio } from 'antd'
+import { Row, Col, Select, PageHeader, Icon, Table, Button, Input, Tag, Modal, message } from 'antd'
 import { QueryString } from '../../common/utils'
 import moment from 'moment'
 import StatusTag from '../shared/_statusTag'
+import ChooseDateModal from './chooseDate'
 
 @inject('stores')
 @observer
@@ -30,6 +31,7 @@ export default class AppointmentIndexPage extends Component {
             query.batchId = this.props.stores.batchStore.model.id;
         }
         await this.props.stores.appointmentStore.getList(query);
+        await this.props.stores.chooseDateStore.getList(query.batchId)
     }
 
     reloadPage = (name, value) => {
@@ -41,6 +43,7 @@ export default class AppointmentIndexPage extends Component {
     handlePageChange = page => this.reloadPage("pageIndex", page);
 
     handleUserChange = (value) => this.reloadPage("onlyShardUser", value);
+    handleStatusChange = (value) => this.reloadPage("status", value)
 
     handleUserSearch = (key) => this.reloadPage("key", key)
 
@@ -49,18 +52,48 @@ export default class AppointmentIndexPage extends Component {
         window.open('/api/appointment/export?batchId=' + batch.id)
     }
 
+    handleConfirmClick = async () => {
+        const batch = this.props.stores.batchStore.model
+        const response = await this.props.stores.appointmentStore.confirm(batch.id);
+        if (response.ok) {
+            message.success("正选名单确认完成");
+            this.loadList(this.props);
+        }
+    }
+
     handleRowSelect = {
         onChange: (selectedRowKeys, selectedRows) => {
             this.setState({ selectedRowKeys })
         },
     }
 
-    operateColumnRender = (text, item) => {
+    handleGiveupClick = (id) => {
+        Modal.confirm({
+            title: "确定执行放弃选房操作？",
+            content: "如果放弃选房，则只能等到尾批才有选房资格，确定要放弃吗？",
+            okText: "确认放弃",
+            onOk: async () => {
+                const result = await this.props.stores.appointmentStore.giveup(id)
+                if (result && result.ok) {
+                    message.success("操作完成");
+                    await this.loadList()
+                }
+            }
+        })
+    }
 
+    operateColumnRender = (text, item) => {
+        const canGiveup = item.status < 3;
+        const buttons = [];
+        if (canGiveup) {
+            buttons.push(<Button type="danger" onClick={() => this.handleGiveupClick(item.id)}>放弃</Button>);
+        }
+        return <Button.Group>{buttons}</Button.Group>
     }
 
     render() {
         const batch = this.props.stores.batchStore.model
+        if (!batch) return null;
         const { list, page, loading, parameter } = this.props.stores.appointmentStore
         return (
             <Row>
@@ -71,21 +104,36 @@ export default class AppointmentIndexPage extends Component {
                     </span>}
                     backIcon={<Icon type="arrow-left" />}
                     extra={(
-                        <Row >
-                            <Col span={12}>
-                                <Select onChange={this.handleUserChange} style={{ width: 200 }} defaultValue="0">
+                        <Row>
+                            <Col span={8}>
+                                <Select onChange={this.handleUserChange} defaultValue="0" style={{ width: 200 }}>
                                     <Select.Option key="0">全部用户</Select.Option>
                                     <Select.Option key="1">只看包含共有人的预约</Select.Option>
                                 </Select>
                             </Col>
-                            <Col span={12}>
+                            <Col span={8}>
+                                <Select onChange={this.handleStatusChange} defaultValue="0" style={{ width: 200 }}>
+                                    <Select.Option key="0">全部状态</Select.Option>
+                                    <Select.Option key="1">等待他人预约</Select.Option>
+                                    <Select.Option key="2">已预约</Select.Option>
+                                    <Select.Option key="3">已入围</Select.Option>
+                                    <Select.Option key="4">已选房</Select.Option>
+                                    <Select.Option key="5">放弃</Select.Option>
+                                </Select>
+                            </Col>
+                            <Col span={8}>
                                 <Input.Search onSearch={this.handleUserSearch} defaultValue={parameter.key} placeholder="姓名、手机、身份证" />
                             </Col>
                         </Row>
                     )} />
                 <div className="toolbar">
                     <Button.Group>
-                        <Button type="primary" disabled={this.state.selectedRowKeys.length === 0}><Icon type="calendar" />批量指定选房日期</Button>
+                        <ChooseDateModal
+                            model={{ batchId: batch.id, appointmentIds: this.state.selectedRowKeys }}
+                            trigger={<Button type="primary" disabled={this.state.selectedRowKeys.length === 0}>
+                                <Icon type="calendar" />批量指定选房日期
+                            </Button>}
+                        />
                     </Button.Group>
                     &nbsp;&nbsp;
                     <Button.Group>

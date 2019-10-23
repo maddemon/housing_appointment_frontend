@@ -17,4 +17,12 @@ export default class AppointmentStore extends StoreBase {
     @action make(batchId, userQuotaId) {
         return this.invokeApi(() => api.appointment.make(batchId, userQuotaId))
     }
+
+    confirm(batchId) {
+        return this.invokeApi(() => api.appointment.confirm(batchId))
+    }
+
+    giveup(id) {
+        return this.invokeApi(() => api.appointment.giveup(id))
+    }
 }

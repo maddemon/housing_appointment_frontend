@@ -26,10 +26,10 @@ const QueryString = {
 
 function throwException(res) {
     try {
-        message.warn(res.exceptionMessage || res.message)
+        message.error(res.exceptionMessage || res.message)
     }
     catch (ex) {
-        message.warn('未知错误')
+        message.error('未知错误')
     }
 }
 

@@ -5,6 +5,7 @@ import BatchStore from './batchStore'
 import PermitStore from './permitStore'
 import QuotaStore from './quotaStore'
 import AppointmentStore from './appointmentStore'
+import ChooseDateStore from './chooseDateStore'
 
 export default {
     globalStore: new GlobalStore(),
@@ -13,5 +14,6 @@ export default {
     batchStore: new BatchStore(),
     permitStore: new PermitStore(),
     quotaStore: new QuotaStore(),
-    appointmentStore: new AppointmentStore()
+    appointmentStore: new AppointmentStore(),
+    chooseDateStore : new ChooseDateStore()
 }
