@@ -44,10 +44,6 @@ export default class UserStore extends StoreBase {
         return this.invokeApi(() => api.user.editPassword(oldPassword, newPassword))
     }
 
-    sendVerifyCode(mobile) {
-        return this.invokeApi(() => api.user.sendVerifyCode(mobile))
-    }
-
     resetPassword(id) {
         return this.invokeApi(() => api.user.resetPassword(id))
     }

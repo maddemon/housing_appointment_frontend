@@ -44,7 +44,7 @@ export default class AppointmentIndexPage extends Component {
 
     handleUserChange = (value) => this.reloadPage("onlyShardUser", value);
     handleStatusChange = (value) => this.reloadPage("status", value)
-
+    handleChooseDateChange = (value) => this.reloadPage("chooseDateId", value);
     handleUserSearch = (key) => this.reloadPage("key", key)
 
     handleExportClick = () => {
@@ -82,11 +82,34 @@ export default class AppointmentIndexPage extends Component {
         })
     }
 
+    handleSendChooseMessage = () => {
+        Modal.confirm({
+            title: "发送选房确认",
+            content: "你确定向已选中的用户发送选房通知短信吗？",
+            okText: "确认发送",
+            onOk: () => {
+                this.props.stores.messageStore.sendChooseMessage(this.state.selectedRowKeys)
+            }
+        })
+    }
+
+    handleSendEnterMessage = () => {
+        Modal.confirm({
+            title: "发送入围短信确认",
+            content: "你已经确定入围名单了吗？\r\n发送全体短信会在阿里云自动扣除一定费用，请谨慎！",
+            okText: "确认发送",
+            onOk: () => {
+                const batch = this.props.stores.batchStore.model
+                this.props.stores.messageStore.sendEnterMessage(batch.id)
+            }
+        })
+    }
+
     operateColumnRender = (text, item) => {
         const canGiveup = item.status < 3;
         const buttons = [];
         if (canGiveup) {
-            buttons.push(<Button type="danger" onClick={() => this.handleGiveupClick(item.id)}>放弃</Button>);
+            buttons.push(<Button key="btn-giveup" type="danger" onClick={() => this.handleGiveupClick(item.id)}>放弃</Button>);
         }
         return <Button.Group>{buttons}</Button.Group>
     }
@@ -95,6 +118,7 @@ export default class AppointmentIndexPage extends Component {
         const batch = this.props.stores.batchStore.model
         if (!batch) return null;
         const { list, page, loading, parameter } = this.props.stores.appointmentStore
+        const chooseDateList = this.props.stores.chooseDateStore.list || []
         return (
             <Row>
                 <PageHeader title="预约管理"
@@ -105,14 +129,14 @@ export default class AppointmentIndexPage extends Component {
                     backIcon={<Icon type="arrow-left" />}
                     extra={(
                         <Row>
-                            <Col span={8}>
-                                <Select onChange={this.handleUserChange} defaultValue="0" style={{ width: 200 }}>
+                            <Col span={6}>
+                                <Select onChange={this.handleUserChange} defaultValue="0" style={{ width: 160 }}>
                                     <Select.Option key="0">全部用户</Select.Option>
                                     <Select.Option key="1">只看包含共有人的预约</Select.Option>
                                 </Select>
                             </Col>
-                            <Col span={8}>
-                                <Select onChange={this.handleStatusChange} defaultValue="0" style={{ width: 200 }}>
+                            <Col span={6}>
+                                <Select onChange={this.handleStatusChange} defaultValue="0" style={{ width: 160 }}>
                                     <Select.Option key="0">全部状态</Select.Option>
                                     <Select.Option key="1">等待他人预约</Select.Option>
                                     <Select.Option key="2">已预约</Select.Option>
@@ -121,24 +145,35 @@ export default class AppointmentIndexPage extends Component {
                                     <Select.Option key="5">放弃</Select.Option>
                                 </Select>
                             </Col>
-                            <Col span={8}>
+                            <Col span={6}>
+                                <Select onChange={this.handleChooseDateChange} defaultValue="" style={{ width: 160 }}>
+                                    <Select.Option key="0" value="">全部选房日期</Select.Option>
+                                    {chooseDateList.map((item, key) => <Select.Option key={key} value={item.id.toString()}>{moment(item.day).format('ll')}{item.hour === 1 ? "上午" : "下午"}</Select.Option>)}
+                                </Select>
+                            </Col>
+                            <Col span={6}>
                                 <Input.Search onSearch={this.handleUserSearch} defaultValue={parameter.key} placeholder="姓名、手机、身份证" />
                             </Col>
                         </Row>
                     )} />
                 <div className="toolbar">
                     <Button.Group>
+                        <Button type="primary" onClick={this.handleConfirmClick}><Icon type="diff" />生成正选名单</Button>
+                        <Button onClick={this.handleExportClick}><Icon type="export" />导出所有名单</Button>
+                        <Button onClick={this.handleSendEnterMessage}><Icon type="bell" />入围通知</Button>
+                    </Button.Group>
+                    &nbsp;
+                    <Button.Group>
                         <ChooseDateModal
                             model={{ batchId: batch.id, appointmentIds: this.state.selectedRowKeys }}
                             trigger={<Button type="primary" disabled={this.state.selectedRowKeys.length === 0}>
                                 <Icon type="calendar" />批量指定选房日期
                             </Button>}
+                            onSubmit={() => this.loadList()}
                         />
-                    </Button.Group>
-                    &nbsp;&nbsp;
-                    <Button.Group>
-                        <Button type="danger" onClick={this.handleConfirmClick}><Icon type="diff" />生成正选名单</Button>
-                        <Button type="primary" onClick={this.handleExportClick}><Icon type="export" />导出所有名单</Button>
+                        <Button onClick={this.handleSendChooseMessage} disabled={this.state.selectedRowKeys.length === 0}>
+                            <Icon type="bell" />选房通知
+                        </Button>
                     </Button.Group>
                 </div>
                 <Table
@@ -151,8 +186,12 @@ export default class AppointmentIndexPage extends Component {
                         { dataIndex: "phone", title: "手机号" },
                         { dataIndex: "idCard", title: "身份证" },
                         { dataIndex: "remark", title: "共有人" },
-                        { dataIndex: "statusText", title: "预约状态", render: (text, item) => <StatusTag status={item.status} text={text} /> },
-                        { dataIndex: "createTime", title: "预约时间", render: (text) => moment(text).format('LLL') },
+                        {
+                            dataIndex: "statusText", title: "预约状态",
+                            render: (text, item) => <StatusTag status={item.status} text={text} />
+                        },
+                        { dataIndex: "createTime", title: "预约时间", render: (text) => moment(text).format('lll') },
+                        { dataIndex: "chooseTime", title: "选房时间" },
                         { title: "操作", render: this.operateColumnRender, },
                     ]}
                     dataSource={list || []}

@@ -12,10 +12,6 @@ export default class chooseDateModal extends Component {
 
     handleSubmit = async (data) => {
         const result = await this.props.stores.chooseDateStore.save(data);
-        if (result && result.ok && data.sendSms === "1") {
-            //发送通知短信
-            //this.props.stores.
-        }
         if (this.props.onSubmit) {
             this.props.onSubmit(result)
         }
@@ -23,7 +19,9 @@ export default class chooseDateModal extends Component {
     }
 
     handleChange = () => {
-        const model = this.props.stores.chooseDateStore.list.find(e => moment(e.day) === this.state.day && e.hour === this.state.hour)
+        console.log(this.state.day, this.state.hour)
+        const model = this.props.stores.chooseDateStore.list.find(e => moment(e.day).format('ll') === this.state.day.format('ll') && e.hour === this.state.hour)
+        console.log(model)
         this.setState({ selectedDay: model })
     }
 
@@ -62,10 +60,6 @@ export default class chooseDateModal extends Component {
             },
             {
                 title: "该时段已有人数", render: <span>{(this.state.selectedDay || {}).currentNumber || 0}</span>
-            },
-            {
-                title: "短信通知", name: 'sendSms',
-                render: <Checkbox value="1" defaultChecked={true} >向所有选择的用户发送选房日期通知短信</Checkbox>
             }
         ];
     }

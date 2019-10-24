@@ -47,10 +47,10 @@ export default class BatchIndexPage extends Component {
 
     handleNotify = (item) => {
         Modal.confirm({
-            title: "摇号通知",
-            content: "你确定要发送通知短信吗？",
+            title: "你确定要发送通知短信吗？",
+            content: "全体预约通知将会发送大量短信，同时阿里云服务器会扣除响应的费用，你确定此操作吗？",
             onOk: async () => {
-                const result = await this.props.stores.batchStore.notify(item.id)
+                const result = await this.props.stores.messageStore.sendAppointmentMessage(item.id)
                 if (result.ok) {
                     message.success(result.message)
                 }

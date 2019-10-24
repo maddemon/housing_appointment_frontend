@@ -6,6 +6,7 @@ import PermitStore from './permitStore'
 import QuotaStore from './quotaStore'
 import AppointmentStore from './appointmentStore'
 import ChooseDateStore from './chooseDateStore'
+import MessageStore from './messageStore'
 
 export default {
     globalStore: new GlobalStore(),
@@ -15,5 +16,6 @@ export default {
     permitStore: new PermitStore(),
     quotaStore: new QuotaStore(),
     appointmentStore: new AppointmentStore(),
-    chooseDateStore : new ChooseDateStore()
+    chooseDateStore: new ChooseDateStore(),
+    messageStore: new MessageStore()
 }

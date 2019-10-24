@@ -25,4 +25,5 @@ export default class AppointmentStore extends StoreBase {
     giveup(id) {
         return this.invokeApi(() => api.appointment.giveup(id))
     }
+
 }

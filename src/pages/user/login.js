@@ -35,7 +35,7 @@ export default class UserLoginPage extends Component {
             return false;
         }
 
-        this.props.stores.userStore.sendVerifyCode(this.state.mobile)
+        this.props.stores.messageStore.sendVerifyCodeMessage(this.state.mobile)
         const getTimes = this.state.getTimes + 1;
         this.setState({ seconds: 60, getTimes: getTimes })
         const timer = setInterval(this.updateSeconds, 1000);

@@ -41,10 +41,6 @@ export default class BatchStore extends StoreBase {
     }
 
 
-    notify(batchId) {
-        return this.invokeApi(() => api.batch.notify(batchId))
-    }
-
     @action async getRooms(batchId) {
         return this.invokeApi(() => api.batch.getRooms(batchId), (response) => {
             this.rooms = response.data

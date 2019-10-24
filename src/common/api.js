@@ -15,9 +15,6 @@ const api = {
         },
         editPassword: (oldPassword, newPassword) => {
             return $.post('user/changePassword', null, { oldPassword, newPassword })
-        },
-        sendVerifyCode: (phone) => {
-            return $.get('user/getVerifyCode', { phone })
         }
     },
     house: {
@@ -58,7 +55,7 @@ const api = {
         },
         chooseRoom: (appointmentId, roomId) => {
             return $.put('room/choose', null, { appointmentId, roomId })
-        }
+        },
     },
     permit: {
         list: (parameter) => {
@@ -111,6 +108,20 @@ const api = {
         },
         list: (batchId) => {
             return $.get('chooseDate/list', { batchId })
+        }
+    },
+    message: {
+        sendVerifyCodeMessage: (phone) => {
+            return $.get('user/getVerifyCode', { phone })
+        },
+        sendAppointmentMessage: (batchId) => {
+            return $.get('message/sendAppointmentMessage', { batchId })
+        },
+        sendEnterMessage: (batchId) => {
+            return $.get('message/sendEnterMessage', { batchId })
+        },
+        sendChooseMessage: (appointmentIds) => {
+            return $.get('message/sendChooseMessage', { appointmentIds })
         }
     }
 }
