@@ -48,14 +48,18 @@ export default class StoreBase {
     }
 
     @action getModel(id) {
+        let model = null;
+        if (this.list.length > 0 && id) {
+            model = (this.list || []).find(e => e.id && e.id.toString() === id.toString());
+            if (model) {
+                this.model = model;
+                return model;
+            }
+        }
         if (this.invokeGetModelApi) {
             return this.invokeApi(() => this.invokeGetModelApi(id), response => {
                 this.model = response.data
             })
-        } else {
-            const model = (this.list || []).find(e => e.id.toString() === id.toString());
-            this.model = model;
-            return model;
         }
     }
 

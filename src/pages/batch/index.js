@@ -62,7 +62,7 @@ export default class BatchIndexPage extends Component {
         this.props.history.push('/appointment/index?batchId=' + batchId)
     }
     handleRedirectToChoosePage = (batchId) => {
-        this.props.history.push('/batch/choose?batchId=' + batchId)
+        this.props.history.push('/batch/choosePermit?batchId=' + batchId)
     }
     handleRedirectToResultPage = (batchId) => {
         this.props.history.push('/batch/chooseResult?batchId=' + batchId)
@@ -92,18 +92,18 @@ export default class BatchIndexPage extends Component {
         const canEdit = moment(item.chooseEndDate) > moment()
         const canDelete = moment(item.appointmentBeginTime) > moment()
         var result = []
-        //if (canNotify) 
-        result.push(<Button key="btnNotify" onClick={this.handleNotify} type="primary"><Icon type="bell" />预约通知</Button>)
-        //else 
-        result.push(<Button key="btnAppointment" onClick={() => this.handleRedirectToAppointmentPage(item.id)}><Icon type="clock-circle" />预约管理</Button>)
-        //if (canChoose) 
-        result.push(<Button key="btnChoose" onClick={() => this.handleRedirectToChoosePage(item.id)} type="primary"><Icon type="check" />选房</Button>)
-        //if (canViewResult) 
-        result.push(<Button key="btnResult" onClick={() => this.handleRedirectToResultPage(item.id)} type="default"><Icon type="file-search" />选房结果</Button>)
-        //if (canEdit) 
-        result.push(<EditModal key="edit" model={item} trigger={<Button icon="edit" title="修改" />} onSubmit={this.handleSubmitForm} />)
-        //if (canDelete) 
-        result.push(<Button key="delete" title="删除" icon="delete" onClick={this.handleDelete} />)
+        if (canNotify)
+            result.push(<Button key="btnNotify" onClick={this.handleNotify} type="primary"><Icon type="bell" />预约通知</Button>)
+        else
+            result.push(<Button key="btnAppointment" onClick={() => this.handleRedirectToAppointmentPage(item.id)}><Icon type="clock-circle" />预约管理</Button>)
+        if (canChoose)
+            result.push(<Button key="btnChoose" onClick={() => this.handleRedirectToChoosePage(item.id)} type="primary"><Icon type="check" />选房</Button>)
+        if (canViewResult)
+            result.push(<Button key="btnResult" onClick={() => this.handleRedirectToResultPage(item.id)} type="default"><Icon type="file-search" />选房结果</Button>)
+        if (canEdit)
+            result.push(<EditModal key="edit" model={item} trigger={<Button icon="edit" title="修改" />} onSubmit={this.handleSubmitForm} />)
+        if (canDelete)
+            result.push(<Button key="delete" title="删除" icon="delete" onClick={this.handleDelete} />)
         return <Button.Group>{result}</Button.Group>
     }
 

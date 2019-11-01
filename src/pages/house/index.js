@@ -65,7 +65,7 @@ export default class HousesIndexPage extends Component {
                         <EditModal
                             title="添加楼盘"
                             trigger={<Button type="primary"><Icon type="plus" /> 添加楼盘</Button>}
-                            onSubmit={this.handleSubmit}
+                            onSubmit={this.handleSubmitEditForm}
                         />
                     </Button.Group>
                 </div>
@@ -77,8 +77,9 @@ export default class HousesIndexPage extends Component {
                         { dataIndex: 'id', title: '编号', width: 75 },
                         { dataIndex: "name", title: "名称" },
                         { dataIndex: 'address', title: '楼盘地址' },
-                        { dataIndex: "roomsCount", title: "房屋数量", width: 100 },
-                        { dataIndex: "remainingRoomsCount", title: "剩余房屋数量", width: 120 },
+                        { dataIndex: "count.dwelling", title: "房屋数量", width: 150, render: (text, item) => `${item.remaining.dwelling || 0} / ${item.count.dwelling || 0}` },
+                        { dataIndex: "count.parking", title: "车位数量", width: 150, render: (text, item) => `${item.remaining.parking || 0} / ${item.count.parking || 0}` },
+                        { dataIndex: "count.storeroom", title: "贮藏室数量", width: 150, render: (text, item) => `${item.remaining.storeroom || 0} / ${item.count.storeroom || 0}` },
                         { title: "操作", render: this.operateColumnRender, width: 150 },
                     ]}
                     dataSource={list || []}

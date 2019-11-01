@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
 import { Row, PageHeader, Button, Col, Card, Select, Result, Modal, message } from 'antd'
+import { QueryString } from '../../common/utils'
 
 @inject('stores')
 @observer
@@ -10,15 +11,12 @@ export default class ChooseRoomPage extends Component {
         await this.loadData()
     }
 
-    loadData = async () => {
-        const { selectedModel, selectedUser } = this.props.stores.batchStore;
-        //如果么有选中购房人，则默认选择第一个可用的购房人，如果没有，则此准购证无效
-        if (!selectedUser) {
-            this.props.history.push('/batch/choosePermit')
-        }
-        if (selectedModel && selectedModel.id) {
-            await this.props.stores.batchStore.getHouses(selectedModel.id);
-        }
+    loadData = async (props) => {
+        props = props || this.props;
+        let query = QueryString.parseJSON(props.location.search)
+        await this.props.stores.batchStore.getModel(query.batchId);
+        await this.props.stores.permitStore.getModel(query.permitId);
+        await this.props.stores.houseStore.getList({ batchId: query.batchId })
     }
 
     handleHouseChange = (value) => {
@@ -54,9 +52,19 @@ export default class ChooseRoomPage extends Component {
         }
     }
     render() {
-        const batch = this.props.stores.batchStore.selectedModel;
-        let { loading, house, selectedPermit, selectedUser, selectedHouse, selectedBuilding } = this.props.stores.batchStore;
-        if (!batch.id) {
+        const loading = this.props.stores.batchStore.loading && this.props.stores.permitStore.loading && this.props.stores.houseStore.loading;
+        const batch = this.props.stores.batchStore.model;
+        const permit = this.props.stores.permitStore.model;
+        const houses = this.props.stores.houseStore.list || [];
+        const house = houses.length > 0 ? houses[0] : null;
+        if (!house) {
+            return null;
+        }
+
+        if (loading) {
+            return null
+        }
+        if (!batch) {
             return <Result
                 status="提醒"
                 title="没有选择批次，请从批次管理-选房进入"
@@ -67,51 +75,35 @@ export default class ChooseRoomPage extends Component {
                 }
             />
         }
-        if (!selectedHouse) {
+        if (!permit) {
             return <Result
                 status="提醒"
-                title="该批次还没有选择楼盘，请返回管理界面选择"
+                title="没有选择准购证"
                 extra={
                     <Button type="primary" key="console" onClick={() => {
-                        this.props.history.push('/batch/index')
+                        this.props.history.push('/batch/choosePermit?batchId=' + batch.id)
                     }}>返回</Button>
                 }
             />
         }
-        if (loading) {
-            return null
-        }
 
         return (
             <div>
-                <PageHeader title="选房" />
-                <Card title={`第①步：请选择下面的购房人 ↓`}>
-                    {selectedPermit.users.map(item => <Button key={item.batchQuotaId} type={selectedUser && selectedUser.batchQuotaId === item.batchQuotaId ? "primary" : ""} onClick={() => {
-                        this.props.stores.batchStore.selectUser(item)
-                    }}>{item.userName}</Button>)}
-                </Card>
-                <Card title={<>
-                    <span>第②步：筛选房屋 -> </span>
-                    <Select key="ddl-house" onChange={this.handleHouseChange} defaultValue={selectedHouse.name} placeholder="请选择楼盘" style={{ width: '200px' }}>
-                        {house.map(e => <Select.Option key={e.name}>{e.name}</Select.Option>)}
-                    </Select>
-                    <Select key="ddl-building" onChange={this.handleBuildingChange} defaultValue={selectedBuilding.name} style={{ width: '200px' }}>
-                        {selectedHouse.buildings.map(e => <Select.Option key={e.name}>{e.name}</Select.Option>)}
-                    </Select>
-                </>} style={{ marginTop: '10px' }}>
-                    <Row className="units" gutter={16}>
-                        {selectedBuilding.units.map(unit => <Col key={unit.name} span={24 / selectedBuilding.units.length}>
-                            <h3>{unit.name}</h3>
-                            <Row className="floors">
-                                {unit.floors.map(floor => <Row key={floor.name} className="rooms">
-                                    {floor.rooms.map(room => <Col key={room.roomId} span={parseInt(24 / floor.rooms.length)} >
-                                        <RoomItemControl model={room} onClick={this.handleChooseRoom} />
-                                    </Col>)}
-                                </Row>)}
-                            </Row>
-                        </Col>)}
-                    </Row>
-                </Card>
+                <PageHeader title="选房"
+                    extra={<Row style={{ width: 400 }}>
+                        <Col span={12}>
+                            <Select onChange={this.handleHouseChange} style={{ width: '100%' }} placeholder="切换楼盘" defaultValue={(house.id || '').toString()}>
+                                {houses.map((item, key) => <Select.Option key={item.id}>{item.name}</Select.Option>)}
+                            </Select>
+                        </Col>
+                        <Col span={12}>
+                            <Select onChange={this.handleBuildingChange} style={{ width: '100%' }} placeholder="选择楼栋" >
+                                {}
+                            </Select>
+                        </Col>
+                    </Row>}
+                />
+
             </div>
         )
     }

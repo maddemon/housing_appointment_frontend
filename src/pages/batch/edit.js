@@ -15,8 +15,8 @@ export default class BatchEditModal extends Component {
         data.appointmentBeginTime = data.appointmentTime[0].format('YYYY-MM-DD 09:00:00')
         data.appointmentEndTime = data.appointmentTime[1].format('YYYY-MM-DD 18:00:00')
 
-        data.chooseBeginDate = data.chooseDate[0].format('YYYY-MM-DD')
-        data.chooseEndDate = data.chooseDate[1].format('YYYY-MM-DD')
+        // data.chooseBeginDate = data.chooseDate[0].format('YYYY-MM-DD')
+        // data.chooseEndDate = data.chooseDate[1].format('YYYY-MM-DD')
 
         const result = await this.props.stores.batchStore.save(data);
         if (this.props.onSubmit) {

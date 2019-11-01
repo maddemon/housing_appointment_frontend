@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Row, Col, Select, PageHeader, Icon, Table, Button, Input, Tag, Modal, message } from 'antd'
+import { Row, Col, Select, PageHeader, Icon, Table, Button, Input, Tag, Modal, message, Result } from 'antd'
 import { QueryString } from '../../common/utils'
 import moment from 'moment'
 import StatusTag from '../shared/_statusTag'
@@ -27,11 +27,11 @@ export default class AppointmentIndexPage extends Component {
         props = props || this.props
         const query = QueryString.parseJSON(props.location.search)
         await this.props.stores.batchStore.getModel(query.batchId)
-        if (!query.batchId) {
+        if (!query.batchId && this.props.stores.batchStore.model) {
             query.batchId = this.props.stores.batchStore.model.id;
+            await this.props.stores.appointmentStore.getList(query);
+            await this.props.stores.chooseDateStore.getList(query.batchId)
         }
-        await this.props.stores.appointmentStore.getList(query);
-        await this.props.stores.chooseDateStore.getList(query.batchId)
     }
 
     reloadPage = (name, value) => {
@@ -116,7 +116,16 @@ export default class AppointmentIndexPage extends Component {
 
     render() {
         const batch = this.props.stores.batchStore.model
-        if (!batch) return null;
+        if (!batch) return (
+            <Result
+                status="404"
+                title="没有批次信息"
+                subTitle="系统没有找到可用的批次，是否没有创建？"
+                extra={<Button type="primary" onClick={() => {
+                    this.props.history.push('/batch/index')
+                }}>返回批次管理</Button>}
+            />
+        );
         const { list, page, loading, parameter } = this.props.stores.appointmentStore
         const chooseDateList = this.props.stores.chooseDateStore.list || []
         return (

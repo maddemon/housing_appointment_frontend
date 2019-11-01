@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button } from 'antd'
+import { Button, Typography } from 'antd'
 import Modal from '../shared/modal'
 import { inject, observer } from 'mobx-react'
 import ImportButton from '../shared/import_button'
@@ -9,6 +9,7 @@ import ImportButton from '../shared/import_button'
 export default class HouseEditModal extends Component {
     state = { uploading: false }
     handleSubmit = async (data) => {
+        data.file = this.state.file;
         const result = await this.props.stores.houseStore.save(data);
         if (this.props.onSubmit) {
             this.props.onSubmit(result)
@@ -26,17 +27,20 @@ export default class HouseEditModal extends Component {
             { name: 'id', defaultValue: model.id, type: "hidden" },
             { title: '名称', name: 'name', defaultValue: model.name, rules: [{ required: true, message: '此项没有填写' }], },
             { title: '楼盘地址', name: 'address', defaultValue: model.address },
-            { name: 'filePath', type: 'hidden', defaultValue: model.filePath },
+            { name: 'filePath', type: 'hidden' },
             {
                 title: '房屋列表',
                 name: 'file',
-                render: <ImportButton
-                    name="file"
-                    text={this.state.file ? this.state.file.fileName : "请选择房屋表格文件(Excel)"}
-                    action="/api/file/upload"
-                    accept=".xls,.xlsx"
-                    onChange={this.handleUpload}
-                />
+                render:
+                    <>
+                        <ImportButton
+                            name="file"
+                            text={this.state.file ? this.state.file.fileName : "请选择房屋表格文件(Excel)"}
+                            action="/api/file/upload"
+                            accept=".xls,.xlsx"
+                            onChange={this.handleUpload}
+                        />
+                    </>
             }
         ];
     }

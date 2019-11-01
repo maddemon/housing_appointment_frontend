@@ -18,6 +18,9 @@ const api = {
         }
     },
     house: {
+        getModel: (id) => {
+            return $.get('house/getModel', { id })
+        },
         save: (data) => {
             return $.post('house/save', null, data)
         },
@@ -61,6 +64,10 @@ const api = {
         list: (parameter) => {
             return $.get('permit/list', parameter)
         },
+        //入围准购证列表
+        enterList: (parameter) => {
+            return $.get('permit/enterList', parameter)
+        },
         statistic: () => {
             return $.get('permit/statistical')
         },
@@ -70,9 +77,12 @@ const api = {
         delete: (permitId) => {
             return $.get('permit/delete', { permitId })
         },
+        getModel: (id) => {
+            return $.get('permit/getmodel', { id });
+        },
         userPermits: () => {
             return $.get('quota/userQuota')
-        }
+        },
     },
     quota: {
         getModel: (id) => {

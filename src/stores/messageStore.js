@@ -2,7 +2,7 @@ import api from '../common/api'
 import StoreBase from './storeBase'
 export default class MessageStore extends StoreBase {
 
-    sendVerifyCode(mobile) {
+    sendVerifyCodeMessage(mobile) {
         return this.invokeApi(() => api.message.sendVerifyCodeMessage(mobile))
     }
 
