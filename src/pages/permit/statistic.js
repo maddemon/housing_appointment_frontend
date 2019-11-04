@@ -13,7 +13,8 @@ export default class PermitStatisticPage extends Component {
     }
 
     render() {
-        const { statistic, loading } = this.props.stores.permitStore
+        let { statistic, loading } = this.props.stores.permitStore
+        statistic = statistic || []
         return (
             <Row>
                 <PageHeader title="准购证管理发放情况统计表" />

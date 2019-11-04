@@ -12,7 +12,8 @@ export default class UserAppointmentsPage extends Component {
         await this.props.stores.appointmentStore.getList();
     }
     render() {
-        const { list, loading } = this.props.stores.appointmentStore;
+        let { list, loading } = this.props.stores.appointmentStore;
+        list = list || [];
         return (
             <div>
                 <PageHeader title="我的预约" subTitle="查询您的预约记录" />
@@ -30,14 +31,17 @@ const UserAppointmentItemControl = (props) => {
     const model = props.model;
     return (
         <Card>
-            <Descriptions title={<span>预约编号{model.id}</span>} bordered column={{ md: 2, sm: 1, xs: 1 }}>
+            <Descriptions title={<span>预约编号</span>} bordered column={{ md: 2, sm: 1, xs: 1 }}>
                 <Descriptions.Item label="批次名称">{model.batchName}</Descriptions.Item>
                 <Descriptions.Item label="准购证号">{model.code}</Descriptions.Item>
-                <Descriptions.Item label="预约时间：">{moment(model.createTime).format('LLL')}</Descriptions.Item>
-                <Descriptions.Item label="预约状态：">
+                <Descriptions.Item label="预约时间">{moment(model.createTime).format('LLL')}</Descriptions.Item>
+                <Descriptions.Item label="预约状态">
                     <StatusTag status={model.status} text={model.statusText} />
                 </Descriptions.Item>
-                <Descriptions.Item label="姓名：">{model.user}</Descriptions.Item>
+                <Descriptions.Item label="姓名">{model.user}</Descriptions.Item>
+                <Descriptions.Item label="共有人">
+                    {model.shareUsers.map(item => <StatusTag status={item.status} text={`${item.user} ${item.statusText}`}/> )}
+                </Descriptions.Item>
             </Descriptions>
         </Card>
     )

@@ -56,7 +56,9 @@ export default class HousesIndexPage extends Component {
     }
 
     render() {
-        const { list, page, loading } = this.props.stores.houseStore
+        let { list, page, loading } = this.props.stores.houseStore
+        list = list || [];
+        page = page || {};
         return (
             <Row>
                 <PageHeader title="楼盘管理" />
@@ -80,6 +82,7 @@ export default class HousesIndexPage extends Component {
                         { dataIndex: "count.dwelling", title: "房屋数量", width: 150, render: (text, item) => `${item.remaining.dwelling || 0} / ${item.count.dwelling || 0}` },
                         { dataIndex: "count.parking", title: "车位数量", width: 150, render: (text, item) => `${item.remaining.parking || 0} / ${item.count.parking || 0}` },
                         { dataIndex: "count.storeroom", title: "贮藏室数量", width: 150, render: (text, item) => `${item.remaining.storeroom || 0} / ${item.count.storeroom || 0}` },
+                        { dataIndex: "count.terrace", title: "露台数量", width: 150, render: (text, item) => `${item.remaining.terrace || 0} / ${item.count.terrace || 0}` },
                         { title: "操作", render: this.operateColumnRender, width: 150 },
                     ]}
                     dataSource={list || []}

@@ -45,14 +45,27 @@ export default class BatchIndexPage extends Component {
         })
     }
 
-    handleNotify = (item) => {
+    handleSendAppointmentMessage = (batchId) => {
         Modal.confirm({
             title: "你确定要发送通知短信吗？",
-            content: "全体预约通知将会发送大量短信，同时阿里云服务器会扣除响应的费用，你确定此操作吗？",
+            content: "本次操作将向“所有未预约的用户”发送预约通知，你确定要执行此操作吗？",
             onOk: async () => {
-                const result = await this.props.stores.messageStore.sendAppointmentMessage(item.id)
+                const result = await this.props.stores.messageStore.sendAppointmentMessage(batchId)
                 if (result.ok) {
-                    message.success(result.message)
+                    message.success("发送短信完成")
+                }
+            },
+        })
+    }
+
+    handleSendFailMessage = (batchId) => {
+        Modal.confirm({
+            title: "你确定要发送通未完成预约通知吗？",
+            content: "本次操作是将向“指标的共有人尚未预约的用户”或“同准购证下其他未预约的用户”发送预约通知短信，你确定执行此操作吗？",
+            onOk: async () => {
+                const result = await this.props.stores.messageStore.sendFailMessage(batchId)
+                if (result.ok) {
+                    message.success("发送短信完成")
                 }
             },
         })
@@ -90,8 +103,10 @@ export default class BatchIndexPage extends Component {
         const canViewResult = moment(item.chooseBeginDate) <= moment();
         const canDelete = moment(item.appointmentBeginTime) > moment()
         var result = []
-        if (canNotify)
-            result.push(<Button key="btnNotify" onClick={this.handleNotify} type="primary"><Icon type="bell" />预约通知</Button>)
+        if (canNotify) {
+            result.push(<Button key="btnNotify" onClick={() => this.handleSendAppointmentMessage(item.id)}><Icon type="bell" />预约通知</Button>)
+            result.push(<Button key="btnNotifyFailMessage" onClick={() => this.handleSendFailMessage(item.id)}><Icon type="bell" />预约未完成通知</Button>)
+        }
         else
             result.push(<Button key="btnAppointment" onClick={() => this.handleRedirectToAppointmentPage(item.id)}><Icon type="clock-circle" />预约管理</Button>)
         result.push(<Button key="btnChoose" onClick={() => this.handleRedirectToChoosePage(item.id)} type="primary"><Icon type="check" />选房</Button>)
@@ -104,7 +119,8 @@ export default class BatchIndexPage extends Component {
     }
 
     render() {
-        const { list } = this.props.stores.batchStore
+        const list = this.props.stores.batchStore.list || []
+        if (!list) return null
         return (
             <Row>
                 <PageHeader title="批次管理" />

@@ -1,13 +1,14 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { PageHeader, Tag, message, Modal } from 'antd'
-
+import { PageHeader, Tag, message, Modal, Row, Col } from 'antd'
 import moment from 'moment'
+
 import { QueryString } from '../../common/utils'
 import BatchItemControl from './_batchItem'
 import PermitItemControl from './_permitItem'
 import NonBatchControl from './_nonBatch'
 import NonPermitControl from './_nonPermit'
+
 
 @inject('stores')
 @observer
@@ -21,7 +22,7 @@ export default class MakeAppointmentPage extends Component {
     loadList = async (props) => {
         props = props || this.props
         const query = QueryString.parseJSON(props.location.search)
-        
+
         await this.props.stores.batchStore.getModel(query.batchId);
         this.props.stores.permitStore.getList();
     }
@@ -30,7 +31,7 @@ export default class MakeAppointmentPage extends Component {
         this.props.history.goBack();
     }
 
-    handleClick = (userQuota) => {
+    handleQuotaClick = (model) => {
         const batch = this.props.stores.batchStore.model;
         Modal.confirm({
             title: "确认",
@@ -38,17 +39,16 @@ export default class MakeAppointmentPage extends Component {
             cancelText: "再想想",
             content: <div>
                 <p>已选批次：{batch.name}</p>
-                <p>已选购房证：{userQuota.permitCode}-{userQuota.quotaCode}</p>
+                <p>已选购房证：{model.permitCode}-{model.quotaCode}</p>
                 <p>当前日期：{moment().format('LL')}</p>
-                <p style={{ color: 'red' }}>系统将在{moment(batch.appointmentEndTime).add(1, "days").format('ll')}发送入围通知短信，请留意您的短信，方便查看是否入选。</p>
+                <p style={{ color: 'red' }}>此操作仅代表提交了预约申请，还需等待准购证全部成员提交之后才会判定是否预约成功。</p>
             </div>,
             onOk: async () => {
-                const result = await this.props.stores.appointmentStore.make(batch.id, userQuota.id)
+                const result = await this.props.stores.appointmentStore.make(batch.id, model.id)
                 if (result.ok) {
                     message.success("预约成功");
                     this.props.history.push('/my/history')
                 }
-                return false;
             }
         })
     }
@@ -68,14 +68,19 @@ export default class MakeAppointmentPage extends Component {
             <>
                 <PageHeader title="预约选房" tags={<Tag color="red">{batch.name}</Tag>} onBack={this.handleBack} />
                 <BatchItemControl model={batch} isAppoinmentPage={true} />
-                <br />
                 {permits.length === 0 ?
                     <NonPermitControl /> :
-                    permits.map((item, key) => <PermitItemControl
-                        key={key}
-                        model={item}
-                        onClick={this.handleClick}
-                    />)}
+                    <Row gutter={{ xs: 8, sm: 16, md: 24 }}>
+                        {permits.map((item, key) => <Col gutter={5} key={key}>
+                            <PermitItemControl
+                                key={key}
+                                model={item}
+                                onClick={this.handleQuotaClick}
+                            />
+                        </Col>
+                        )}
+                    </Row>
+                }
             </>
         )
     }

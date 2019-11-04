@@ -32,9 +32,7 @@ export default class BatchEditModal extends Component {
     getFormItems = () => {
         const model = this.props.model || {}
         let houses = this.props.stores.houseStore.list;
-        if (!model.id) {
-            houses = houses.filter(e => e.remainingRoomsCount > 0);
-        }
+       
         return [
             { name: 'id', defaultValue: model.id || '0', type: "hidden" },
             {

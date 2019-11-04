@@ -66,7 +66,7 @@ button.ant-btn.room {
 .login .ant-tabs-bar {
     text-align: center;
     border: none;
-    margin-bottom: 25px;
+    margin: 25px 0;
 }
 .anticon.nav-phone-icon {
     position: absolute;

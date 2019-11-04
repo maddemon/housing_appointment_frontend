@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Row, Col, Select, PageHeader, Icon, Table, Button, Input, Tag, Modal, message, Result } from 'antd'
+import { Row, Col, Select, PageHeader, Icon, Table, Button, Input, Tag, Modal, message, Result, Tooltip } from 'antd'
 import { QueryString } from '../../common/utils'
 import moment from 'moment'
 import StatusTag from '../shared/_statusTag'
@@ -85,22 +85,29 @@ export default class AppointmentIndexPage extends Component {
     handleSendChooseMessage = () => {
         Modal.confirm({
             title: "发送选房确认",
-            content: "你确定向已选中的用户发送选房通知短信吗？",
+            content: "本次操作将向“已选中的用户”发送选房通知短信，你确认执行此操作吗？",
             okText: "确认发送",
-            onOk: () => {
-                this.props.stores.messageStore.sendChooseMessage(this.state.selectedRowKeys)
+            onOk: async () => {
+                const batch = this.props.stores.batchStore.model
+                const response = await this.props.stores.messageStore.sendChooseMessage(batch.id, this.state.selectedRowKeys)
+                if (response && response.ok) {
+                    message.success("发送短信完成");
+                }
             }
         })
     }
 
-    handleSendEnterMessage = () => {
+    handleSendNotEnterMessage = () => {
         Modal.confirm({
-            title: "发送入围短信确认",
-            content: "你已经确定入围名单了吗？\r\n发送全体短信会在阿里云自动扣除一定费用，请谨慎！",
+            title: "发送备选短信确认",
+            content: "本次操作将向“未进入入围名单的用户”发送备选短信通知，你已经确定入围名单了吗？",
             okText: "确认发送",
-            onOk: () => {
+            onOk: async () => {
                 const batch = this.props.stores.batchStore.model
-                this.props.stores.messageStore.sendEnterMessage(batch.id)
+                const response = await this.props.stores.messageStore.sendNotEnterMessage(batch.id)
+                if (response && response.ok) {
+                    message.success("发送短信完成");
+                }
             }
         })
     }
@@ -109,9 +116,18 @@ export default class AppointmentIndexPage extends Component {
         const canGiveup = item.status < 3;
         const buttons = [];
         if (canGiveup) {
-            buttons.push(<Button key="btn-giveup" type="danger" onClick={() => this.handleGiveupClick(item.id)}>放弃</Button>);
+            //buttons.push(<Button key="btn-giveup" type="danger" onClick={() => this.handleGiveupClick(item.id)}>取消报名</Button>);
         }
         return <Button.Group>{buttons}</Button.Group>
+    }
+
+    shareUserColumnRender = (text, record) => {
+        if (record.shareUsers.length === 0) {
+            return null;
+        }
+
+        return record.shareUsers.map((item, key) => <span key={key}>{item.user}({item.phone}){item.statusText}<br /></span>)
+
     }
 
     render() {
@@ -128,6 +144,9 @@ export default class AppointmentIndexPage extends Component {
         );
         const { list, page, loading, parameter } = this.props.stores.appointmentStore
         const chooseDateList = this.props.stores.chooseDateStore.list || []
+        if (!list || !page || !parameter || !chooseDateList) {
+            return null
+        }
         return (
             <Row>
                 <PageHeader title="预约管理"
@@ -169,7 +188,7 @@ export default class AppointmentIndexPage extends Component {
                     <Button.Group>
                         <Button type="primary" onClick={this.handleConfirmClick}><Icon type="diff" />生成正选名单</Button>
                         <Button onClick={this.handleExportClick}><Icon type="export" />导出所有名单</Button>
-                        <Button onClick={this.handleSendEnterMessage}><Icon type="bell" />入围通知</Button>
+                        <Button onClick={this.handleSendNotEnterMessage}><Icon type="bell" />备选通知</Button>
                     </Button.Group>
                     &nbsp;
                     <Button.Group>
@@ -194,10 +213,13 @@ export default class AppointmentIndexPage extends Component {
                         { dataIndex: "user", title: "预约用户" },
                         { dataIndex: "phone", title: "手机号" },
                         { dataIndex: "idCard", title: "身份证" },
-                        { dataIndex: "remark", title: "共有人" },
+                        {
+                            dataIndex: "shareUsers", title: "共有人", 
+                            render: this.shareUserColumnRender
+                        },
                         {
                             dataIndex: "statusText", title: "预约状态",
-                            render: (text, item) => <StatusTag status={item.status} text={text} />
+                            render: (text, record) => <StatusTag status={record.status} text={text} />
                         },
                         { dataIndex: "createTime", title: "预约时间", render: (text) => moment(text).format('lll') },
                         { dataIndex: "chooseTime", title: "选房时间" },

@@ -70,8 +70,10 @@ export default class PermitIndexPage extends Component {
     }
 
     render() {
-        const { list, page, loading } = this.props.stores.permitStore
-        console.log('permit/index')
+        let { list, page, loading } = this.props.stores.permitStore
+        list = list || []
+        page = page || {}
+
         return (
             <Row>
                 <PageHeader title="准购证管理" extra={

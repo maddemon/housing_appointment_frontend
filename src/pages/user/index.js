@@ -76,7 +76,11 @@ export default class UserIndexPage extends Component {
     }
 
     render() {
-        const { loading, list, page, parameter } = this.props.stores.userStore;
+        let { loading, list, page, parameter } = this.props.stores.userStore;
+        list = list || []
+        page = page || {}
+        parameter = parameter || {}
+
         return (
             <Row>
                 <PageHeader title="用户管理" extra={<Input.Search onSearch={this.handleSearch} defaultValue={parameter.key} />} />
@@ -95,6 +99,7 @@ export default class UserIndexPage extends Component {
                         { dataIndex: "phone", title: "手机号", width: 200 },
                         { dataIndex: "idCard", title: "证件号码", },
                         { dataIndex: "createTime", title: "创建日期", width: 200, render: (text) => moment(text).format('lll') },
+                        { dataIndex: 'remark', title: '备注' },
                         { title: "操作", render: this.operateColumnRender, width: 200 },
                     ]}
                     dataSource={list}

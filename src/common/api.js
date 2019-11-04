@@ -121,8 +121,8 @@ const api = {
         }
     },
     message: {
-        sendVerifyCodeMessage: (phone) => {
-            return $.get('user/getVerifyCode', { phone })
+        sendVerifyCodeMessage: (name) => {
+            return $.get('message/sendVerifyCodeMessage', { idcard: name })
         },
         sendAppointmentMessage: (batchId) => {
             return $.get('message/sendAppointmentMessage', { batchId })
@@ -130,8 +130,14 @@ const api = {
         sendEnterMessage: (batchId) => {
             return $.get('message/sendEnterMessage', { batchId })
         },
-        sendChooseMessage: (appointmentIds) => {
-            return $.get('message/sendChooseMessage', { appointmentIds })
+        sendFailMessage: (batchId) => {
+            return $.get('message/sendFailMessage', { batchId })
+        },
+        sendNotEnterMessage: (batchId) => {
+            return $.get('message/sendNotEnterMessage', { batchId })
+        },
+        sendChooseMessage: (batchId, appointmentIds) => {
+            return $.get('message/sendChooseMessage', { batchId, appointmentIds })
         }
     }
 }

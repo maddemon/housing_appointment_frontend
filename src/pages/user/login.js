@@ -8,7 +8,7 @@ import ShareForm from '../shared/form'
 @observer
 export default class UserLoginPage extends Component {
 
-    state = { mobile: null, getTimes: 0, seconds: 0 }
+    state = { name: null, getTimes: 0, seconds: 0 }
 
     componentWillMount() {
         this.props.stores.globalStore.setTitle('用户登录');
@@ -29,13 +29,16 @@ export default class UserLoginPage extends Component {
         }
     }
 
-    handleVerifyCodeClick = () => {
-        if (!this.state.mobile) {
-            message.error("手机号码填写不正确");
+    handleVerifyCodeClick = async () => {
+        if (!this.state.name) {
+            message.error("没有填写证件号码");
             return false;
         }
 
-        this.props.stores.messageStore.sendVerifyCodeMessage(this.state.mobile)
+        const response = await this.props.stores.messageStore.sendVerifyCodeMessage(this.state.name)
+        if (response && response.ok) {
+            message.success(`短信验证码已发送至${response.data.phone}手机号码中，请注意查收`)
+        }
         const getTimes = this.state.getTimes + 1;
         this.setState({ seconds: 60, getTimes: getTimes })
         const timer = setInterval(this.updateSeconds, 1000);
@@ -47,13 +50,6 @@ export default class UserLoginPage extends Component {
         if (response && response.ok) {
             const query = QueryString.parseJSON(this.props.location.seach)
             this.props.history.push(query.returnUrl || '/')
-        }
-    }
-
-    handleMobileChange = (e) => {
-        const mobile = e.target.value;
-        if ((/^1(3|4|5|6|7|8|9)\d{9}$/g).test(mobile)) {
-            this.setState({ mobile: e.target.value })
         }
     }
 
@@ -69,6 +65,10 @@ export default class UserLoginPage extends Component {
         return "获取验证码";
     }
 
+    handleNameChange = (e) => {
+        this.setState({ name: e.target.value })
+    }
+
     render() {
         return (
             <div className="container login-page">
@@ -81,7 +81,7 @@ export default class UserLoginPage extends Component {
                 <Row className="login">
                     <Col xs={{ span: 20, offset: 2 }} sm={{ span: 16, offset: 4 }} md={{ span: 12, offset: 6 }} lg={{ span: 6, offset: 9 }} xl={{ span: 4, offset: 10 }}>
                         <Tabs animated={false}>
-                            <Tabs.TabPane tab="用户登录" key="member">
+                            <Tabs.TabPane tab="短信登录" key="member">
                                 <ShareForm
                                     loading={this.props.stores.userStore.loading}
                                     onSubmit={this.handleSubmit}
@@ -89,14 +89,14 @@ export default class UserLoginPage extends Component {
                                         {
                                             name: 'name',
                                             rules: [{ required: true, message: '此项没有填写', }],
-                                            render: <Input size="large" onChange={this.handleMobileChange} placeholder="手机号" />
+                                            render: <Input size="large" placeholder="身份证件号码" onChange={this.handleNameChange} />
                                         },
                                         {
                                             name: 'code',
                                             rules: [{ required: true, message: '此项没有填写', }],
                                             render: <Row gutter={12}>
                                                 <Col span={12}>
-                                                    <Input size="large" placeholder="短信验证码" />
+                                                    <Input size="large" placeholder="手机验证码" />
                                                 </Col>
                                                 <Col span={12}>
                                                     <Button size="large" block onClick={this.handleVerifyCodeClick} disabled={this.state.seconds > 0}>
@@ -115,7 +115,7 @@ export default class UserLoginPage extends Component {
                                     ]}
                                 />
                             </Tabs.TabPane>
-                            <Tabs.TabPane tab="管理登录" key="manager">
+                            <Tabs.TabPane tab="密码登录" key="manager">
                                 <ShareForm
                                     loading={this.props.stores.userStore.loading}
                                     onSubmit={this.handleSubmit}

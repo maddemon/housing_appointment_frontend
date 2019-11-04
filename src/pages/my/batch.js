@@ -23,7 +23,9 @@ export default class AppointmentStep1Page extends Component {
     }
 
     render() {
-        const { avaliables, loading } = this.props.stores.batchStore;
+        let { avaliables, loading } = this.props.stores.batchStore;
+        avaliables = avaliables || [];
+
         return (
             <>
                 <PageHeader title="预约选房" />
@@ -32,7 +34,7 @@ export default class AppointmentStep1Page extends Component {
                     {avaliables.length === 0 ?
                         <NonBatchControl />
                         :
-                        avaliables.map((item, key) => <BatchItemControl model={item} key={key} onClick={this.handleAppointmentClick} />)
+                        avaliables.map((item, key) => <BatchItemControl model={item} key={item.id} onClick={this.handleAppointmentClick} />)
                     }
                 </Spin>
             </>
