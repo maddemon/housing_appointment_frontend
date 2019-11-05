@@ -31,7 +31,7 @@ export default class HouseEditModal extends Component {
         return [
             { name: 'id', defaultValue: model.id, type: "hidden" },
             { title: '名称', name: 'name', defaultValue: model.name, rules: [{ required: true, message: '此项没有填写' }], },
-            { title: '楼盘地址', name: 'address', defaultValue: model.address },
+            { title: '楼盘地址', name: 'address', defaultValue: model.address, rules: [{ required: true, message: '此项没有填写' }], },
             { name: 'roomFilePath', type: 'hidden' },
             {
                 title: '房屋列表',

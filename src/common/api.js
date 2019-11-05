@@ -88,6 +88,9 @@ const api = {
         getModel: (id) => {
             return $.get('quota/GetUserQuota', { id })
         },
+        save: (model) => {
+            return $.post('quota/save', null, model)
+        },
         delete: (id) => {
             return $.get('quota/delete', { id })
         },

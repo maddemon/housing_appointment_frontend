@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Row, PageHeader, Icon, Button, Table, Input, Tag } from 'antd'
+import { Row, Col, PageHeader, Icon, Button, Table, Input, Tag, Select } from 'antd'
 import { QueryString } from '../../common/utils'
-import StatusTag from '../shared/_statusTag'
+import EditQuotaModal from './edit_quota'
 
 @inject('stores')
 @observer
@@ -20,64 +20,76 @@ export default class PermitIndexPage extends Component {
     }
 
     loadList = (props) => {
+        props = props || this.props
         let query = QueryString.parseJSON(props.location.search)
         this.props.stores.permitStore.getList(query);
     }
 
-    operateColumnRender = (text, item) => {
-        return <Button.Group>
-            <Button key="btnEdit">
-                <Icon type="edit" />
-            </Button>
-            <Button key="btnDelete" onClick={() => this.handleDelete(item.id)} type="danger" title="删除">
-                <Icon type="delete" />
-            </Button>
-        </Button.Group>
-    }
-
     handlePageChange = page => {
-        this.props.history.push(`/permit/index?pageIndex=${page}`)
+        const parameter = this.props.stores.permitStore.parameter || {}
+        parameter["pageIndex"] = page;
+        this.props.history.push('/permit/index?' + QueryString.stringify(parameter))
     }
 
-    handleSearch = (value) => {
-        this.props.history.push(`/permit/index?key=${value}`)
+    handleSearch = (key) => {
+        this.props.history.push(`/permit/index?key=${key}`)
     }
 
     handleRedirectToStatistics = () => {
         this.props.history.push(`/permit/statistic`)
     }
+    handleFilterChange = (val) => {
+        this.props.history.push(`/permit/index?issue=${val}`)
+    }
 
-    quotaRowRender = (record, index, indent, expanded) => {
-        if (!expanded) {
-            return null
-        }
+    handleSaveQuota = () => {
+        this.loadList()
+    }
 
-        return <Table
-            bordered={false}
-            rowKey="id"
-            pagination={false}
-            dataSource={record.quotas || []}
-            columns={[
-                { dataIndex: 'quotaCode', title: '购房证编号', width: 160 },
-                { dataIndex: 'user', title: "购房人", width: 200 },
-                { dataIndex: 'statusText', title: "状态" }
-            ]}
-        />
+    handleDeleteQuota = () => {
+        this.loadList();
     }
 
     quotaColumnRender = (text, record) => {
-        return record.quotas.map((item, key) => <StatusTag key={key} status={item.status} text={`${item.quotaCode} ${item.user} (${item.statusText})`} />);
+        return record.quotas.map((item, key) => <EditQuotaModal
+            key={key}
+            model={item}
+            trigger={<Button>{item.quotaCode} {item.user} {item.statusText}</Button>}
+            onSubmit={this.handleSaveQuota}
+            onDelete={this.handleDeleteQuota}
+        />);
+    }
+
+    operateColumnRender = (text, item) => {
+        if (item.issueNumber < item.quotaNumber) {
+            return <EditQuotaModal model={{ permitCode: item.permitCode, }}
+                trigger={<Button type="primary">发证</Button>}
+                onSubmit={this.handleSaveQuota}
+                onDelete={this.handleDeleteQuota}
+            />
+        }
+        return null;
     }
 
     render() {
-        let { list, page, loading } = this.props.stores.permitStore
+        let { list, page, loading, parameter } = this.props.stores.permitStore
         list = list || []
         page = page || {}
-
+        parameter = parameter || {}
+        console.log(typeof (parameter.issue))
         return (
             <Row>
-                <PageHeader title="准购证管理" extra={
-                    <Input.Search onSearch={this.handleSearch} />
+                <PageHeader title="准购证管理" extra={<Row>
+                    <Col span={12}>
+                        <Select onChange={this.handleFilterChange} style={{ width: 200 }} defaultValue={parameter.issue}>
+                            <Select.Option key="all" value="">查看所有</Select.Option>
+                            <Select.Option key="false" value="false">仅看未发证</Select.Option>
+                        </Select>
+                    </Col>
+                    <Col span={12}>
+                        <Input.Search defaultValue={parameter.key} onSearch={this.handleSearch} style={{ width: 200 }} />
+                    </Col>
+                </Row>
                 } />
                 <div className="toolbar">
                     <Button onClick={this.handleRedirectToStatistics}><Icon type="bar-chart" />查看发证情况</Button>
@@ -87,13 +99,13 @@ export default class PermitIndexPage extends Component {
                     loading={loading}
                     rowKey="id"
                     columns={[
-                        { dataIndex: "permitCode", title: "准购证号", },
-                        { dataIndex: "agency", title: "动迁机构", },
-                        { dataIndex: "town", title: "镇街" },
-                        { dataIndex: "quotaNumber", title: "限购套数" },
+                        { dataIndex: "permitCode", title: "准购证号", width: 100 },
+                        { dataIndex: "agency", title: "动迁机构", width: 120 },
+                        { dataIndex: "town", title: "镇街", width: 150 },
+                        { dataIndex: "quotaNumber", title: "限购套数", width: 100 },
                         { dataIndex: 'quotas', title: '实发套数', render: this.quotaColumnRender },
                         { dataIndex: "remark", title: "备注" },
-                        { title: '操作', render: this.operateColumnRender }
+                        { title: '操作', render: this.operateColumnRender, width: 120 }
                     ]}
                     dataSource={list}
                     pagination={{ ...page, size: 5, onChange: this.handlePageChange, }}

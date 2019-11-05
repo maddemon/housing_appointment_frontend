@@ -27,8 +27,12 @@ export default class AppointmentIndexPage extends Component {
         props = props || this.props
         const query = QueryString.parseJSON(props.location.search)
         await this.props.stores.batchStore.getModel(query.batchId)
-        if (!query.batchId && this.props.stores.batchStore.model) {
+
+        if (!query.batchId) {
             query.batchId = this.props.stores.batchStore.model.id;
+        }
+
+        if (query.batchId) {
             await this.props.stores.appointmentStore.getList(query);
             await this.props.stores.chooseDateStore.getList(query.batchId)
         }
@@ -131,8 +135,9 @@ export default class AppointmentIndexPage extends Component {
     }
 
     render() {
-        const batch = this.props.stores.batchStore.model
-        if (!batch) return (
+        const batch = this.props.stores.batchStore.model || {};
+        let loading = this.props.stores.batchStore.loading;
+        if (!batch.id && !loading) return (
             <Result
                 status="404"
                 title="没有批次信息"
@@ -142,11 +147,10 @@ export default class AppointmentIndexPage extends Component {
                 }}>返回批次管理</Button>}
             />
         );
-        const { list, page, loading, parameter } = this.props.stores.appointmentStore
+        const { list, page, parameter } = this.props.stores.appointmentStore
+        loading = this.props.stores.appointmentStore.loading
         const chooseDateList = this.props.stores.chooseDateStore.list || []
-        if (!list || !page || !parameter || !chooseDateList) {
-            return null
-        }
+
         return (
             <Row>
                 <PageHeader title="预约管理"
@@ -180,7 +184,7 @@ export default class AppointmentIndexPage extends Component {
                                 </Select>
                             </Col>
                             <Col span={6}>
-                                <Input.Search onSearch={this.handleUserSearch} defaultValue={parameter.key} placeholder="姓名、手机、身份证" />
+                                <Input.Search onSearch={this.handleUserSearch} defaultValue={(parameter || {}).key} placeholder="姓名、手机、身份证" />
                             </Col>
                         </Row>
                     )} />
@@ -214,7 +218,7 @@ export default class AppointmentIndexPage extends Component {
                         { dataIndex: "phone", title: "手机号" },
                         { dataIndex: "idCard", title: "身份证" },
                         {
-                            dataIndex: "shareUsers", title: "共有人", 
+                            dataIndex: "shareUsers", title: "共有人",
                             render: this.shareUserColumnRender
                         },
                         {

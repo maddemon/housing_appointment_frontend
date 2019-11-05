@@ -1,5 +1,5 @@
 const config = {
-    SystemName: '临安市在线预约选房系统',
+    SystemName: '临安区在线预约选房系统',
     Version: '2.0',
     Host: '',
     ApiPath: '/api/',

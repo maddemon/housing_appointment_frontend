@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { PageHeader, Icon, Button, Row, message, Modal, Tag, Table, Card, Descriptions, Pagination } from 'antd'
+import { PageHeader, Icon, Button, Row, message, Modal, Tag, Table, Card, Descriptions, Pagination, Spin } from 'antd'
 import moment from 'moment'
 import EditModal from './edit'
 
@@ -119,8 +119,7 @@ export default class BatchIndexPage extends Component {
     }
 
     render() {
-        const list = this.props.stores.batchStore.list || []
-        if (!list) return null
+        const { list, loading } = this.props.stores.batchStore
         return (
             <Row>
                 <PageHeader title="批次管理" />
@@ -130,15 +129,17 @@ export default class BatchIndexPage extends Component {
                     </Button.Group>
                 </div>
                 <Row gutter={16}>
-                    {list.map((item) => <Card key={item.id}>
-                        <Descriptions title={this.nameColumnRender(item.name, item)} bordered column={{ md: 2, sm: 1, xs: 1 }}>
-                            <Descriptions.Item label="编号">{item.id}</Descriptions.Item>
-                            <Descriptions.Item label="楼盘">{this.houseColumnRender('', item)}</Descriptions.Item>
-                            <Descriptions.Item label="预约时段">{this.appointmentColumnRender('', item)}</Descriptions.Item>
-                            <Descriptions.Item label="选房地点">{item.chooseAddress}</Descriptions.Item>
-                            <Descriptions.Item label="管理">{this.operateColumnRender('', item)}</Descriptions.Item>
-                        </Descriptions>
-                    </Card>)}
+                    <Spin spinning={loading}>
+                        {(list || []).map((item) => <Card key={item.id}>
+                            <Descriptions title={this.nameColumnRender(item.name, item)} bordered column={{ md: 2, sm: 1, xs: 1 }}>
+                                <Descriptions.Item label="编号">{item.id}</Descriptions.Item>
+                                <Descriptions.Item label="楼盘">{this.houseColumnRender('', item)}</Descriptions.Item>
+                                <Descriptions.Item label="预约时段">{this.appointmentColumnRender('', item)}</Descriptions.Item>
+                                <Descriptions.Item label="选房地点">{item.chooseAddress}</Descriptions.Item>
+                                <Descriptions.Item label="管理">{this.operateColumnRender('', item)}</Descriptions.Item>
+                            </Descriptions>
+                        </Card>)}
+                    </Spin>
                 </Row>
             </Row >
         )

@@ -2,8 +2,9 @@ import React, { Component } from 'react'
 import { Icon, Button, Row, Col, Tabs, Input, message } from 'antd'
 import { inject, observer } from 'mobx-react';
 import { QueryString } from '../../common/utils'
-import Config from '../../common/config'
 import ShareForm from '../shared/form'
+import LoginLogo from './_login_logo'
+
 @inject('stores')
 @observer
 export default class UserLoginPage extends Component {
@@ -72,16 +73,11 @@ export default class UserLoginPage extends Component {
     render() {
         return (
             <div className="container login-page">
-                <div className="top">
-                    <div className="header">
-                        <img alt="logo" className="logo" src="/images/logo.png" />
-                        <span className="title">{Config.SystemName}</span>
-                    </div>
-                </div>
+                <LoginLogo />
                 <Row className="login">
                     <Col xs={{ span: 20, offset: 2 }} sm={{ span: 16, offset: 4 }} md={{ span: 12, offset: 6 }} lg={{ span: 6, offset: 9 }} xl={{ span: 4, offset: 10 }}>
                         <Tabs animated={false}>
-                            <Tabs.TabPane tab="短信登录" key="member">
+                            <Tabs.TabPane tab="用户登录" key="member">
                                 <ShareForm
                                     loading={this.props.stores.userStore.loading}
                                     onSubmit={this.handleSubmit}
@@ -112,32 +108,6 @@ export default class UserLoginPage extends Component {
                                             type="primary" htmlType="submit" block>
                                             <Icon type="login" />登录
                                     </Button>
-                                    ]}
-                                />
-                            </Tabs.TabPane>
-                            <Tabs.TabPane tab="密码登录" key="manager">
-                                <ShareForm
-                                    loading={this.props.stores.userStore.loading}
-                                    onSubmit={this.handleSubmit}
-                                    items={[
-                                        {
-                                            name: 'name',
-                                            placeholder: '用户名',
-                                            size: 'large',
-                                            rules: [{ required: true, message: '此项没有填写', }]
-                                        },
-                                        {
-                                            name: 'password',
-                                            placeholder: '密码',
-                                            size: 'large',
-                                            type: 'password',
-                                            rules: [{ required: true, message: '此项没有填写', }],
-                                        }
-                                    ]}
-                                    buttons={[
-                                        <Button size="large" loading={this.props.stores.userStore.loading} type="primary" htmlType="submit" block>
-                                            <Icon type="login" />登录
-                                        </Button>
                                     ]}
                                 />
                             </Tabs.TabPane>

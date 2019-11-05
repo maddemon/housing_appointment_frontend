@@ -24,7 +24,7 @@ export default class ModalBase extends Component {
     renderBody = () => { }
 
     render() {
-        const { trigger, title, width, height, style } = this.props
+        const { trigger, title, width, height, style, footer } = this.props
         return (
             <>
                 {trigger ?
@@ -39,6 +39,7 @@ export default class ModalBase extends Component {
                     onOk={this.handleSubmit}
                     onCancel={this.hideModal}
                     style={style}
+                    footer={footer}
                 >
                     {this.renderBody()}
                 </Modal>

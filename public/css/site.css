@@ -64,8 +64,7 @@ button.ant-btn.room {
     }
 
 .login .ant-tabs-bar {
-    text-align: center;
-    border: none;
+    text-align: left;
     margin: 25px 0;
 }
 .anticon.nav-phone-icon {

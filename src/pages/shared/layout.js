@@ -4,7 +4,8 @@ import { inject, observer } from 'mobx-react';
 import DocumentTitle from 'react-document-title';
 import { Layout, Breadcrumb, Result, Button, Icon } from 'antd';
 import TopNavbar from '../shared/_header';
-import UserLoginPage from '../user/login';
+import UserLoginPage from '../user/user_login';
+import AdminLoginPage from '../user/admin_login';
 import UserIndexPage from '../user';
 import HousesIndexPage from '../house'
 import BatchIndexPage from '../batch';
@@ -35,6 +36,7 @@ export default class PrimaryLayout extends Component {
                         <PrivateRoute exact path="/" component={HomePage} />
                         <Route exact path="/batch/chooseResult" component={ChooseResultPage} />
                         <Route exact path="/user/login" component={UserLoginPage} />
+                        <Route exact path="/admin/login" component={AdminLoginPage} />
                         <PrivateRoute exact path="/my/history" component={MyHistoryPage} />
                         <PrivateRoute exact path="/my/permit" component={MyPermitPage} />
                         <PrivateRoute exact path="/my/batch" component={MyBatchPage} />
