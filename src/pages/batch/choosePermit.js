@@ -14,31 +14,39 @@ export default class ChoosePermitPage extends Component {
         await this.loadData()
     }
 
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.location.search !== this.props.location.search) {
+            this.loadData(nextProps)
+        }
+    }
+
     loadData = async (props) => {
         props = props || this.props;
-        let query = QueryString.parseJSON(props.location.search)
-
+        let query = QueryString.parseJSON(props.location.search);
         await this.props.stores.batchStore.getModel(query.batchId);
         const batch = this.props.stores.batchStore.model;
-        if (batch) {
-            query.pageSize = 99999;
-            await this.props.stores.chooseDateStore.getList(batch.id)
-            if (!query.chooseDateId) {
-                const defaultChooseDate = await this.props.stores.chooseDateStore.getDefaultModel();
-                console.log(defaultChooseDate)
-                query.chooseDateId = (defaultChooseDate || {}).id || '';
-            }
-            await this.props.stores.permitStore.getEnterList(query)
+        if (!batch) return;
+        await this.props.stores.chooseDateStore.getList(batch.id)
+        if (!query.chooseDateId) {
+            const defaultChooseDate = await this.props.stores.chooseDateStore.getDefaultModel();
+            query.chooseDateId = (defaultChooseDate || {}).id || '';
         }
+        await this.props.stores.permitStore.getEnterList(query)
     }
 
     handleItemClick = (item) => {
         this.props.stores.batchStore.selectPermit(item)
         this.props.history.push('/batch/chooseRoom')
     }
+    handlePageChange = page => {
+        let query = QueryString.parseJSON(this.props.location.search)
+        query.pageIndex = page;
+        this.props.history.push(`/batch/choosePermit?${QueryString.stringify(query)}`)
+    }
+
     handleDateChange = (val) => {
         const batch = this.props.stores.batchStore.model;
-        this.props.history.push(`?chooseDateId=${val}&batchId=${batch.id}`)
+        this.props.history.push(`/batch/choosePermit?chooseDateId=${val}&batchId=${batch.id}`)
     }
     handleSearch = (key) => {
         this.setState({ searchKey: key })
@@ -50,7 +58,6 @@ export default class ChoosePermitPage extends Component {
     quotaColumnRender = (text, record) => {
         return record.quotas.map((item, key) => {
             return <StatusTag key={key} status={item.status} text={`${item.quotaCode} - ${item.user} - ${item.statusText}`}></StatusTag>
-
         });
     }
     handleRedirectToChooseRoomPage = (permit) => {
@@ -62,12 +69,10 @@ export default class ChoosePermitPage extends Component {
     }
 
     render() {
-        const { enterList, loading, parameter } = this.props.stores.permitStore;
-        if (loading) return <></>
-        console.log(parameter)
-
+        const { list, parameter, page } = this.props.stores.permitStore;
         const batch = this.props.stores.batchStore.model;
-        if (!batch) {
+
+        if (!batch && !this.props.stores.batchStore.loading) {
             return (
                 <Result
                     status="404"
@@ -84,7 +89,14 @@ export default class ChoosePermitPage extends Component {
             <div>
                 <PageHeader title="选房" extra={<Row>
                     <Col span={12}>
-                        <Select onChange={this.handleDateChange} style={{ width: 200 }} defaultValue={(parameter.chooseDateId || '').toString()}>
+                        <Select
+                            loading={this.props.stores.chooseDateStore.loading}
+                            onChange={this.handleDateChange}
+                            style={{ width: 200 }}
+                            defaultValue={(parameter.chooseDateId || '0').toString()}
+                            placeholder="请选择选房日期"
+                        >
+                            <Select.Option key='all' value='0'>全部选房日期</Select.Option>
                             {chooseDateList.map(item => <Select.Option key={item.id.toString()}>
                                 {moment(item.day).format('ll')} - {item.hour === 1 ? "上午" : "下午"}
                             </Select.Option>)}
@@ -102,20 +114,19 @@ export default class ChoosePermitPage extends Component {
                 <Row>
                     <Table
                         bordered={true}
-                        loading={loading}
+                        loading={this.props.stores.permitStore.loading}
                         rowKey="id"
                         columns={[
                             { dataIndex: "permitCode", title: "准购证号", },
                             { dataIndex: "agency", title: "动迁机构", },
                             { dataIndex: "town", title: "镇街" },
-                            { dataIndex: "remark", title: "备注" },
                             { dataIndex: "quotas", title: "购房证", render: this.quotaColumnRender },
                             { dataIndex: "id", title: "操作", render: this.operateColumnRender }
                         ]}
-                        dataSource={enterList}
+                        dataSource={list}
                         defaultExpandAllRows={true}
                         expandedRowRender={this.quotaRowRender}
-                        pagination={false}
+                        pagination={{ ...page, size: 5, onChange: this.handlePageChange, }}
                     ></Table>
                 </Row>
             </div >

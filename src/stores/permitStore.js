@@ -5,7 +5,6 @@ import StoreBase from './storeBase'
 export default class PermitStore extends StoreBase {
 
     @observable statistic = []
-    @observable enterList = []
 
     constructor() {
         super()
@@ -24,7 +23,10 @@ export default class PermitStore extends StoreBase {
         return this.invokeApi(() => api.permit.enterList(parameter),
             (response) => {
                 this.parameter = parameter;
-                return this.enterList = response.data;
+                this.page = response.data.page;
+                this.list = response.data.list;
+                console.log(response)
+                return this.list;
             })
     }
 }

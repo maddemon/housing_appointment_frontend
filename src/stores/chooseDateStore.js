@@ -6,11 +6,13 @@ export default class HousesStore extends StoreBase {
 
     constructor() {
         super()
-        this.invokeListApi = (parameter) => api.chooseDate.list(parameter);
+        this.invokeListApi = (batchId) => {
+            if (!batchId) return;
+            return api.chooseDate.list(batchId)
+        };
         this.invokeSaveApi = (model) => api.chooseDate.save(model);
         this.invokeDeleteApi = (id) => api.chooseDate.delete(id);
     }
-
 
     @action getDefaultModel = (batchId) => {
         if (!this.list || this.list.length === 0) {

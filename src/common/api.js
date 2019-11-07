@@ -34,6 +34,14 @@ const api = {
             return '/api/house/import'
         }
     },
+    room: {
+        list: (batchId) => {
+            return $.get('room/list', { batchId })
+        },
+        choose: (batchId, userQuotaId, roomId) => {
+            return $.post('room/choose', null, { batchId, userQuotaId, roomId })
+        },
+    },
     batch: {
         getModel: (id) => {
             return $.get('batch/getmodel', { id })
@@ -46,18 +54,6 @@ const api = {
         },
         list: (parameter) => {
             return $.get('batch/list', parameter)
-        },
-        successAppointment: (batchId) => {
-            return $.get('room/batchStatus', { batchId })
-        },
-        getRooms: (batchId) => {
-            return $.get('room/list', { batchId })
-        },
-        getPermits: (batchId) => {
-            return $.get('permit/list', { batchId })
-        },
-        chooseRoom: (appointmentId, roomId) => {
-            return $.put('room/choose', null, { appointmentId, roomId })
         },
     },
     permit: {

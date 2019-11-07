@@ -19,8 +19,12 @@ export default class HousesStore extends StoreBase {
     }
 
     @action getRooms(batchId) {
-        this.invokeApi(() => api.house.list({ batchId }), (response) => {
+        this.invokeApi(() => api.room.getList({ batchId }), (response) => {
             this.rooms = response.data.list
         })
+    }
+
+    @action getBuildings(house) {
+
     }
 }
