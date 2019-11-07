@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
+import { Link } from 'react-router-dom'
 import { Row, Col, Select, PageHeader, Icon, Table, Button, Input, Tag, Modal, message, Result, Tooltip } from 'antd'
 import { QueryString } from '../../common/utils'
 import moment from 'moment'
@@ -134,6 +135,11 @@ export default class AppointmentIndexPage extends Component {
 
     }
 
+    permitColumnRender = (text, record) => {
+        const code = text.split('-')[0];
+        return <Link to={`/permit/index?key=${code}`}>{text}</Link>
+    }
+
     render() {
         const batch = this.props.stores.batchStore.model || {};
         let loading = this.props.stores.batchStore.loading;
@@ -213,7 +219,7 @@ export default class AppointmentIndexPage extends Component {
                     rowSelection={this.handleRowSelect}
                     rowKey="id"
                     columns={[
-                        { dataIndex: "code", title: "准购证号" },
+                        { dataIndex: "code", title: "准购证号", render: this.permitColumnRender },
                         { dataIndex: "user", title: "预约用户" },
                         { dataIndex: "phone", title: "手机号" },
                         { dataIndex: "idCard", title: "身份证" },

@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react'
 import { Row, Col, PageHeader, Icon, Button, Table, Input, Tag, Select } from 'antd'
 import { QueryString } from '../../common/utils'
 import EditQuotaModal from './edit_quota'
+import StatusTag from '../shared/_statusTag'
 
 @inject('stores')
 @observer
@@ -54,7 +55,7 @@ export default class PermitIndexPage extends Component {
         return record.quotas.map((item, key) => <EditQuotaModal
             key={key}
             model={item}
-            trigger={<Button>{item.quotaCode} {item.user} {item.statusText}</Button>}
+            trigger={<StatusTag status={item.status}>{item.quotaCode} {item.user} {item.statusText}</StatusTag>}
             onSubmit={this.handleSaveQuota}
             onDelete={this.handleDeleteQuota}
         />);

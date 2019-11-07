@@ -26,10 +26,10 @@ export default class StatusTag extends Component {
                 color = "#f50";
                 break;
         }
-        return <Tag color={color}>{text}</Tag>
+        return <Tag color={color}>{text || this.props.children}</Tag>
     }
 }
 StatusTag.propTypes = {
     status: PropTypes.number.isRequired,
-    text: PropTypes.string.isRequired
+    text: PropTypes.string
 }
