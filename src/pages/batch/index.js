@@ -89,15 +89,6 @@ export default class BatchIndexPage extends Component {
     });
   };
 
-  handleRedirectToAppointmentPage = batchId => {
-    this.props.history.push("/appointment/index?batchId=" + batchId);
-  };
-  handleRedirectToChoosePage = batchId => {
-    this.props.history.push("/batch/choosePermit?batchId=" + batchId);
-  };
-  handleRedirectToResultPage = batchId => {
-    this.props.history.push("/batch/chooseResult?batchId=" + batchId);
-  };
   houseColumnRender = (text, item) => {
     return item.houses.map((item, key) => <Tag key={key}>{item.name}</Tag>);
   };
@@ -132,7 +123,6 @@ export default class BatchIndexPage extends Component {
   };
   renderOperateColumn = (text, item) => {
     const canNotify = moment(item.appointmentEndTime) > moment();
-    const canViewResult = moment(item.chooseBeginDate) <= moment();
     const canDelete = moment(item.appointmentBeginTime) > moment();
     var result = [];
     if (canNotify) {
@@ -148,29 +138,46 @@ export default class BatchIndexPage extends Component {
       result.push(
         <Button
           key="btnNotifyFailMessage"
+          icon="bell"
           onClick={() => this.handleSendFailMessage(item.id)}
         >
-          <Icon type="bell" />
           预约未完成通知
         </Button>
       );
-    } else
-      result.push(
-        <Button
-          key="btnAppointment"
-          onClick={() => this.handleRedirectToAppointmentPage(item.id)}
-        >
-          <Icon type="clock-circle" />
-          预约管理
-        </Button>
-      );
+    }
+    result.push(
+      <Button
+        key="btnAppointment"
+        icon="clock-circle"
+        type="primary"
+        onClick={() =>
+          this.props.history.push("/appointment/index?batchId=" + item.id)
+        }
+      >
+        预约管理
+      </Button>
+    );
+    result.push(
+      <Button
+        key="btnSchedule"
+        type="primary"
+        icon="calendar"
+        onClick={() =>
+          this.props.history.push("/batch/schedule?batchId=" + item.id)
+        }
+      >
+        排期
+      </Button>
+    );
     result.push(
       <Button
         key="btnChoose"
-        onClick={() => this.handleRedirectToChoosePage(item.id)}
         type="primary"
+        icon="check"
+        onClick={() =>
+          this.props.history.push("/batch/choosePermit?batchId=" + item.id)
+        }
       >
-        <Icon type="check" />
         选房
       </Button>
     );
@@ -179,20 +186,17 @@ export default class BatchIndexPage extends Component {
       <EditModal
         key="edit"
         model={item}
-        trigger={<Button icon="edit" title="修改" />}
+        trigger={<Button icon="edit">修改</Button>}
         onSubmit={this.handleSubmitForm}
       />
     );
     if (canDelete)
       result.push(
-        <Button
-          key="delete"
-          title="删除"
-          icon="delete"
-          onClick={this.handleDelete}
-        />
+        <Button key="delete" icon="delete" onClick={this.handleDelete}>
+          删除
+        </Button>
       );
-    return <Button.Group>{result}</Button.Group>;
+    return <>{result}</>;
   };
 
   render() {

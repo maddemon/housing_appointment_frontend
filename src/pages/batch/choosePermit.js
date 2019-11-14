@@ -18,6 +18,8 @@ import moment from "moment";
 import StatusTag from "../shared/_statusTag";
 import ChooseRoom from "./_chooseRoom";
 import ChooseResult from "./_chooseResult";
+import NonBatchControl from "../my/_nonBatch";
+import ChooseDateSelectControl from "../shared/_chooseDateSelect";
 
 @inject("stores")
 @observer
@@ -39,11 +41,7 @@ export default class ChoosePermitPage extends Component {
     await this.props.stores.batchStore.getModel(query.batchId);
     const batch = this.props.stores.batchStore.model;
     if (!batch) return;
-    await this.props.stores.chooseDateStore.getList(batch.id);
-    if (!query.chooseDateId) {
-      const defaultChooseDate = await this.props.stores.chooseDateStore.getDefaultModel();
-      query.chooseDateId = (defaultChooseDate || {}).id || "";
-    }
+
     await this.props.stores.permitStore.getEnterList(query);
     await this.props.stores.roomStore.getResultList(batch.id);
   };
@@ -101,37 +99,14 @@ export default class ChoosePermitPage extends Component {
       );
     });
   };
-  handleRedirectToChooseRoomPage = permit => {
-    const batch = this.props.stores.batchStore.model;
-    this.props.history.push(
-      `/batch/chooseRoom?batchId=${batch.id}&permitId=${permit.id}`
-    );
-  };
 
   render() {
-    const { list, parameter, page } = this.props.stores.permitStore;
+    const { list, page, parameter } = this.props.stores.permitStore;
     const batch = this.props.stores.batchStore.model;
 
     if (!batch && !this.props.stores.batchStore.loading) {
-      return (
-        <Result
-          status="404"
-          title="没有可用批次"
-          subTitle="系统没有找到可用的批次，是否没有创建？"
-          extra={
-            <Button
-              type="primary"
-              onClick={() => {
-                this.props.history.push("/batch/index");
-              }}
-            >
-              返回批次管理
-            </Button>
-          }
-        />
-      );
+      return <NonBatchControl />;
     }
-    const chooseDateList = this.props.stores.chooseDateStore.list || [];
     return (
       <div>
         <PageHeader
@@ -139,23 +114,10 @@ export default class ChoosePermitPage extends Component {
           extra={
             <Row>
               <Col span={12}>
-                <Select
-                  loading={this.props.stores.chooseDateStore.loading}
+                <ChooseDateSelectControl
                   onChange={this.handleDateChange}
-                  style={{ width: 200 }}
-                  defaultValue={(parameter.chooseDateId || "0").toString()}
-                  placeholder="请选择选房日期"
-                >
-                  <Select.Option key="all" value="0">
-                    全部选房日期
-                  </Select.Option>
-                  {chooseDateList.map(item => (
-                    <Select.Option key={item.id.toString()}>
-                      {moment(item.day).format("ll")} -{" "}
-                      {item.hour === 1 ? "上午" : "下午"}
-                    </Select.Option>
-                  ))}
-                </Select>
+                  value={parameter.chooseDateId}
+                />
               </Col>
               <Col span={12}>
                 <Input.Search

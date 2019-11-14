@@ -23,6 +23,7 @@ import MyPermitPage from "../my/permit";
 import MyHistoryPage from "../my/history";
 import UserEditPasswordPage from "../user/edit_password";
 import ChooseUserPage from "../batch/choosePermit";
+import SchedulePage from "../batch/schedule";
 import HomePage from "../home";
 import "moment/locale/zh-cn";
 
@@ -56,6 +57,11 @@ export default class PrimaryLayout extends Component {
               exact
               path="/batch/choosePermit"
               component={ChooseUserPage}
+            />
+            <PrivateRoute
+              exact
+              path="/batch/schedule"
+              component={SchedulePage}
             />
             <PrivateRoute
               exact

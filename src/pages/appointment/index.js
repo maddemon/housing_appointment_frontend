@@ -19,7 +19,6 @@ import {
 import { QueryString } from "../../common/utils";
 import moment from "moment";
 import StatusTag from "../shared/_statusTag";
-import ChooseDateModal from "./chooseDate";
 
 @inject("stores")
 @observer
@@ -67,11 +66,6 @@ export default class AppointmentIndexPage extends Component {
   handleChooseDateChange = value => this.reloadPage("chooseDateId", value);
   handleUserSearch = key => this.reloadPage("key", key);
 
-  handleExportClick = () => {
-    const batch = this.props.stores.batchStore.model;
-    window.open("/api/appointment/export?batchId=" + batch.id);
-  };
-
   handleConfirmClick = async () => {
     const batch = this.props.stores.batchStore.model;
     const response = await this.props.stores.appointmentStore.confirm(batch.id);
@@ -79,46 +73,6 @@ export default class AppointmentIndexPage extends Component {
       message.success("正选名单确认完成");
       this.loadList(this.props);
     }
-  };
-
-  handleRowSelect = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      this.setState({ selectedRowKeys });
-    }
-  };
-
-  handleGiveupClick = id => {
-    Modal.confirm({
-      title: "确定执行放弃选房操作？",
-      content: "如果放弃选房，则只能等到尾批才有选房资格，确定要放弃吗？",
-      okText: "确认放弃",
-      onOk: async () => {
-        const result = await this.props.stores.appointmentStore.giveup(id);
-        if (result && result.ok) {
-          message.success("操作完成");
-          await this.loadList();
-        }
-      }
-    });
-  };
-
-  handleSendChooseMessage = () => {
-    Modal.confirm({
-      title: "发送选房确认",
-      content:
-        "本次操作将向“已选中的用户”发送选房通知短信，你确认执行此操作吗？",
-      okText: "确认发送",
-      onOk: async () => {
-        const batch = this.props.stores.batchStore.model;
-        const response = await this.props.stores.messageStore.sendChooseMessage(
-          batch.id,
-          this.state.selectedRowKeys
-        );
-        if (response && response.ok) {
-          message.success("发送短信完成");
-        }
-      }
-    });
   };
 
   handleSendNotEnterMessage = () => {
@@ -189,7 +143,6 @@ export default class AppointmentIndexPage extends Component {
       );
     const { list, page, parameter } = this.props.stores.appointmentStore;
     loading = this.props.stores.appointmentStore.loading;
-    const chooseDateList = this.props.stores.chooseDateStore.list || [];
 
     return (
       <Row>
@@ -229,23 +182,6 @@ export default class AppointmentIndexPage extends Component {
                 </Select>
               </Col>
               <Col span={6}>
-                <Select
-                  onChange={this.handleChooseDateChange}
-                  defaultValue=""
-                  style={{ width: 160 }}
-                >
-                  <Select.Option key="0" value="">
-                    全部选房日期
-                  </Select.Option>
-                  {chooseDateList.map((item, key) => (
-                    <Select.Option key={key} value={item.id.toString()}>
-                      {moment(item.day).format("ll")}
-                      {item.hour === 1 ? "上午" : "下午"}
-                    </Select.Option>
-                  ))}
-                </Select>
-              </Col>
-              <Col span={6}>
                 <Input.Search
                   onSearch={this.handleUserSearch}
                   defaultValue={(parameter || {}).key}
@@ -268,32 +204,6 @@ export default class AppointmentIndexPage extends Component {
             <Button onClick={this.handleSendNotEnterMessage}>
               <Icon type="bell" />
               备选通知
-            </Button>
-          </Button.Group>
-          &nbsp;
-          <Button.Group>
-            <ChooseDateModal
-              model={{
-                batchId: batch.id,
-                appointmentIds: this.state.selectedRowKeys
-              }}
-              trigger={
-                <Button
-                  type="primary"
-                  disabled={this.state.selectedRowKeys.length === 0}
-                >
-                  <Icon type="calendar" />
-                  批量指定选房日期
-                </Button>
-              }
-              onSubmit={() => this.loadList()}
-            />
-            <Button
-              onClick={this.handleSendChooseMessage}
-              disabled={this.state.selectedRowKeys.length === 0}
-            >
-              <Icon type="bell" />
-              选房通知
             </Button>
           </Button.Group>
         </div>
@@ -321,9 +231,7 @@ export default class AppointmentIndexPage extends Component {
               dataIndex: "createTime",
               title: "预约时间",
               render: text => moment(text).format("lll")
-            },
-            { dataIndex: "chooseTime", title: "选房时间" },
-            { title: "操作", render: this.renderOperateColumn }
+            }
           ]}
           dataSource={list || []}
           pagination={{ ...page, size: 5, onChange: this.handlePageChange }}

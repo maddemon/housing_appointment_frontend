@@ -1,6 +1,7 @@
 import React, { Component } from "react";
+import { Drawer } from "antd";
 
-export default class Drawer extends Component {
+export default class SharedDrawer extends Component {
   state = { visible: false };
   show = () => this.setState({ visible: true });
   hide = () => {

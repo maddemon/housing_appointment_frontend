@@ -17,8 +17,10 @@ export default class StatusTag extends Component {
         color = "#108ee9";
         break;
       case 3:
-      case 4: //已入围
         color = "#87d068";
+        break;
+      case 4: //已入围
+        color = "#cd47d1";
         break;
       case 5: //放弃、尾批
         color = "#f50";

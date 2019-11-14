@@ -12,7 +12,8 @@ import {
   Select,
   Table,
   message,
-  Result
+  Result,
+  Input
 } from "antd";
 import ChooseResult from "./_chooseResult";
 @inject("stores")
@@ -124,11 +125,8 @@ export default class ChooseRoom extends Component {
     const batch = this.props.stores.batchStore;
     const quota = this.props.quota;
 
-    const {
-      chooseResult,
-      selectedHouse,
-      selectedRoom
-    } = this.props.stores.roomStore;
+    const roomStore = this.props.stores.roomStore;
+    const { chooseResult, selectedHouse, selectedRoom } = roomStore;
 
     if (chooseResult || quota.users.find(e => e.status > 3)) {
       return <ChooseResult quota={quota} />;
@@ -143,7 +141,7 @@ export default class ChooseRoom extends Component {
                 type="primary"
                 onClick={this.handleConfirmChoose}
                 disabled={!selectedRoom || !selectedRoom.dwelling}
-                loading={this.props.stores.roomStore.loading}
+                loading={roomStore.loading}
               >
                 确认选房
               </Button>
@@ -157,7 +155,10 @@ export default class ChooseRoom extends Component {
         >
           {selectedHouse ? (
             <div>
-              已选楼盘：<Tag color="red">{selectedHouse.name}</Tag>
+              已选楼盘：
+              <Tag color="red" style={{ fontSize: 20, padding: 5, margin: 5 }}>
+                {selectedHouse.name}
+              </Tag>
               <Button onClick={() => this.handleSelectHouse(null)} size="small">
                 重选
               </Button>
@@ -167,10 +168,22 @@ export default class ChooseRoom extends Component {
           {Object.keys(selectedRoom || {}).map(key => {
             return (
               <div key={key}>
-                已选{this.props.stores.roomStore.getRoomName(key)}：
-                <Tag color="red">
-                  {selectedRoom[key].profile.building}号楼
-                  {selectedRoom[key].profile.number}号房
+                已选{roomStore.getRoomName(key)}：
+                <Tag
+                  color="red"
+                  style={{ fontSize: 20, padding: 5, margin: 5 }}
+                >
+                  {key === "parking" ? (
+                    <span>
+                      {selectedRoom[key].profile.area} -
+                      {selectedRoom[key].profile.number}
+                    </span>
+                  ) : (
+                    <span>
+                      {selectedRoom[key].profile.building}号楼
+                      {selectedRoom[key].profile.number}
+                    </span>
+                  )}
                 </Tag>
                 <Button
                   onClick={() => this.handleSelectRoom(null)}
@@ -248,6 +261,10 @@ class BuildingList extends Component {
     this.setState({ building: number });
   };
 
+  handleSearch = e => {
+    this.setState({ key: e.target.value });
+  };
+
   render() {
     const { buildings, loading } = this.props.stores.roomStore;
     const { roomType } = this.props;
@@ -279,7 +296,17 @@ class BuildingList extends Component {
             <Select.Option key={key}>{key}</Select.Option>
           ))}
         </Select>
-        <RoomList roomType={roomType} building={selectedBuilding} />;
+        <Input.Search
+          onChange={this.handleSearch}
+          placeholder="输入房号查询"
+          style={{ width: 150, marginLeft: 20 }}
+        />
+        <RoomList
+          roomType={roomType}
+          building={selectedBuilding}
+          searchKey={this.state.key}
+        />
+        ;
       </>
     );
   }
@@ -308,6 +335,7 @@ class RoomList extends Component {
     return (
       <Button
         size="small"
+        type="primary"
         disabled={item.quotaID !== 0}
         onClick={() => this.handleSelectRoom(item)}
       >
@@ -354,10 +382,12 @@ class RoomList extends Component {
     }
   };
   render() {
-    const { roomType, building } = this.props;
+    const { roomType, building, searchKey } = this.props;
     const { rooms } = this.props.stores.roomStore;
-    const list = rooms[roomType].filter(
+    let list = rooms[roomType].filter(
       e =>
+        ((searchKey && e.profile.number.indexOf(searchKey) > -1) ||
+          !searchKey) &&
         e.quotaID === 0 &&
         ((e.profile.area === building && e.type === 2) ||
           e.profile.building === building)
