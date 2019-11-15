@@ -26,7 +26,6 @@ export default class PermitStore extends StoreBase {
       response => {
         this.parameter = parameter;
         this.page = response.data.page;
-        console.log(this.list);
         this.list = response.data.list;
         return this.list;
       }

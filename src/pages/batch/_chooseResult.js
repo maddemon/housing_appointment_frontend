@@ -96,7 +96,7 @@ const Dwelling = ({ model }) => (
 const Parking = ({ model }) =>
   model ? (
     <Row>
-      停车位： <Tag>{model.profile.area}幢</Tag>
+      停车位： <Tag>{model.profile.area}</Tag>
       <Tag>{model.profile.number}号</Tag>
       <Tag>{model.profile.price}元</Tag>
     </Row>

@@ -19,6 +19,7 @@ import {
 import { QueryString } from "../../common/utils";
 import moment from "moment";
 import StatusTag from "../shared/_statusTag";
+import EditAppointmentModal from "./_edit";
 
 @inject("stores")
 @observer
@@ -79,7 +80,7 @@ export default class AppointmentIndexPage extends Component {
     Modal.confirm({
       title: "发送备选短信确认",
       content:
-        "本次操作将向“未进入入围名单的用户”发送备选短信通知，你已经确定入围名单了吗？",
+        "本次操作将向“未入围名单的用户”发送备选短信通知，你已经确定入围名单了吗？",
       okText: "确认发送",
       onOk: async () => {
         const batch = this.props.stores.batchStore.model;
@@ -193,16 +194,21 @@ export default class AppointmentIndexPage extends Component {
         />
         <div className="toolbar">
           <Button.Group>
-            <Button type="primary" onClick={this.handleConfirmClick}>
-              <Icon type="diff" />
+            <Button
+              icon="diff"
+              type="primary"
+              onClick={this.handleConfirmClick}
+            >
               生成正选名单
             </Button>
-            <Button onClick={this.handleExportClick}>
-              <Icon type="export" />
+            <Button icon="export" onClick={this.handleExportClick}>
               导出所有名单
             </Button>
-            <Button onClick={this.handleSendNotEnterMessage}>
-              <Icon type="bell" />
+            <Button
+              type="danger"
+              icon="bell"
+              onClick={this.handleSendNotEnterMessage}
+            >
               备选通知
             </Button>
           </Button.Group>
@@ -224,7 +230,11 @@ export default class AppointmentIndexPage extends Component {
               dataIndex: "statusText",
               title: "预约状态",
               render: (text, record) => (
-                <StatusTag status={record.status} text={text} />
+                <EditAppointmentModal
+                  model={record}
+                  trigger={<StatusTag status={record.status} text={text} />}
+                  onSubmit={this.loadList}
+                />
               )
             },
             {

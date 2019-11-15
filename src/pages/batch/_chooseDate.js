@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, DatePicker, Select, Checkbox } from "antd";
+import { Button, DatePicker, Select } from "antd";
 import Modal from "../shared/modal";
 import { inject, observer } from "mobx-react";
 import moment from "moment";
@@ -18,25 +18,21 @@ export default class chooseDateModal extends Component {
   };
 
   handleChange = () => {
-    console.log(this.state.day, this.state.hour);
+    if (!this.state.day) return;
+
     const model = this.props.stores.chooseDateStore.list.find(
       e =>
         moment(e.day).format("ll") === this.state.day.format("ll") &&
-        e.hour === this.state.hour
+        e.hour === parseInt(this.state.hour)
     );
-    console.log(model);
     this.setState({ selectedDay: model });
   };
 
   handleDateChange = val => {
-    this.setState({ day: val }, () => {
-      this.handleChange();
-    });
+    this.setState({ day: val }, this.handleChange);
   };
   handleHourChange = val => {
-    this.setState({ hour: val }, () => {
-      this.handleChange();
-    });
+    this.setState({ hour: val }, this.handleChange);
   };
 
   getFormItems = () => {
@@ -64,22 +60,26 @@ export default class chooseDateModal extends Component {
         title: "时段",
         name: "hour",
         type: "select",
-        defaultValue: "am",
+        defaultValue: "1",
         render: (
           <Select placeholder="请选择预约时段" onChange={this.handleHourChange}>
-            <Select.Option key="am">上午</Select.Option>
-            <Select.Option key="pm">下午</Select.Option>
+            <Select.Option key="am" value="1">
+              上午
+            </Select.Option>
+            <Select.Option key="pm" value="2">
+              下午
+            </Select.Option>
           </Select>
         )
       },
       {
-        title: "准购证数量",
+        title: "选择准购证数量",
         render: (
           <span className="warningText">{model.selectedPermitIds.length}</span>
         )
       },
       {
-        title: "购房证数量",
+        title: "选择购房证数量",
         render: (
           <span className="warningText">{model.selectedQuotaIds.length}</span>
         )

@@ -298,7 +298,7 @@ class BuildingList extends Component {
         </Select>
         <Input.Search
           onChange={this.handleSearch}
-          placeholder="输入房号查询"
+          placeholder="输入房号/编号查询"
           style={{ width: 150, marginLeft: 20 }}
         />
         <RoomList

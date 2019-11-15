@@ -115,6 +115,9 @@ const api = {
     },
     giveup: id => {
       return $.get("appointment/giveup", { id });
+    },
+    updateStatus: (id, status) => {
+      return $.get("appointment/updateStatus", { id, status });
     }
   },
   chooseDate: {
@@ -141,8 +144,8 @@ const api = {
     sendNotEnterMessage: batchId => {
       return $.get("message/sendNotEnterMessage", { batchId });
     },
-    sendChooseMessage: (batchId, appointmentIds) => {
-      return $.get("message/sendChooseMessage", { batchId, appointmentIds });
+    sendChooseMessage: (batchId, quotaIds) => {
+      return $.get("message/sendChooseMessage", { batchId, quotaIds });
     }
   }
 };

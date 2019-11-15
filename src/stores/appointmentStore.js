@@ -1,29 +1,31 @@
-import { observable, action } from 'mobx'
-import api from '../common/api'
-import StoreBase from './storeBase'
+import { observable, action } from "mobx";
+import api from "../common/api";
+import StoreBase from "./storeBase";
 
 export default class AppointmentStore extends StoreBase {
+  @observable resultList = [];
+  @observable successState = {};
 
-    @observable resultList = [];
-    @observable successState = {}
+  constructor() {
+    super();
+    this.invokeListApi = parameter => api.appointment.list(parameter);
+    this.invokeSaveApi = model => api.appointment.save(model);
+    this.invokeDeleteApi = id => api.appointment.delete(id);
+  }
 
-    constructor() {
-        super();
-        this.invokeListApi = (parameter) => api.appointment.list(parameter);
-        this.invokeSaveApi = (model) => api.appointment.save(model);
-        this.invokeDeleteApi = (id) => api.appointment.delete(id);
-    }
+  @action make(batchId, userQuotaId) {
+    return this.invokeApi(() => api.appointment.make(batchId, userQuotaId));
+  }
 
-    @action make(batchId, userQuotaId) {
-        return this.invokeApi(() => api.appointment.make(batchId, userQuotaId))
-    }
+  confirm(batchId) {
+    return this.invokeApi(() => api.appointment.confirm(batchId));
+  }
 
-    confirm(batchId) {
-        return this.invokeApi(() => api.appointment.confirm(batchId))
-    }
+  giveup(id) {
+    return this.invokeApi(() => api.appointment.giveup(id));
+  }
 
-    giveup(id) {
-        return this.invokeApi(() => api.appointment.giveup(id))
-    }
-
+  updateStatus(id, status) {
+    return this.invokeApi(() => api.appointment.updateStatus(id, status));
+  }
 }
