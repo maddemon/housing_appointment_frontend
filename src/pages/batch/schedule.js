@@ -10,7 +10,6 @@ import {
   Table,
   Tag,
   Col,
-  Radio,
   Select
 } from "antd";
 import { QueryString } from "../../common/utils";
@@ -98,7 +97,9 @@ export default class SchedulePage extends Component {
   setSelectedRows = selectedRows => {
     let selectedQuotas = [];
     selectedRows.forEach(item => {
-      selectedQuotas = selectedQuotas.concat(item.quotas);
+      selectedQuotas = selectedQuotas.concat(
+        item.quotas.filter(e => e.users.find(u => u.status === 3))
+      );
     });
     this.setState({
       selectedPermitIds: selectedRows.map(e => e.id),
@@ -163,6 +164,13 @@ export default class SchedulePage extends Component {
           title="选房"
           subTitle={
             <>
+              {chooseDate ? (
+                <Tag color="red">
+                  {moment(chooseDate.day).format("ll")}：{chooseDate.hourText}共
+                  {page.total}个准购证，包含
+                  {chooseDate.quotaIds.length}个购房证
+                </Tag>
+              ) : null}
               {batch ? <Tag color="#108ee9">所属批次：{batch.name}</Tag> : null}
             </>
           }

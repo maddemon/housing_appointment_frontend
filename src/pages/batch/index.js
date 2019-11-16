@@ -163,7 +163,9 @@ export default class BatchIndexPage extends Component {
         type="primary"
         icon="calendar"
         onClick={() =>
-          this.props.history.push("/batch/schedule?batchId=" + item.id)
+          this.props.history.push(
+            "/batch/schedule?batchId=" + item.id + "&hasChooseDate=false"
+          )
         }
       >
         排期

@@ -39,7 +39,9 @@ export default class ChooseDateControl extends Component {
     if (date < moment(batch.appointmentEndTime)) {
     }
     const { list } = this.props.stores.chooseDateStore;
-    date = moment(date.format("YYYY-MM-DDT00:00:00"));
+    const currentDayList = list.filter(
+      e => moment(e.day).format("YYYYMMDD") === date.format("YYYYMMDD")
+    );
     return (
       <div
         style={{
@@ -66,7 +68,7 @@ export default class ChooseDateControl extends Component {
         <div style={{ clear: "both", marginTop: 15 }}>
           {list
             .filter(
-              e => moment(e.Day).format("YYYYMMDD") === date.format("YYYYMMDD")
+              e => moment(e.day).format("YYYYMMDD") === date.format("YYYYMMDD")
             )
             .map((item, key) => (
               <div key={key} style={{ marginTop: 2 }}>

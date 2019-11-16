@@ -41,7 +41,6 @@ export default class ChoosePermitPage extends Component {
     await this.props.stores.batchStore.getModel(query.batchId);
     const batch = this.props.stores.batchStore.model;
     if (!batch) return;
-
     await this.props.stores.permitStore.getEnterList(query);
     await this.props.stores.roomStore.getResultList(batch.id);
   };
