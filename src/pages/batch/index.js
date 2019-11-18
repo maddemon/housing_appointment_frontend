@@ -183,7 +183,17 @@ export default class BatchIndexPage extends Component {
         选房
       </Button>
     );
-
+    result.push(
+      <Button
+        key="bthResult"
+        icon="list"
+        onClick={() =>
+          this.props.history.push("/batch/result?batchId=" + item.id)
+        }
+      >
+        选房结果
+      </Button>
+    );
     result.push(
       <EditModal
         key="edit"

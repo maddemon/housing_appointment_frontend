@@ -60,6 +60,9 @@ const api = {
     },
     list: parameter => {
       return $.get("batch/list", parameter);
+    },
+    getChooseResult: batchId => {
+      return $.get("batch/ChooseResult", { batchId });
     }
   },
   permit: {

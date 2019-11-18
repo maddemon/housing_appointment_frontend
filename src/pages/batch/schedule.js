@@ -94,16 +94,24 @@ export default class SchedulePage extends Component {
     });
   };
 
-  setSelectedRows = selectedRows => {
-    let selectedQuotas = [];
-    selectedRows.forEach(item => {
-      selectedQuotas = selectedQuotas.concat(
+  getPermitAndQuotas = list => {
+    let quotas = [];
+    list.forEach(item => {
+      quotas = quotas.concat(
         item.quotas.filter(e => e.users.find(u => u.status === 3))
       );
     });
+    return {
+      permitIds: list.map(e => e.id),
+      quotaIds: quotas.map(e => e.id)
+    };
+  };
+
+  setSelectedRows = selectedRows => {
+    const data = this.getPermitAndQuotas(selectedRows);
     this.setState({
-      selectedPermitIds: selectedRows.map(e => e.id),
-      selectedQuotaIds: selectedQuotas.map(e => e.id)
+      selectedPermitIds: data.permitIds,
+      selectedQuotaIds: data.quotaIds
     });
   };
 
@@ -145,6 +153,19 @@ export default class SchedulePage extends Component {
     return "";
   };
 
+  renderChooseDateCount = chooseDate => {
+    if (!chooseDate) return null;
+    const { list } = this.props.stores.permitStore;
+    const data = this.getPermitAndQuotas(list);
+    return (
+      <Tag color="red">
+        {moment(chooseDate.day).format("ll")}：{chooseDate.hourText}共
+        {data.permitIds.length}个准购证，包含
+        {data.quotaIds.length}个购房证
+      </Tag>
+    );
+  };
+
   render() {
     const { list, page, parameter } = this.props.stores.permitStore;
     const batch = this.props.stores.batchStore.model;
@@ -164,13 +185,7 @@ export default class SchedulePage extends Component {
           title="选房"
           subTitle={
             <>
-              {chooseDate ? (
-                <Tag color="red">
-                  {moment(chooseDate.day).format("ll")}：{chooseDate.hourText}共
-                  {page.total}个准购证，包含
-                  {chooseDate.quotaIds.length}个购房证
-                </Tag>
-              ) : null}
+              {this.renderChooseDateCount(chooseDate)}
               {batch ? <Tag color="#108ee9">所属批次：{batch.name}</Tag> : null}
             </>
           }

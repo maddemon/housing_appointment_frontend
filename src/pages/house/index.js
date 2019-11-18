@@ -97,6 +97,7 @@ export default class HousesIndexPage extends Component {
           columns={[
             { dataIndex: "id", title: "编号", width: 75 },
             { dataIndex: "name", title: "名称" },
+            { dataIndex: "shortName", title: "简称" },
             { dataIndex: "address", title: "楼盘地址" },
             {
               dataIndex: "count.dwelling",

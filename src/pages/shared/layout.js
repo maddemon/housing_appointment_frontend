@@ -24,6 +24,7 @@ import MyHistoryPage from "../my/history";
 import UserEditPasswordPage from "../user/edit_password";
 import ChooseUserPage from "../batch/choosePermit";
 import SchedulePage from "../batch/schedule";
+import BatchChooseResultPage from "../batch/result";
 import HomePage from "../home";
 import "moment/locale/zh-cn";
 
@@ -40,6 +41,11 @@ export default class PrimaryLayout extends Component {
             <PrivateRoute exact path="/" component={HomePage} />
             <Route exact path="/user/login" component={UserLoginPage} />
             <Route exact path="/admin/login" component={AdminLoginPage} />
+            <Route
+              exact
+              path="/batch/result"
+              component={BatchChooseResultPage}
+            />
             <PrivateRoute exact path="/my/history" component={MyHistoryPage} />
             <PrivateRoute exact path="/my/permit" component={MyPermitPage} />
             <PrivateRoute exact path="/my/batch" component={MyBatchPage} />
@@ -141,6 +147,14 @@ class UserLayout extends Component {
 @observer
 class PrivateRoute extends Component {
   render() {
+    if (this.props.location.pathname === "/batch/result") {
+      return (
+        <FullscreenLayout>
+          <Route {...this.props}></Route>
+        </FullscreenLayout>
+      );
+    }
+
     const user = this.props.stores.userStore.current();
     if (!user) {
       const returnUrl = `${this.props.location.pathname}${this.props.location.search}`;
@@ -157,6 +171,17 @@ class PrivateRoute extends Component {
       <AdminLayout>
         <Route {...this.props}></Route>
       </AdminLayout>
+    );
+  }
+}
+
+@observer
+class FullscreenLayout extends Component {
+  render() {
+    return (
+      <Layout hasSider={false}>
+        <Route {...this.props}></Route>
+      </Layout>
     );
   }
 }

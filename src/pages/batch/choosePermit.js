@@ -71,6 +71,14 @@ export default class ChoosePermitPage extends Component {
     this.handleSearch(e.target.value);
   };
 
+  handleExportClick = () => {
+    const batch = this.props.stores.batchStore.model;
+    const chooseDate = this.props.stores.chooseDateStore.model || {};
+    window.open(
+      `/api/batch/exportResult?batchId=${batch.id}&chooseDateId=${chooseDate.id}`
+    );
+  };
+
   renderQuotaColumn = (text, record) => {
     return record.quotas.map((quota, key) => {
       const userNames = quota.users.map(e => e.user).join(" / ");
@@ -106,6 +114,8 @@ export default class ChoosePermitPage extends Component {
     if (!batch && !this.props.stores.batchStore.loading) {
       return <NonBatchControl />;
     }
+    const chooseDate = this.props.stores.chooseDateStore.model;
+
     return (
       <div>
         <PageHeader
@@ -113,10 +123,24 @@ export default class ChoosePermitPage extends Component {
           extra={
             <Row>
               <Col span={12}>
-                <ChooseDateSelectControl
-                  onChange={this.handleDateChange}
-                  value={parameter.chooseDateId}
-                />
+                <Row>
+                  <Col span={12}>
+                    <ChooseDateSelectControl
+                      onChange={this.handleDateChange}
+                      value={parameter.chooseDateId}
+                    />
+                  </Col>
+                  <Col span={12}>
+                    <Button
+                      type="primary"
+                      icon="export"
+                      onClick={this.handleExportClick}
+                      disabled={!chooseDate}
+                    >
+                      导出列表
+                    </Button>
+                  </Col>
+                </Row>
               </Col>
               <Col span={12}>
                 <Input.Search
