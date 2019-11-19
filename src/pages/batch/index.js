@@ -185,10 +185,21 @@ export default class BatchIndexPage extends Component {
     );
     result.push(
       <Button
-        key="bthResult"
+        key="bthBigscreen"
         icon="list"
         onClick={() =>
           this.props.history.push("/batch/result?batchId=" + item.id)
+        }
+      >
+        选房大屏
+      </Button>
+    );
+    result.push(
+      <Button
+        key="bthResult"
+        icon="list"
+        onClick={() =>
+          this.props.history.push("/batch/rooms?batchId=" + item.id)
         }
       >
         选房结果

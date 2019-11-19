@@ -13,7 +13,7 @@ import {
   Select,
   Tag
 } from "antd";
-import { QueryString } from "../../common/utils";
+import { QueryString, reloadPage } from "../../common/utils";
 import moment from "moment";
 import StatusTag from "../shared/_statusTag";
 import ChooseRoom from "./_chooseRoom";
@@ -45,26 +45,15 @@ export default class ChoosePermitPage extends Component {
     await this.props.stores.roomStore.getResultList(batch.id);
   };
 
-  reloadPage = (key, value) => {
-    let query = QueryString.parseJSON(this.props.location.search);
-    query[key] = value;
-    if (key !== "pageIndex") {
-      query["pageIndex"] = "1";
-    }
-    this.props.history.push(
-      `/batch/choosePermit?${QueryString.stringify(query)}`
-    );
-  };
-
   handlePageChange = page => {
-    this.reloadPage("pageIndex", page);
+    reloadPage(this.props, { pageIndex: page });
   };
 
   handleDateChange = val => {
-    this.reloadPage("chooseDateId", val);
+    reloadPage(this.props, { chooseDateId: val });
   };
   handleSearch = key => {
-    this.reloadPage("key", key);
+    reloadPage(this.props, { key });
   };
 
   handlePressEnter = e => {
@@ -123,24 +112,10 @@ export default class ChoosePermitPage extends Component {
           extra={
             <Row>
               <Col span={12}>
-                <Row>
-                  <Col span={12}>
-                    <ChooseDateSelectControl
-                      onChange={this.handleDateChange}
-                      value={parameter.chooseDateId}
-                    />
-                  </Col>
-                  <Col span={12}>
-                    <Button
-                      type="primary"
-                      icon="export"
-                      onClick={this.handleExportClick}
-                      disabled={!chooseDate}
-                    >
-                      导出列表
-                    </Button>
-                  </Col>
-                </Row>
+                <ChooseDateSelectControl
+                  onChange={this.handleDateChange}
+                  value={parameter.chooseDateId}
+                />
               </Col>
               <Col span={12}>
                 <Input.Search

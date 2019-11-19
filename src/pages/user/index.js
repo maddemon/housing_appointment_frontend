@@ -11,7 +11,7 @@ import {
   message
 } from "antd";
 import moment from "moment";
-import { QueryString } from "../../common/utils";
+import { QueryString, reloadPage } from "../../common/utils";
 import EditModal from "./edit";
 
 @inject("stores")
@@ -52,14 +52,12 @@ export default class UserIndexPage extends Component {
     message.success("密码重置完成");
   };
 
-  handlePageChange = page => {
-    const parameter = this.props.stores.userStore.parameter || {};
-    parameter.pageIndex = page;
-    this.props.history.push(`/user/index?${QueryString.stringify(parameter)}`);
+  handlePageChange = pageIndex => {
+    reloadPage(this.props, { pageIndex });
   };
 
-  handleSearch = value => {
-    this.props.history.push(`/user/index?key=${value}`);
+  handleSearch = key => {
+    reloadPage(this.props, { key });
   };
 
   renderOperateColumn = (text, item) => {

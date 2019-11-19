@@ -13,6 +13,7 @@ import UserLoginPage from "../user/user_login";
 import AdminLoginPage from "../user/admin_login";
 import UserIndexPage from "../user";
 import HousesIndexPage from "../house";
+import HouseDetailPage from "../house/detail";
 import BatchIndexPage from "../batch";
 import PermitIndexPage from "../permit";
 import PermitStatisticPage from "../permit/statistic";
@@ -25,6 +26,7 @@ import UserEditPasswordPage from "../user/edit_password";
 import ChooseUserPage from "../batch/choosePermit";
 import SchedulePage from "../batch/schedule";
 import BatchChooseResultPage from "../batch/result";
+import BatchRoomListPage from "../batch/rooms";
 import HomePage from "../home";
 import "moment/locale/zh-cn";
 
@@ -46,6 +48,7 @@ export default class PrimaryLayout extends Component {
               path="/batch/result"
               component={BatchChooseResultPage}
             />
+            <Route exact path="/batch/rooms" component={BatchRoomListPage} />
             <PrivateRoute exact path="/my/history" component={MyHistoryPage} />
             <PrivateRoute exact path="/my/permit" component={MyPermitPage} />
             <PrivateRoute exact path="/my/batch" component={MyBatchPage} />
@@ -58,6 +61,11 @@ export default class PrimaryLayout extends Component {
               exact
               path="/house/index"
               component={HousesIndexPage}
+            />
+            <PrivateRoute
+              exact
+              path="/house/detail"
+              component={HouseDetailPage}
             />
             <PrivateRoute
               exact
@@ -147,14 +155,6 @@ class UserLayout extends Component {
 @observer
 class PrivateRoute extends Component {
   render() {
-    if (this.props.location.pathname === "/batch/result") {
-      return (
-        <FullscreenLayout>
-          <Route {...this.props}></Route>
-        </FullscreenLayout>
-      );
-    }
-
     const user = this.props.stores.userStore.current();
     if (!user) {
       const returnUrl = `${this.props.location.pathname}${this.props.location.search}`;
@@ -171,17 +171,6 @@ class PrivateRoute extends Component {
       <AdminLayout>
         <Route {...this.props}></Route>
       </AdminLayout>
-    );
-  }
-}
-
-@observer
-class FullscreenLayout extends Component {
-  render() {
-    return (
-      <Layout hasSider={false}>
-        <Route {...this.props}></Route>
-      </Layout>
     );
   }
 }

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 import { Button, Card, Tag, Row, Result } from "antd";
+import { RoomTypes } from "../../common/config";
 
 @inject("stores")
 @observer
@@ -34,7 +35,7 @@ export default class ChooseResult extends Component {
     const houseId = rooms[0].houseID;
     let result = {};
     rooms.forEach(room => {
-      const typeName = roomStore.getRoomTypeName(room.type);
+      const typeName = RoomTypes[room.type];
       result[typeName] = room;
     });
     return (

@@ -1,6 +1,7 @@
 import api from "../common/api";
 import StoreBase from "./storeBase";
 import { observable, action } from "mobx";
+import { RoomTypes } from "../common/config";
 
 export default class RoomStore extends StoreBase {
   @observable rooms = null;
@@ -88,49 +89,12 @@ export default class RoomStore extends StoreBase {
     }
   }
 
-  getRoomTypeName(type) {
-    switch (type) {
-      case 1:
-        return "dwelling";
-      case 2:
-        return "parking";
-      case 3:
-        return "storeroom";
-      case 4:
-        return "terrace";
-      default:
-        return "";
-    }
-  }
-
-  getRoomName(typeName) {
-    let roomName = "";
-    switch (typeName) {
-      case "dwelling":
-        roomName = "住宅";
-        break;
-      case "parking":
-        roomName = "停车位";
-        break;
-      case "storeroom":
-        roomName = "贮藏室";
-        break;
-      case "terrace":
-        roomName = "露台";
-        break;
-      default:
-        roomName = "";
-        break;
-    }
-    return roomName;
-  }
-
   @action selectRoom(room) {
     if (room) {
       if (!this.selectedRoom) {
         this.selectedRoom = {};
       }
-      this.selectedRoom[this.getRoomTypeName(room.type)] = room;
+      this.selectedRoom[RoomTypes[room.type]] = room;
       //如果是住宅且有露台，则自动选中露台
       if (room.type === 1) {
         const terrace = this.getTerrace(room);

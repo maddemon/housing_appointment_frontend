@@ -1,6 +1,5 @@
 import api from "../common/api";
 import StoreBase from "./storeBase";
-import { observable, action } from "mobx";
 
 export default class HousesStore extends StoreBase {
   constructor() {

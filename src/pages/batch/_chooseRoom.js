@@ -16,6 +16,10 @@ import {
   Input
 } from "antd";
 import ChooseResult from "./_chooseResult";
+import { RoomTypeNames } from "../../common/config";
+
+import BuildingList from "../house/_buildingList";
+
 @inject("stores")
 @observer
 export default class ChooseRoom extends Component {
@@ -104,16 +108,16 @@ export default class ChooseRoom extends Component {
       <Spin spinning={this.props.stores.roomStore.loading}>
         <Tabs>
           <Tabs.TabPane key="dwelling" tab="住宅">
-            <BuildingList roomType="dwelling" />
+            <BuildingList roomType="dwelling" action="choose" />
           </Tabs.TabPane>
           {rooms.parking ? (
             <Tabs.TabPane key="parking" tab="车位">
-              <BuildingList roomType="parking" />
+              <BuildingList roomType="parking" action="choose" />
             </Tabs.TabPane>
           ) : null}
           {rooms.storeroom ? (
             <Tabs.TabPane key="storeroom" tab="贮藏室">
-              <BuildingList roomType="storeroom" />
+              <BuildingList roomType="storeroom" action="choose" />
             </Tabs.TabPane>
           ) : null}
         </Tabs>
@@ -168,7 +172,7 @@ export default class ChooseRoom extends Component {
           {Object.keys(selectedRoom || {}).map(key => {
             return (
               <div key={key}>
-                已选{roomStore.getRoomName(key)}：
+                已选{RoomTypeNames[key]}：
                 <Tag
                   color="red"
                   style={{ fontSize: 20, padding: 5, margin: 5 }}
@@ -252,153 +256,3 @@ const HouseList = ({ batch, onSelect }) => {
     </Row>
   ));
 };
-
-@inject("stores")
-@observer
-class BuildingList extends Component {
-  state = { building: null };
-  handleSelectBuilding = number => {
-    this.setState({ building: number });
-  };
-
-  handleSearch = e => {
-    this.setState({ key: e.target.value });
-  };
-
-  render() {
-    const { buildings, loading } = this.props.stores.roomStore;
-    const { roomType } = this.props;
-    if (loading) return <Spin spinning={loading}></Spin>;
-    // console.log(buildings[roomType]);
-    // if (!this.state.building) {
-    //   return Object.keys(buildings[roomType] || {}).map(key => (
-    //     <Button
-    //       key={key}
-    //       style={{ margin: 5, width: 80, height: 40 }}
-    //       onClick={() => this.handleSelectBuilding(key)}
-    //     >
-    //       {key}
-    //     </Button>
-    //   ));
-    // }
-
-    const numbers = Object.keys(buildings[roomType] || {});
-    const selectedBuilding = this.state.building || numbers[0];
-    return (
-      <>
-        {roomType === "parking" ? "选择所属区" : "选择幢号"}：
-        <Select
-          style={{ width: 200, marginBottom: 5 }}
-          onSelect={this.handleSelectBuilding}
-          defaultValue={selectedBuilding.toString()}
-        >
-          {Object.keys(buildings[roomType] || {}).map(key => (
-            <Select.Option key={key}>{key}</Select.Option>
-          ))}
-        </Select>
-        <Input.Search
-          onChange={this.handleSearch}
-          placeholder="输入房号/编号查询"
-          style={{ width: 150, marginLeft: 20 }}
-        />
-        <RoomList
-          roomType={roomType}
-          building={selectedBuilding}
-          searchKey={this.state.key}
-        />
-        ;
-      </>
-    );
-  }
-}
-
-@inject("stores")
-@observer
-class RoomList extends Component {
-  handleSelectRoom = room => {
-    this.props.stores.roomStore.selectRoom(room);
-  };
-
-  renderTerraceColumn = (text, item) => {
-    const terrace = this.props.stores.roomStore.getTerrace(item);
-    if (terrace) {
-      return (
-        <span>
-          {terrace.profile.area}平方米 {terrace.profile.price}元
-        </span>
-      );
-    }
-    return null;
-  };
-
-  renderOperateColumn = (text, item) => {
-    return (
-      <Button
-        size="small"
-        type="primary"
-        disabled={item.quotaID !== 0}
-        onClick={() => this.handleSelectRoom(item)}
-      >
-        选择
-      </Button>
-    );
-  };
-
-  getColumns = roomType => {
-    switch (roomType) {
-      default:
-      case "dwelling":
-        return [
-          { dataIndex: "profile.number", title: "房号" },
-          {
-            dataIndex: "profile.area",
-            title: "预测面积(㎡)"
-          },
-          { dataIndex: "profile.amount", title: "总价(元)" },
-          {
-            dataIndex: "terrace",
-            title: "露台(㎡/元)",
-            render: this.renderTerraceColumn
-          },
-          { dataIndex: "id", title: "操作", render: this.renderOperateColumn }
-        ];
-      case "parking":
-        return [
-          {
-            dataIndex: "profile.area",
-            title: "分区号"
-          },
-          { dataIndex: "profile.number", title: "车位号" },
-          { dataIndex: "profile.price", title: "定价" },
-          { dataIndex: "id", title: "操作", render: this.renderOperateColumn }
-        ];
-      case "storeroom":
-        return [
-          { dataIndex: "profile.number", title: "房号" },
-          { dataIndex: "profile.area", title: "预测面积" },
-          { dataIndex: "profile.price", title: "定价" },
-          { dataIndex: "id", title: "操作", render: this.renderOperateColumn }
-        ];
-    }
-  };
-  render() {
-    const { roomType, building, searchKey } = this.props;
-    const { rooms } = this.props.stores.roomStore;
-    let list = rooms[roomType].filter(
-      e =>
-        ((searchKey && e.profile.number.indexOf(searchKey) > -1) ||
-          !searchKey) &&
-        e.quotaID === 0 &&
-        ((e.profile.area === building && e.type === 2) ||
-          e.profile.building === building)
-    );
-
-    return (
-      <Table
-        rowKey="id"
-        dataSource={list}
-        columns={this.getColumns(roomType)}
-      />
-    );
-  }
-}

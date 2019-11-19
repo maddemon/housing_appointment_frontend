@@ -12,7 +12,7 @@ import {
   Col,
   Select
 } from "antd";
-import { QueryString } from "../../common/utils";
+import { QueryString, reloadPage } from "../../common/utils";
 import StatusTag from "../shared/_statusTag";
 import NonBatchControl from "../my/_nonBatch";
 import ChooseDateSelectControl from "../shared/_chooseDateSelect";
@@ -45,23 +45,15 @@ export default class SchedulePage extends Component {
     await this.props.stores.permitStore.getEnterList(query);
   };
 
-  reloadPage = parameter => {
-    let query = QueryString.parseJSON(this.props.location.search);
-    Object.keys(parameter).forEach(key => {
-      query[key] = parameter[key];
-    });
-    this.props.history.push(`/batch/schedule?${QueryString.stringify(query)}`);
-  };
-
   handlePageChange = page => {
-    this.reloadPage({ pageIndex: page });
+    reloadPage(this.props, { pageIndex: page });
   };
 
   handleDateChange = chooseDateId => {
-    this.reloadPage({ chooseDateId, pageIndex: 1, hasChooseDate: "" });
+    reloadPage(this.props, { chooseDateId, pageIndex: 1, hasChooseDate: "" });
   };
   handleSearch = key => {
-    this.reloadPage({ key, pageIndex: 1 });
+    reloadPage(this.props, { key });
   };
 
   handlePressEnter = e => {
@@ -218,7 +210,7 @@ export default class SchedulePage extends Component {
                       style={{ width: 150 }}
                       defaultValue={parameter.hasChooseDate || ""}
                       onChange={value => {
-                        this.reloadPage({ hasChooseDate: value });
+                        reloadPage(this.props, { hasChooseDate: value });
                       }}
                     >
                       <Select.Option key="0" value="">

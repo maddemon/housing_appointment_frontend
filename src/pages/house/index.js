@@ -3,6 +3,7 @@ import { inject, observer } from "mobx-react";
 import { Row, PageHeader, Icon, Button, Table, message, Modal } from "antd";
 import { QueryString } from "../../common/utils";
 import EditModal from "./edit";
+import { Link } from "react-router-dom";
 
 @inject("stores")
 @observer
@@ -96,7 +97,13 @@ export default class HousesIndexPage extends Component {
           rowKey="id"
           columns={[
             { dataIndex: "id", title: "编号", width: 75 },
-            { dataIndex: "name", title: "名称" },
+            {
+              dataIndex: "name",
+              title: "名称",
+              render: (text, item) => (
+                <Link to={`/house/detail?id=${item.id}`}>{text}</Link>
+              )
+            },
             { dataIndex: "shortName", title: "简称" },
             { dataIndex: "address", title: "楼盘地址" },
             {

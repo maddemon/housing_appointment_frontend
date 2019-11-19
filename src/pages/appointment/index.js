@@ -16,7 +16,7 @@ import {
   Result,
   Tooltip
 } from "antd";
-import { QueryString } from "../../common/utils";
+import { QueryString, reloadPage } from "../../common/utils";
 import moment from "moment";
 import StatusTag from "../shared/_statusTag";
 import EditAppointmentModal from "./_edit";
@@ -52,20 +52,13 @@ export default class AppointmentIndexPage extends Component {
     }
   };
 
-  reloadPage = (name, value) => {
-    const parameter = this.props.stores.appointmentStore.parameter || {};
-    parameter[name] = value;
-    this.props.history.push(
-      "/appointment/index?" + QueryString.stringify(parameter)
-    );
-  };
+  handlePageChange = page => reloadPage(this.props, { pageIndex: page });
 
-  handlePageChange = page => this.reloadPage("pageIndex", page);
-
-  handleUserChange = value => this.reloadPage("onlyShardUser", value);
-  handleStatusChange = value => this.reloadPage("status", value);
-  handleChooseDateChange = value => this.reloadPage("chooseDateId", value);
-  handleUserSearch = key => this.reloadPage("key", key);
+  handleUserChange = value => reloadPage(this.props, { onlyShardUser: value });
+  handleStatusChange = value => reloadPage(this.props, { status: value });
+  handleChooseDateChange = value =>
+    reloadPage(this.props, { chooseDateId: value });
+  handleUserSearch = key => reloadPage(this.props, { key });
 
   handleConfirmClick = async () => {
     const batch = this.props.stores.batchStore.model;

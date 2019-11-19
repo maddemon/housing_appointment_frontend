@@ -11,7 +11,7 @@ import {
   Tag,
   Select
 } from "antd";
-import { QueryString } from "../../common/utils";
+import { QueryString, reloadPage } from "../../common/utils";
 import EditQuotaModal from "./edit_quota";
 import StatusTag from "../shared/_statusTag";
 
@@ -36,22 +36,18 @@ export default class PermitIndexPage extends Component {
   };
 
   handlePageChange = page => {
-    const parameter = this.props.stores.permitStore.parameter || {};
-    parameter["pageIndex"] = page;
-    this.props.history.push(
-      "/permit/index?" + QueryString.stringify(parameter)
-    );
+    reloadPage(this.props, { pageIndex: page });
   };
 
   handleSearch = key => {
-    this.props.history.push(`/permit/index?key=${key}`);
+    reloadPage(this.props, { key });
   };
 
   handleRedirectToStatistics = () => {
     this.props.history.push(`/permit/statistic`);
   };
   handleFilterChange = val => {
-    this.props.history.push(`/permit/index?issue=${val}`);
+    reloadPage(this.props, { issue: val });
   };
 
   handleSaveQuota = () => {
