@@ -10,7 +10,8 @@ import {
   Table,
   Tag,
   Col,
-  Select
+  Select,
+  DatePicker
 } from "antd";
 import { QueryString, reloadPage } from "../../common/utils";
 import StatusTag from "../shared/_statusTag";
@@ -69,21 +70,53 @@ export default class SchedulePage extends Component {
 
   handleSendChooseMessage = () => {
     Modal.confirm({
-      title: "发送选房确认",
-      content:
-        "本次操作将向“已选中的准购证”发送选房通知短信，你确认执行此操作吗？",
-      okText: "确认发送",
-      onOk: async () => {
-        const batch = this.props.stores.batchStore.model;
-        const response = await this.props.stores.messageStore.sendChooseMessage(
-          batch.id,
-          this.state.selectedQuotaIds
-        );
-        if (response && response.ok) {
-          message.success("发送短信完成");
-        }
+      title: "发送选房短信通知",
+      content: (
+        <div>
+          <div>请选择日期范围：</div>
+          <DatePicker.RangePicker
+            onChange={(dates, dateStrings) => {
+              if (dateStrings && dateStrings.length > 1) {
+                this.setState({
+                  beginDate: dateStrings[0],
+                  endDate: dateStrings[1]
+                });
+              } else {
+                this.setState({ beginDate: null, endDate: null });
+              }
+            }}
+          ></DatePicker.RangePicker>
+        </div>
+      ),
+      onOk: () => {
+        Modal.confirm({
+          title: "确认发送",
+          content: "确定日期选择无误，要批量发送短信吗？",
+          onOk: () => {
+            this.props.stores.messageStore.sendChooseMessage(
+              this.state.beginDate,
+              this.state.endDate
+            );
+          }
+        });
       }
     });
+    // Modal.confirm({
+    //   title: "发送选房确认",
+    //   content:
+    //     "本次操作将向“已选中的准购证”发送选房通知短信，你确认执行此操作吗？",
+    //   okText: "确认发送",
+    //   onOk: async () => {
+    //     const batch = this.props.stores.batchStore.model;
+    //     const response = await this.props.stores.messageStore.sendChooseMessage(
+    //       batch.id,
+    //       this.state.selectedQuotaIds
+    //     );
+    //     if (response && response.ok) {
+    //       message.success("发送短信完成");
+    //     }
+    //   }
+    // });
   };
 
   getPermitAndQuotas = list => {
@@ -262,7 +295,6 @@ export default class SchedulePage extends Component {
             <Button
               icon="bell"
               onClick={this.handleSendChooseMessage}
-              disabled={!hasSelected}
               type="danger"
             >
               选房通知

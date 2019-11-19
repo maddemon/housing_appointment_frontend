@@ -18,9 +18,9 @@ export default class MessageStore extends StoreBase {
   sendFailMessage(batchId) {
     return this.invokeApi(() => api.message.sendFailMessage(batchId));
   }
-  sendChooseMessage(batchId, quotaIds) {
+  sendChooseMessage(beginDate, endDate) {
     return this.invokeApi(() =>
-      api.message.sendChooseMessage(batchId, quotaIds)
+      api.message.sendChooseMessage({ beginDate, endDate })
     );
   }
 }

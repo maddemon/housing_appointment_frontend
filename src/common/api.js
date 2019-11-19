@@ -147,8 +147,8 @@ const api = {
     sendNotEnterMessage: batchId => {
       return $.get("message/sendNotEnterMessage", { batchId });
     },
-    sendChooseMessage: (batchId, quotaIds) => {
-      return $.get("message/sendChooseMessage", { batchId, quotaIds });
+    sendChooseMessage: parameters => {
+      return $.get("message/sendChooseMessage", parameters);
     }
   }
 };
