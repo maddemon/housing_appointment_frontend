@@ -41,14 +41,11 @@ export default class RoomList extends Component {
   };
   getViewColumns = roomType => {
     switch (roomType) {
-      default:
+      case "dwelling":
         return [
           { dataIndex: "profile.building", title: "幢号" },
           { dataIndex: "profile.number", title: "房号" },
-          {
-            dataIndex: "profile.area",
-            title: "面积(㎡)"
-          },
+          { dataIndex: "profile.area", title: "预测面积(㎡)" },
           { dataIndex: "profile.amount", title: "总价(元)" },
           {
             dataIndex: "quotaId",
@@ -63,13 +60,38 @@ export default class RoomList extends Component {
             title: "分区号"
           },
           { dataIndex: "profile.number", title: "车位号" },
-          { dataIndex: "profile.price", title: "定价" },
+          { dataIndex: "profile.price", title: "定价(元)" },
           {
             dataIndex: "quotaId",
             title: "状态",
             render: this.renderStatusColumn
           }
         ];
+      case "terrace":
+        return [
+          { dataIndex: "profile.building", title: "幢号" },
+          { dataIndex: "profile.number", title: "房号" },
+          { dataIndex: "profile.area", title: "面积(㎡)" },
+          { dataIndex: "profile.price", title: "定价(元)" },
+          {
+            dataIndex: "quotaId",
+            title: "状态",
+            render: this.renderStatusColumn
+          }
+        ];
+      case "storeroom":
+        return [
+          { dataIndex: "profile.building", title: "幢号" },
+          { dataIndex: "profile.number", title: "房号" },
+          { dataIndex: "profile.price", title: "定价(元)" },
+          {
+            dataIndex: "quotaId",
+            title: "状态",
+            render: this.renderStatusColumn
+          }
+        ];
+      default:
+        return [];
     }
   };
   getChooseColumns = roomType => {
@@ -103,7 +125,6 @@ export default class RoomList extends Component {
       case "storeroom":
         return [
           { dataIndex: "profile.number", title: "房号" },
-          { dataIndex: "profile.area", title: "预测面积" },
           { dataIndex: "profile.price", title: "定价" },
           { dataIndex: "id", title: "操作", render: this.renderOperateColumn }
         ];
