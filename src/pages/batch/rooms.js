@@ -53,16 +53,13 @@ export default class BatchChooseResult extends Component {
   handleChangeDate = date => {
     this.setState({ date: date ? date.format("ll") : null });
   };
-  handleExport = () => {
+  handleExport = hasChoose => {
     const batch = this.props.stores.batchStore.model || {};
     const house = this.props.stores.houseStore.model;
     window.open(
-      "/api/batch/ExportChooseResult?batchId=" +
-        batch.id +
-        "&date=" +
-        (this.state.date || "") +
-        "&houseId=" +
-        house.id
+      `/api/batch/ExportChooseResult?batchId=${batch.id}
+      &date=${this.state.date || ""}&houseId=${house.id}
+      &hasChoose=${hasChoose === null ? "" : hasChoose}`
     );
   };
 
@@ -93,8 +90,16 @@ export default class BatchChooseResult extends Component {
             identity && identity.role === "admin" ? (
               <Row>
                 <DatePicker onChange={this.handleChangeDate} />
-                <Button type="primary" onClick={this.handleExport}>
-                  导出
+                <Button type="primary" onClick={() => this.handleExport(true)}>
+                  导出已选
+                </Button>
+                &nbsp;
+                <Button type="primary" onClick={() => this.handleExport(false)}>
+                  导出未选
+                </Button>
+                &nbsp;
+                <Button type="primary" onClick={() => this.handleExport()}>
+                  导出全部
                 </Button>
               </Row>
             ) : null
