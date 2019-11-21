@@ -7,6 +7,11 @@ import RoomList from "./_roomList";
 @observer
 export default class BuildingList extends Component {
   state = { building: null };
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({ building: null });
+  }
+
   handleSelectBuilding = number => {
     this.setState({ building: number });
   };

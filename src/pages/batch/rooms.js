@@ -55,11 +55,12 @@ export default class BatchChooseResult extends Component {
   };
   handleExport = hasChoose => {
     const batch = this.props.stores.batchStore.model || {};
-    const house = this.props.stores.houseStore.model;
     window.open(
-      `/api/batch/ExportChooseResult?batchId=${batch.id}
-      &date=${this.state.date || ""}&houseId=${house.id}
-      &hasChoose=${hasChoose === null ? "" : hasChoose}`
+      `/api/batch/ExportChooseResult?refresh=true&batchId=${
+        batch.id
+      }&date=${this.state.date || ""}&hasChoose=${
+        hasChoose === null ? "" : hasChoose
+      }`
     );
   };
 
