@@ -64,6 +64,11 @@ export default class BatchChooseResult extends Component {
     );
   };
 
+  handleExportStatistic = () => {
+    const batch = this.props.stores.batchStore.model || {};
+    window.open(`/api/batch/ExportStatistic?batchId=${batch.id}`);
+  };
+
   getHouseId = () => {
     const list = this.props.stores.houseStore.list;
     return list && list.length > 0 ? list[0].id : 0;
@@ -101,6 +106,13 @@ export default class BatchChooseResult extends Component {
                 &nbsp;
                 <Button type="primary" onClick={() => this.handleExport()}>
                   导出全部
+                </Button>
+                &nbsp;
+                <Button
+                  type="primary"
+                  onClick={() => this.handleExportStatistic()}
+                >
+                  导出统计
                 </Button>
               </Row>
             ) : null
