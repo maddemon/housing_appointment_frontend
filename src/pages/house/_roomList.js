@@ -10,8 +10,8 @@ export default class RoomList extends Component {
   };
 
   renderStatusColumn = (text, item) => (
-    <Tag color={item.quotaID ? "red" : "green"}>
-      {item.quotaID ? "已选" : "未选"}
+    <Tag color={item.hasChoosen ? "red" : "green"}>
+      {item.hasChoosen ? "已选" : "未选"}
     </Tag>
   );
 
@@ -32,7 +32,7 @@ export default class RoomList extends Component {
       <Button
         size="small"
         type="primary"
-        disabled={item.quotaID !== 0}
+        disabled={item.hasChoosen}
         onClick={() => this.handleSelectRoom(item)}
       >
         选择
@@ -48,7 +48,7 @@ export default class RoomList extends Component {
           { dataIndex: "profile.area", title: "预测面积(㎡)" },
           { dataIndex: "profile.amount", title: "总价(元)" },
           {
-            dataIndex: "quotaId",
+            dataIndex: "hasChoosen",
             title: "状态",
             render: this.renderStatusColumn
           }
@@ -62,7 +62,7 @@ export default class RoomList extends Component {
           { dataIndex: "profile.number", title: "车位号" },
           { dataIndex: "profile.price", title: "定价(元)" },
           {
-            dataIndex: "quotaId",
+            dataIndex: "hasChoosen",
             title: "状态",
             render: this.renderStatusColumn
           }
@@ -74,7 +74,7 @@ export default class RoomList extends Component {
           { dataIndex: "profile.area", title: "面积(㎡)" },
           { dataIndex: "profile.price", title: "定价(元)" },
           {
-            dataIndex: "quotaId",
+            dataIndex: "hasChoosen",
             title: "状态",
             render: this.renderStatusColumn
           }
@@ -85,7 +85,7 @@ export default class RoomList extends Component {
           { dataIndex: "profile.number", title: "房号" },
           { dataIndex: "profile.price", title: "定价(元)" },
           {
-            dataIndex: "quotaId",
+            dataIndex: "hasChoosen",
             title: "状态",
             render: this.renderStatusColumn
           }
@@ -141,7 +141,7 @@ export default class RoomList extends Component {
           e.profile.building === building)
     );
     if (action === "choose") {
-      list = list.filter(e => e.quotaID === 0);
+      list = list.filter(e => !e.hasChoosen);
       return (
         <Table
           rowKey="id"

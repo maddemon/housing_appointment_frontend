@@ -56,17 +56,15 @@ export default class BatchChooseResult extends Component {
   handleExport = hasChoose => {
     const batch = this.props.stores.batchStore.model || {};
     window.open(
-      `/api/batch/ExportChooseResult?refresh=true&batchId=${
-        batch.id
-      }&date=${this.state.date || ""}&hasChoose=${
-        hasChoose === null ? "" : hasChoose
-      }`
+      `/api/batch/ExportChooseResult?refresh=true&batchId=${batch.id}&date=${this.state.date || ""}&hasChoose=${hasChoose === null ? "" : hasChoose}`
     );
   };
 
   handleExportStatistic = () => {
     const batch = this.props.stores.batchStore.model || {};
-    window.open(`/api/batch/ExportStatistic?batchId=${batch.id}`);
+    window.open(
+      `/api/batch/ExportStatistic?batchId=${batch.id}&date=${this.state.date || ""}`
+    );
   };
 
   getHouseId = () => {
@@ -87,10 +85,10 @@ export default class BatchChooseResult extends Component {
         <PageHeader
           title={"楼盘选房情况"}
           subTitle={
-            <>
+            <span>
               <Tag color="red">{house.name}</Tag>
               <Tag color="blue">{batch.name}</Tag>
-            </>
+            </span>
           }
           extra={
             identity && identity.role === "admin" ? (

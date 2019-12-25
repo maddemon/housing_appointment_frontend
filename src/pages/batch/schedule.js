@@ -42,7 +42,6 @@ export default class SchedulePage extends Component {
     await this.props.stores.batchStore.getModel(query.batchId);
     const batch = this.props.stores.batchStore.model;
     if (!batch) return;
-    query.status = 3;
     await this.props.stores.permitStore.getEnterList(query);
   };
 
@@ -123,7 +122,7 @@ export default class SchedulePage extends Component {
     let quotas = [];
     list.forEach(item => {
       quotas = quotas.concat(
-        item.quotas.filter(e => e.users.find(u => u.status === 3))
+        item.quotas.filter(e => e.users.find(u => u.status === 2 || u.status === 3))
       );
     });
     return {
