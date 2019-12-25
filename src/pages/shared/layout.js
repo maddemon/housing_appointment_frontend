@@ -9,24 +9,12 @@ import { inject, observer } from "mobx-react";
 import DocumentTitle from "react-document-title";
 import { Layout, Breadcrumb, Result, Button, Icon } from "antd";
 import TopNavbar from "../shared/_header";
-import UserLoginPage from "../user/user_login";
-import AdminLoginPage from "../user/admin_login";
+import LoginPage from "../user/login";
 import UserIndexPage from "../user";
-import HousesIndexPage from "../house";
-import HouseDetailPage from "../house/detail";
-import BatchIndexPage from "../batch";
 import PermitIndexPage from "../permit";
 import PermitStatisticPage from "../permit/statistic";
-import AppointmentIndexPage from "../appointment";
-import MyBatchPage from "../my/batch";
-import MyAppointmentPage from "../my/appointment";
-import MyPermitPage from "../my/permit";
-import MyHistoryPage from "../my/history";
+
 import UserEditPasswordPage from "../user/edit_password";
-import ChooseUserPage from "../batch/choosePermit";
-import SchedulePage from "../batch/schedule";
-import BatchChooseResultPage from "../batch/result";
-import BatchRoomListPage from "../batch/rooms";
 import HomePage from "../home";
 import "moment/locale/zh-cn";
 
@@ -41,47 +29,7 @@ export default class PrimaryLayout extends Component {
         <Router>
           <Switch>
             <PrivateRoute exact path="/" component={HomePage} />
-            <Route exact path="/user/login" component={UserLoginPage} />
-            <Route exact path="/admin/login" component={AdminLoginPage} />
-            <Route
-              exact
-              path="/batch/result"
-              component={BatchChooseResultPage}
-            />
-            <Route exact path="/batch/rooms" component={BatchRoomListPage} />
-            <PrivateRoute exact path="/my/history" component={MyHistoryPage} />
-            <PrivateRoute exact path="/my/permit" component={MyPermitPage} />
-            <PrivateRoute exact path="/my/batch" component={MyBatchPage} />
-            <PrivateRoute
-              exact
-              path="/my/appointment"
-              component={MyAppointmentPage}
-            />
-            <PrivateRoute
-              exact
-              path="/house/index"
-              component={HousesIndexPage}
-            />
-            <PrivateRoute
-              exact
-              path="/house/detail"
-              component={HouseDetailPage}
-            />
-            <PrivateRoute
-              exact
-              path="/batch/choosePermit"
-              component={ChooseUserPage}
-            />
-            <PrivateRoute
-              exact
-              path="/batch/schedule"
-              component={SchedulePage}
-            />
-            <PrivateRoute
-              exact
-              path="/batch/index"
-              component={BatchIndexPage}
-            />
+            <Route exact path="/user/login" component={LoginPage} />
             <PrivateRoute
               exact
               path="/permit/index"
@@ -91,11 +39,6 @@ export default class PrimaryLayout extends Component {
               exact
               path="/permit/statistic"
               component={PermitStatisticPage}
-            />
-            <PrivateRoute
-              exact
-              path="/appointment/index"
-              component={AppointmentIndexPage}
             />
             <PrivateRoute exact path="/user/index" component={UserIndexPage} />
             <PrivateRoute

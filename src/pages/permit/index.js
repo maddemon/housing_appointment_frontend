@@ -112,15 +112,19 @@ export default class PermitIndexPage extends Component {
                   defaultValue={parameter.issue}
                 >
                   <Select.Option key="all" value="">
-                    查看所有
+                    全部
                   </Select.Option>
                   <Select.Option key="false" value="false">
-                    仅看未发证
+                    未发证
+                  </Select.Option>
+                  <Select.Option key="true" value="true">
+                    已发证
                   </Select.Option>
                 </Select>
               </Col>
               <Col span={12}>
                 <Input.Search
+                  placeholder="姓名、准购证号"
                   defaultValue={parameter.key}
                   onSearch={this.handleSearch}
                   style={{ width: 200 }}
@@ -142,14 +146,14 @@ export default class PermitIndexPage extends Component {
           columns={[
             { dataIndex: "permitCode", title: "准购证号", width: 100 },
             { dataIndex: "agency", title: "动迁机构", width: 120 },
-            { dataIndex: "town", title: "镇街", width: 150 },
-            { dataIndex: "quotaNumber", title: "限购套数", width: 100 },
+            { dataIndex: "village", title: "行政村", width: 150 },
+            { dataIndex: "householderName", title: "户主姓名", width: 150 },
+            { dataIndex: "householderIDCard", title: "户主身份证", width: 150 },
             {
               dataIndex: "quotas",
-              title: "实发套数",
+              title: "指标",
               render: this.renderQuotaColumn
             },
-            { dataIndex: "remark", title: "备注" },
             { title: "操作", render: this.renderOperateColumn, width: 120 }
           ]}
           dataSource={list}

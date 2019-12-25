@@ -16,12 +16,9 @@ export default class HomePage extends Component {
         if (identity) {
             switch (identity.role) {
                 case 'admin':
-                    redirectUrl = '/batch/index'
+                    redirectUrl = '/permit/index'
                     break;
-                case 'user':
-                    redirectUrl = '/my/batch'
-                    break;
-                case 'jiansheju':
+                case 'agency':
                     redirectUrl = '/permit/statistic'
                     break;
                 default:

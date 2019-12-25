@@ -19,7 +19,6 @@ export default class PermitStatisticPage extends Component {
             <Row>
                 <PageHeader title="准购证管理发放情况统计表" />
                 <Table dataSource={statistic} bordered={true} pagination={false} loading={loading}>
-                    <Column title="镇街" dataIndex="town" key="town" />
                     <Column title="动迁机构" dataIndex="agency" key="agency" />
                     <ColumnGroup title="应发数">
                         <Column title="户数" dataIndex="family" key="family" />
