@@ -56,7 +56,6 @@ export default class EditQuotaModal extends Component {
             { name: 'quotaCode', title: "购房证号", defaultValue: model.quotaCode, rules: [{ required: true, message: '此项没有填写' }], },
             { name: 'user', title: "姓名", defaultValue: model.user, rules: [{ required: true, message: '此项没有填写' }], },
             { name: 'idCard', title: "证件号码", defaultValue: model.idCard, rules: [{ required: true, message: '此项没有填写' }], },
-            { name: 'phone', title: "手机号", defaultValue: model.phone, rules: [{ required: true, message: '此项没有填写' }], }
         ]
     }
 
@@ -79,7 +78,7 @@ export default class EditQuotaModal extends Component {
                 onSubmit={this.handleSaveSubmit}
                 trigger={this.props.trigger || <Button>发证</Button>}
                 items={this.getFormItems()}
-                loading={this.props.stores.houseStore.loading}
+                loading={this.props.stores.quotaStore.loading}
                 footer={this.getFooterButtons()}
             >
             </FormModal>

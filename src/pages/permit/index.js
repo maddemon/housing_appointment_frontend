@@ -148,7 +148,7 @@ export default class PermitIndexPage extends Component {
             { dataIndex: "agency", title: "动迁机构", width: 120 },
             { dataIndex: "village", title: "行政村", width: 150 },
             { dataIndex: "householderName", title: "户主姓名", width: 150 },
-            { dataIndex: "householderIDCard", title: "户主身份证", width: 150 },
+            { dataIndex: "householderIDCard", title: "户主身份证", width: 200 },
             {
               dataIndex: "quotas",
               title: "指标",

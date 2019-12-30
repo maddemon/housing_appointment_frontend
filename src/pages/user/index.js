@@ -130,7 +130,6 @@ export default class UserIndexPage extends Component {
           columns={[
             { dataIndex: "id", title: "编号", width: 75 },
             { dataIndex: "name", title: "姓名", width: 150 },
-            { dataIndex: "phone", title: "手机号", width: 200 },
             { dataIndex: "idCard", title: "证件号码" },
             {
               dataIndex: "createTime",
@@ -138,7 +137,6 @@ export default class UserIndexPage extends Component {
               width: 200,
               render: text => moment(text).format("lll")
             },
-            { dataIndex: "remark", title: "备注" },
             { title: "操作", render: this.renderOperateColumn, width: 200 }
           ]}
           dataSource={list}

@@ -12,8 +12,11 @@ export default class EditPasswordModal extends Component {
             return false;
         }
         const result = await this.props.stores.userStore.editPassword(values.oldpassword, values.newpassword)
-        if (result.status === '200') {
+        if (result.status === 200 || result.status === 204) {
             message.success("密码修改成功！")
+        }
+        else{
+            return false; 
         }
     }
 

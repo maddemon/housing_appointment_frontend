@@ -22,7 +22,6 @@ export default class PermitStatisticPage extends Component {
                     <Column title="动迁机构" dataIndex="agency" key="agency" />
                     <ColumnGroup title="应发数">
                         <Column title="户数" dataIndex="family" key="family" />
-                        <Column title="房数" dataIndex="room" key="room" />
                     </ColumnGroup>
                     <ColumnGroup title="实发数">
                         <Column title="户数" dataIndex="realFamily" key="realFamily" />
@@ -30,7 +29,6 @@ export default class PermitStatisticPage extends Component {
                     </ColumnGroup>
                     <ColumnGroup title="实发率">
                         <Column title="户数" dataIndex="rateFamily" key="rateFamily" render={(text) => parseFloat(text).toFixed(2) + '%'} />
-                        <Column title="房数" dataIndex="rateRoom" key="rateRoom" render={(text) => parseFloat(text).toFixed(2) + '%'} />
                     </ColumnGroup>
                 </Table>
             </Row>

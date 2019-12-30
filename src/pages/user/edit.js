@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button } from 'antd'
+import { Button, Radio } from 'antd'
 import Modal from '../shared/modal'
 import { inject, observer } from 'mobx-react'
 
@@ -23,7 +23,14 @@ export default class UserEditModal extends Component {
             { name: 'id', defaultValue: model.id, type: "hidden" },
             { title: '证件号码', name: 'idCard', defaultValue: model.idCard, rules: [{ required: true, message: '请填写证件号码' }], },
             { title: '姓名', name: 'name', defaultValue: model.name, rules: [{ required: true, message: '请填写姓名' }], },
-            { title: '手机', name: 'phone', defaultValue: model.phone, rules: [{ required: true, message: '请填写手机号码' }], },
+            {
+                title: '角色', name: 'role', defaultValue: model.role || 'user', render: <Radio.Group>
+                <Radio.Button value="user">购房人</Radio.Button>
+                <Radio.Button value="agency">动迁公司</Radio.Button>
+                <Radio.Button value="admin">管理员</Radio.Button>
+                </Radio.Group>
+            },
+            { title: '密码', name: 'password', defaultValue: '' },
         ];
     }
 

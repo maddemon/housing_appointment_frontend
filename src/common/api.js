@@ -14,7 +14,7 @@ const api = {
       return $.get("user/resetPassword", { id });
     },
     editPassword: (oldPassword, newPassword) => {
-      return $.post("user/changePassword", null, { oldPassword, newPassword });
+      return $.get("user/changePassword", { oldPassword, newPassword });
     }
   },
   house: {
