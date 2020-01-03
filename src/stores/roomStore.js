@@ -113,7 +113,7 @@ export default class RoomStore extends StoreBase {
     Object.keys(this.rooms).forEach(roomType => {
       buildings[roomType] = {};
       this.rooms[roomType].forEach(room => {
-        let key = room.profile.building || room.profile.area;
+        let key = room.profile.building || room.profile.block;
         if (!buildings[roomType][key]) {
           buildings[roomType][key] = [room];
         } else {

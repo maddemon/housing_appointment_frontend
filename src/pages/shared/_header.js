@@ -35,8 +35,32 @@ class TopNavbar extends Component {
     ];
     if (identity) {
       switch (identity.role) {
+        case "user":
+          result = result.concat([
+            <Menu.Item key="/my/batch">
+              <Icon type="form" />
+              预约选房
+            </Menu.Item>,
+            <Menu.Item key="/my/permit">
+              <Icon type="book" />
+              我的购房证
+            </Menu.Item>,
+            <Menu.Item key="/my/history">
+              <Icon type="calendar" />
+              预约记录
+            </Menu.Item>
+          ]);
+          break;
         case "admin":
           result = result.concat([
+            <Menu.Item key="/batch/index">
+              <Icon type="import" />
+              批次管理
+            </Menu.Item>,
+            <Menu.Item key="/house/index">
+              <Icon type="build" />
+              楼盘管理
+            </Menu.Item>,
             <Menu.Item key="/permit/index">
               <Icon type="switcher" />
               准购证管理{" "}
@@ -47,7 +71,7 @@ class TopNavbar extends Component {
             </Menu.Item>
           ]);
           break;
-        case "agency":
+        case "jiansheju":
           result = result.concat([
             <Menu.Item key="/permit/statistic">
               <Icon type="bar-chart" />

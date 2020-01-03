@@ -41,7 +41,7 @@ export default class ChoosePermitPage extends Component {
     await this.props.stores.batchStore.getModel(query.batchId);
     const batch = this.props.stores.batchStore.model;
     if (!batch) return;
-    await this.props.stores.permitStore.getEnterList(query);
+    await this.props.stores.permitStore.getList(query);
     await this.props.stores.roomStore.getResultList(batch.id);
   };
 
@@ -103,29 +103,17 @@ export default class ChoosePermitPage extends Component {
     if (!batch && !this.props.stores.batchStore.loading) {
       return <NonBatchControl />;
     }
-    const chooseDate = this.props.stores.chooseDateStore.model;
 
     return (
       <div>
         <PageHeader
           title="选房"
-          extra={
-            <Row>
-              <Col span={12}>
-                <ChooseDateSelectControl
-                  onChange={this.handleDateChange}
-                  value={parameter.chooseDateId}
-                />
-              </Col>
-              <Col span={12}>
-                <Input.Search
-                  onSearch={this.handleSearch}
-                  onPressEnter={this.handlePressEnter}
-                  placeholder="输入准购证号查询"
-                  enterButton
-                />
-              </Col>
-            </Row>
+          extra={<Input.Search
+            onSearch={this.handleSearch}
+            onPressEnter={this.handlePressEnter}
+            placeholder="输入准购证号查询"
+            enterButton
+          />
           }
         />
         <Row>
@@ -136,7 +124,7 @@ export default class ChoosePermitPage extends Component {
             columns={[
               { dataIndex: "permitCode", title: "准购证号" },
               { dataIndex: "agency", title: "动迁机构" },
-              { dataIndex: "town", title: "镇街" },
+              { dataIndex: "householderName", title: "户主姓名" },
               {
                 dataIndex: "quotas",
                 title: "购房证",

@@ -122,55 +122,8 @@ export default class BatchIndexPage extends Component {
     return <span>{text}</span>;
   };
   renderOperateColumn = (text, item) => {
-    const canNotify = moment(item.appointmentEndTime) > moment();
     const canDelete = moment(item.appointmentBeginTime) > moment();
     var result = [];
-    if (canNotify) {
-      result.push(
-        <Button
-          key="btnNotify"
-          onClick={() => this.handleSendAppointmentMessage(item.id)}
-        >
-          <Icon type="bell" />
-          预约通知
-        </Button>
-      );
-      result.push(
-        <Button
-          key="btnNotifyFailMessage"
-          icon="bell"
-          onClick={() => this.handleSendFailMessage(item.id)}
-        >
-          预约未完成通知
-        </Button>
-      );
-    }
-    result.push(
-      <Button
-        key="btnAppointment"
-        icon="clock-circle"
-        type="primary"
-        onClick={() =>
-          this.props.history.push("/appointment/index?batchId=" + item.id)
-        }
-      >
-        预约管理
-      </Button>
-    );
-    result.push(
-      <Button
-        key="btnSchedule"
-        type="primary"
-        icon="calendar"
-        onClick={() =>
-          this.props.history.push(
-            "/batch/schedule?batchId=" + item.id + "&hasChooseDate=false"
-          )
-        }
-      >
-        排期
-      </Button>
-    );
     result.push(
       <Button
         key="btnChoose"

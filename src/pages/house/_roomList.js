@@ -46,7 +46,7 @@ export default class RoomList extends Component {
           { dataIndex: "profile.building", title: "幢号" },
           { dataIndex: "profile.number", title: "房号" },
           { dataIndex: "profile.area", title: "预测面积(㎡)" },
-          { dataIndex: "profile.amount", title: "总价(元)" },
+          { dataIndex: "profile.price", title: "总价(元)" },
           {
             dataIndex: "hasChoosen",
             title: "状态",
@@ -56,7 +56,7 @@ export default class RoomList extends Component {
       case "parking":
         return [
           {
-            dataIndex: "profile.area",
+            dataIndex: "profile.block",
             title: "分区号"
           },
           { dataIndex: "profile.number", title: "车位号" },
@@ -82,8 +82,10 @@ export default class RoomList extends Component {
       case "storeroom":
         return [
           { dataIndex: "profile.building", title: "幢号" },
+          { dataIndex: "profile.block", title: "区块" },
           { dataIndex: "profile.number", title: "房号" },
           { dataIndex: "profile.price", title: "定价(元)" },
+          { dataIndex: "profile.remark", title: "备注" },
           {
             dataIndex: "hasChoosen",
             title: "状态",
@@ -100,11 +102,12 @@ export default class RoomList extends Component {
       case "dwelling":
         return [
           { dataIndex: "profile.number", title: "房号" },
+          { dataIndex: "profile.block", title: "区块" },
           {
             dataIndex: "profile.area",
             title: "预测面积(㎡)"
           },
-          { dataIndex: "profile.amount", title: "总价(元)" },
+          { dataIndex: "profile.price", title: "总价(元)" },
           {
             dataIndex: "terrace",
             title: "露台(㎡/元)",
@@ -115,7 +118,7 @@ export default class RoomList extends Component {
       case "parking":
         return [
           {
-            dataIndex: "profile.area",
+            dataIndex: "profile.block",
             title: "分区号"
           },
           { dataIndex: "profile.number", title: "车位号" },
@@ -125,7 +128,9 @@ export default class RoomList extends Component {
       case "storeroom":
         return [
           { dataIndex: "profile.number", title: "房号" },
+          { dataIndex: "profile.block", title: "区块" },
           { dataIndex: "profile.price", title: "定价" },
+          { dataIndex: "profile.remarkz", title: "备注" },
           { dataIndex: "id", title: "操作", render: this.renderOperateColumn }
         ];
     }
@@ -137,7 +142,7 @@ export default class RoomList extends Component {
       e =>
         ((searchKey && e.profile.number.indexOf(searchKey) > -1) ||
           !searchKey) &&
-        ((e.profile.area === building && e.type === 2) ||
+        ((e.profile.block === building && e.type === 2) ||
           e.profile.building === building)
     );
     if (action === "choose") {
