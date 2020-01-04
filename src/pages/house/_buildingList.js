@@ -26,7 +26,7 @@ export default class BuildingList extends Component {
     if (loading) return <Spin spinning={loading}></Spin>;
 
     const numbers = Object.keys(buildings[roomType] || {});
-    const selectedBuilding = this.state.building || numbers[0];
+    const selectedBuilding = this.state.building || numbers[0] || '';
     return (
       <>
         {roomType === "parking" ? "选择所属区" : "选择幢号"}：

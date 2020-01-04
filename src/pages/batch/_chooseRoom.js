@@ -1,20 +1,6 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-import {
-  Drawer,
-  Row,
-  Button,
-  Card,
-  Tag,
-  Tabs,
-  Spin,
-  Modal,
-  Select,
-  Table,
-  message,
-  Result,
-  Input
-} from "antd";
+import { Drawer, Row, Button, Card, Tag, Tabs, Spin, Modal, message } from "antd";
 import ChooseResult from "./_chooseResult";
 import { RoomTypeNames } from "../../common/config";
 
@@ -133,10 +119,10 @@ export default class ChooseRoom extends Component {
     const { chooseResult, selectedHouse, selectedRoom } = roomStore;
 
     if (chooseResult || quota.users.find(e => e.status > 3)) {
-      return <ChooseResult quota={quota} />;
+      return <ChooseResult quota={quota} onReset={this.hide} />;
     }
     return (
-      <>
+      <span>
         <Card
           title="选择结果"
           extra={
@@ -183,11 +169,11 @@ export default class ChooseRoom extends Component {
                       {selectedRoom[key].profile.number}
                     </span>
                   ) : (
-                    <span>
-                      {selectedRoom[key].profile.building}号楼
+                      <span>
+                        {selectedRoom[key].profile.building}号楼
                       {selectedRoom[key].profile.number}
-                    </span>
-                  )}
+                      </span>
+                    )}
                 </Tag>
                 <Button
                   onClick={() => this.handleSelectRoom(null)}
@@ -200,15 +186,15 @@ export default class ChooseRoom extends Component {
           })}
         </Card>
         {this.renderStep()}
-      </>
+      </span>
     );
-  };
+  }
 
   render() {
     const trigger = this.props.trigger;
     const { quota } = this.props;
     return (
-      <>
+      <span>
         {trigger ? <span onClick={this.show}>{trigger}</span> : null}
         <Drawer
           title={`${quota.permitCode}-${quota.quotaCode} ${quota.users
@@ -220,7 +206,7 @@ export default class ChooseRoom extends Component {
         >
           {this.renderBody()}
         </Drawer>
-      </>
+      </span>
     );
   }
 }

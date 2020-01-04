@@ -138,7 +138,7 @@ export default class RoomList extends Component {
   render() {
     const { roomType, building, searchKey, action } = this.props;
     const { rooms } = this.props.stores.roomStore;
-    let list = rooms[roomType].filter(
+    let list = ((rooms || {})[roomType] || []).filter(
       e =>
         ((searchKey && e.profile.number.indexOf(searchKey) > -1) ||
           !searchKey) &&

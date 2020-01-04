@@ -1,25 +1,10 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-import {
-  Row,
-  PageHeader,
-  Input,
-  Button,
-  Spin,
-  Result,
-  Table,
-  DatePicker,
-  Col,
-  Select,
-  Tag
-} from "antd";
+import { Row, PageHeader, Input, Table, } from "antd";
 import { QueryString, reloadPage } from "../../common/utils";
-import moment from "moment";
 import StatusTag from "../shared/_statusTag";
 import ChooseRoom from "./_chooseRoom";
-import ChooseResult from "./_chooseResult";
 import NonBatchControl from "../my/_nonBatch";
-import ChooseDateSelectControl from "../shared/_chooseDateSelect";
 
 @inject("stores")
 @observer
@@ -97,7 +82,7 @@ export default class ChoosePermitPage extends Component {
   };
 
   render() {
-    const { list, page, parameter } = this.props.stores.permitStore;
+    const { list, page } = this.props.stores.permitStore;
     const batch = this.props.stores.batchStore.model;
 
     if (!batch && !this.props.stores.batchStore.loading) {

@@ -46,6 +46,9 @@ const api = {
     },
     giveup: (batchId, quotaId) => {
       return $.get("room/giveup", { batchId, quotaId });
+    },
+    resetResult: quotaId => {
+      return $.get('room/resetResult', { quotaId })
     }
   },
   batch: {

@@ -172,7 +172,7 @@ export default class BatchIndexPage extends Component {
           删除
         </Button>
       );
-    return <>{result}</>;
+    return result;
   };
 
   render() {
@@ -202,12 +202,8 @@ export default class BatchIndexPage extends Component {
                   bordered
                   column={{ md: 2, sm: 1, xs: 1 }}
                 >
-                  <Descriptions.Item label="编号">{item.id}</Descriptions.Item>
                   <Descriptions.Item label="楼盘">
                     {this.houseColumnRender("", item)}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="预约时段">
-                    {this.appointmentColumnRender("", item)}
                   </Descriptions.Item>
                   <Descriptions.Item label="选房地点">
                     {item.chooseAddress}

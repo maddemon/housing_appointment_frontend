@@ -123,4 +123,13 @@ export default class RoomStore extends StoreBase {
     });
     return (this.buildings = buildings);
   }
+
+  @action resetResult(quotaId) {
+    this.chooseResult = false;
+    this.selectedHouse = null;
+    this.selectedRoom = null;
+    this.invokeApi(() => api.room.resetResult(quotaId), () => {
+      this.resultList = this.resultList.filter(e=>e.quotaId !== quotaId);
+    })
+  }
 }
