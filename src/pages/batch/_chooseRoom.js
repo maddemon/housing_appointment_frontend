@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-import { Drawer, Row, Button, Card, Tag, Tabs, Spin, Modal, message } from "antd";
+import { Drawer, Row, Button, Card, Tag, Tabs, Spin, Modal, message, Input } from "antd";
 import ChooseResult from "./_chooseResult";
 import { RoomTypeNames } from "../../common/config";
 
@@ -9,7 +9,7 @@ import BuildingList from "../house/_buildingList";
 @inject("stores")
 @observer
 export default class ChooseRoom extends Component {
-  state = { visible: false };
+  state = { visible: false, phone: '' };
   show = () => this.setState({ visible: true });
   hide = () => {
     this.setState({ visible: false });
@@ -32,15 +32,27 @@ export default class ChooseRoom extends Component {
       message.error("你还没有选房，请先选房");
       return;
     }
+    const quota = this.props.quota;
+    let phone = quota.users[0].phone;
     Modal.confirm({
       title: "选房确认",
-      content: "你确定不更改选择了吗？",
+      content: <span>
+        购房人手机号：
+        <Input onChange={(e) => {
+          phone = e.target.value
+        }} placeholder="请填写购房人手机号" defaultValue={phone} />
+      </span>,
       onOk: async () => {
+        if (!phone) {
+          message.error("请填写手机号");
+          return false;
+        }
         const batch = this.props.stores.batchStore.model;
         const { quota } = this.props;
         const response = await this.props.stores.roomStore.confirmChoose(
           batch.id,
-          quota.id
+          quota.id,
+          phone
         );
         if (response && response.ok) {
           message.success("选房成功！");

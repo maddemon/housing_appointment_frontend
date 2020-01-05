@@ -28,12 +28,13 @@ export default class RoomStore extends StoreBase {
     this.selectedRoom = null;
   }
 
-  @action async confirmChoose(batchId, quotaId) {
+  @action async confirmChoose(batchId, quotaId, phone) {
     return await this.invokeApi(
       () =>
         api.room.choose({
           batchId,
           quotaId,
+          phone,
           roomIds: Object.keys(this.selectedRoom).map(
             formType => this.selectedRoom[formType].id
           )
@@ -129,7 +130,7 @@ export default class RoomStore extends StoreBase {
     this.selectedHouse = null;
     this.selectedRoom = null;
     this.invokeApi(() => api.room.resetResult(quotaId), () => {
-      this.resultList = this.resultList.filter(e=>e.quotaId !== quotaId);
+      this.resultList = this.resultList.filter(e => e.quotaId !== quotaId);
     })
   }
 }

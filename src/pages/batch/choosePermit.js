@@ -55,12 +55,11 @@ export default class ChoosePermitPage extends Component {
 
   renderQuotaColumn = (text, record) => {
     return record.quotas.map((quota, key) => {
-      const userNames = quota.users.map(e => e.user).join(" / ");
       return (
         <ChooseRoom
           key={key}
           quota={quota}
-          user={userNames}
+          users={quota.users}
           permit={record}
           onChoosen={this.loadData}
           trigger={

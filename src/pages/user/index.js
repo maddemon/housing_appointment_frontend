@@ -131,6 +131,7 @@ export default class UserIndexPage extends Component {
             { dataIndex: "id", title: "编号", width: 75 },
             { dataIndex: "name", title: "姓名", width: 150 },
             { dataIndex: "idCard", title: "证件号码" },
+            { dataIndex: "phone", title: "手机号码" },
             {
               dataIndex: "createTime",
               title: "创建日期",

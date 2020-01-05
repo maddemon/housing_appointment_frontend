@@ -30,6 +30,7 @@ export default class UserEditModal extends Component {
                 <Radio.Button value="admin">管理员</Radio.Button>
                 </Radio.Group>
             },
+            { title: '手机', name: 'phone', defaultValue: model.phone, rules: [{ required: true, message: '请填写手机号码' }], },
             { title: '密码', name: 'password', defaultValue: '' },
         ];
     }
