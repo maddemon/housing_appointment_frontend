@@ -121,10 +121,11 @@ const GiveupResult = () => (
 
 const Dwelling = ({ model }) => (
   <Row>
-    住宅： <Tag>{model.profile.building}幢</Tag>
+    住宅： <Tag>{model.profile.block}</Tag>
+    <Tag>{model.profile.building}幢</Tag>
     <Tag>{model.profile.number}号</Tag>
     <Tag>{model.profile.area}平方米</Tag>
-    <Tag>{model.profile.amount}元</Tag>
+    <Tag>{model.profile.price}元</Tag>
   </Row>
 );
 
@@ -140,7 +141,8 @@ const Parking = ({ model }) =>
 const Storeroom = ({ model }) =>
   model ? (
     <Row>
-      贮藏室： <Tag>{model.profile.building}幢</Tag>
+      贮藏室：<Tag>{model.profile.block}</Tag>
+      <Tag>{model.profile.building}幢</Tag>
       <Tag>{model.profile.number}号</Tag>
       <Tag>{model.profile.area}平方米</Tag>
       <Tag>{model.profile.price}元</Tag>
@@ -150,7 +152,9 @@ const Storeroom = ({ model }) =>
 const Terrace = ({ model }) =>
   model ? (
     <Row>
-      露台： <Tag>{model.profile.building}幢</Tag>
+      露台：
+      <Tag>{model.profile.block}</Tag>
+      <Tag>{model.profile.building}幢</Tag>
       <Tag>{model.profile.number}号</Tag>
       <Tag>{model.profile.area}平方米</Tag>
       <Tag>{model.profile.price}元</Tag>

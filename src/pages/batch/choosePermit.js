@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-import { Row, PageHeader, Input, Table, } from "antd";
+import { Row, PageHeader, Input, Table, Button, } from "antd";
 import { QueryString, reloadPage } from "../../common/utils";
 import StatusTag from "../shared/_statusTag";
 import ChooseRoom from "./_chooseRoom";
@@ -46,12 +46,10 @@ export default class ChoosePermitPage extends Component {
   };
 
   handleExportClick = () => {
-    const batch = this.props.stores.batchStore.model;
-    const chooseDate = this.props.stores.chooseDateStore.model || {};
-    window.open(
-      `/api/batch/exportResult?batchId=${batch.id}&chooseDateId=${chooseDate.id}`
-    );
+    window.open(`/api/permit/export`);
   };
+
+
 
   renderQuotaColumn = (text, record) => {
     return record.quotas.map((quota, key) => {
@@ -92,12 +90,14 @@ export default class ChoosePermitPage extends Component {
       <div>
         <PageHeader
           title="选房"
-          extra={<Input.Search
+          extra={<span style={{ flexDirection: "between", display: "flex" }}><Input.Search
             onSearch={this.handleSearch}
             onPressEnter={this.handlePressEnter}
             placeholder="输入准购证号查询"
             enterButton
           />
+            <Button onClick={this.handleExportClick} icon="export">导出</Button>
+          </span>
           }
         />
         <Row>
