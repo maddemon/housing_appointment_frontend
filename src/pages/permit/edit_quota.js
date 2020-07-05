@@ -79,7 +79,7 @@ export default class EditQuotaModal extends Component {
                 onSubmit={this.handleSaveSubmit}
                 trigger={this.props.trigger || <Button>发证</Button>}
                 items={this.getFormItems()}
-                loading={this.props.stores.houseStore.loading}
+                loading={this.props.stores.quotaStore.loading}
                 footer={this.getFooterButtons()}
             >
             </FormModal>

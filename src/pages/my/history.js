@@ -29,6 +29,7 @@ export default class UserAppointmentsPage extends Component {
 
 const UserAppointmentItemControl = (props) => {
     const model = props.model;
+    console.log(model)
     return (
         <Card>
             <Descriptions title={<span>预约编号</span>} bordered column={{ md: 2, sm: 1, xs: 1 }}>
@@ -39,9 +40,7 @@ const UserAppointmentItemControl = (props) => {
                     <StatusTag status={model.status} text={model.statusText} />
                 </Descriptions.Item>
                 <Descriptions.Item label="姓名">{model.user}</Descriptions.Item>
-                <Descriptions.Item label="共有人">
-                    {model.shareUsers.map(item => <StatusTag status={item.status} text={`${item.user} ${item.statusText}`}/> )}
-                </Descriptions.Item>
+                
             </Descriptions>
         </Card>
     )

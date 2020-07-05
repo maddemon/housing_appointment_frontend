@@ -1,11 +1,38 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-import { Button, Card, Tag, Row, Result } from "antd";
+import { Button, Card, Tag, Row, Result, Modal } from "antd";
 import { RoomTypes } from "../../common/config";
 
 @inject("stores")
 @observer
 export default class ChooseResult extends Component {
+  handleResetResult = () => {
+
+    Modal.confirm({
+      title: "重置确认",
+      content: "你确定要重置该用户的选房结果吗？",
+      onOk: async () => {
+
+        const { chooseResult } = this.props.stores.roomStore;
+        if (chooseResult) {
+          await this.props.stores.roomStore.resetResult(chooseResult.quotaId);
+        }
+        else {
+          const quota = this.props.quota;
+          if (quota) {
+            await this.props.stores.roomStore.resetResult(quota.id);
+          }
+        }
+        const batch = this.props.stores.batchStore.model;
+        await this.props.stores.permitStore.getEnterList({ batchId: batch.id });
+        if (this.props.onReset) {
+          this.props.onReset();
+        }
+      }
+    })
+
+  }
+
   render() {
     const { chooseResult } = this.props.stores.roomStore;
     if (chooseResult) {
@@ -14,6 +41,7 @@ export default class ChooseResult extends Component {
           <SuccessResult
             houseId={chooseResult.houseId}
             quotaId={chooseResult.quotaId}
+            onReset={this.handleResetResult}
           />
         );
       } else {
@@ -39,7 +67,7 @@ export default class ChooseResult extends Component {
       result[typeName] = room;
     });
     return (
-      <SuccessResult houseId={houseId} quotaId={quota.id} result={result} />
+      <SuccessResult houseId={houseId} quotaId={quota.id} result={result} onReset={this.handleResetResult} />
     );
   }
 }
@@ -53,7 +81,7 @@ class SuccessResult extends Component {
   };
 
   render() {
-    const { result } = this.props;
+    const { result, onReset } = this.props;
     return (
       <Result
         status="success"
@@ -61,6 +89,9 @@ class SuccessResult extends Component {
         extra={[
           <Button type="primary" key="console" onClick={this.handleExportClick}>
             打印购房协议书
+          </Button>,
+          <Button type="danger" key="reset" onClick={onReset}>
+            重新选房
           </Button>
         ]}
       >

@@ -66,7 +66,7 @@ export default class EditAppointmentModal extends Component {
               <Select>
                 <Select.Option key="1">等待他人预约</Select.Option>
                 <Select.Option key="2">已预约</Select.Option>
-                <Select.Option key="3">已入围</Select.Option>
+                {/* <Select.Option key="3">已入围</Select.Option> */}
               </Select>
             )
           }

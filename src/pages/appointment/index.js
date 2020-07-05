@@ -170,7 +170,7 @@ export default class AppointmentIndexPage extends Component {
                   <Select.Option key="0">全部状态</Select.Option>
                   <Select.Option key="1">等待他人预约</Select.Option>
                   <Select.Option key="2">已预约</Select.Option>
-                  <Select.Option key="3">已入围</Select.Option>
+                  {/* <Select.Option key="3">已入围</Select.Option> */}
                   <Select.Option key="4">已选房</Select.Option>
                   <Select.Option key="5">放弃</Select.Option>
                 </Select>
@@ -187,23 +187,23 @@ export default class AppointmentIndexPage extends Component {
         />
         <div className="toolbar">
           <Button.Group>
-            <Button
+            {/* <Button
               icon="diff"
               type="primary"
               onClick={this.handleConfirmClick}
             >
               生成正选名单
-            </Button>
+            </Button> */}
             <Button icon="export" onClick={this.handleExportClick}>
               导出所有名单
             </Button>
-            <Button
+            {/* <Button
               type="danger"
               icon="bell"
               onClick={this.handleSendNotEnterMessage}
             >
               备选通知
-            </Button>
+            </Button> */}
           </Button.Group>
         </div>
         <Table

@@ -12,30 +12,31 @@ export default class QuotaItemControl extends Component {
     }
   };
 
-  handleClick = () => {
-    const model = this.props.model;
+  handleClick = (userQuota) => {
     if (this.props.onClick) {
-      this.props.onClick(model);
+      this.props.onClick(userQuota);
     }
   };
+
   render() {
     const model = this.props.model;
     const batch = this.props.stores.batchStore.model;
 
-    const userQuota = model.users.find(e => e.mine);
+    const myQuota = model.users.find(e => e.mine);
 
-    const showButton =
-      userQuota.mine &&
-      (userQuota.status === 0 || (userQuota.status === 5 && batch.last));
+
+    const showButton = myQuota && (myQuota.status === 0 || (myQuota.status === 5 && batch.last));
+    const userName = model.users.map(e => e.user).join();
 
     return (
       <Card>
         <div style={{ margin: 5 }}>
-          {userQuota.user}（{model.permitCode}-{model.quotaCode}）
-          <StatusTag status={userQuota.status} text={userQuota.statusText} />
+          {userName}
+          （{model.permitCode}-{model.quotaCode}）
+           {model.users.map(userQuota => <StatusTag status={userQuota.status} text={userQuota.statusText} />)}
         </div>
         {showButton ? (
-          <Button type="primary" onClick={this.handleClick}>
+          <Button type="primary" onClick={() => this.handleClick(myQuota)}>
             <Icon type="check" />
             选择此购房资格
           </Button>

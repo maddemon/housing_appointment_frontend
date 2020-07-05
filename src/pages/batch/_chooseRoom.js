@@ -183,11 +183,11 @@ export default class ChooseRoom extends Component {
                       {selectedRoom[key].profile.number}
                     </span>
                   ) : (
-                    <span>
-                      {selectedRoom[key].profile.building}号楼
-                      {selectedRoom[key].profile.number}
-                    </span>
-                  )}
+                      <span>
+                        {selectedRoom[key].profile.building}号楼
+                        {selectedRoom[key].profile.number}
+                      </span>
+                    )}
                 </Tag>
                 <Button
                   onClick={() => this.handleSelectRoom(null)}

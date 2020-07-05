@@ -1,23 +1,9 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
-import {
-  Row,
-  PageHeader,
-  Input,
-  Button,
-  Spin,
-  Result,
-  Table,
-  DatePicker,
-  Col,
-  Select,
-  Tag
-} from "antd";
+import { Row, PageHeader, Input, Table, Col } from "antd";
 import { QueryString, reloadPage } from "../../common/utils";
-import moment from "moment";
 import StatusTag from "../shared/_statusTag";
 import ChooseRoom from "./_chooseRoom";
-import ChooseResult from "./_chooseResult";
 import NonBatchControl from "../my/_nonBatch";
 import ChooseDateSelectControl from "../shared/_chooseDateSelect";
 
@@ -39,10 +25,8 @@ export default class ChoosePermitPage extends Component {
     props = props || this.props;
     let query = QueryString.parseJSON(props.location.search);
     await this.props.stores.batchStore.getModel(query.batchId);
-    const batch = this.props.stores.batchStore.model;
-    if (!batch) return;
     await this.props.stores.permitStore.getEnterList(query);
-    await this.props.stores.roomStore.getResultList(batch.id);
+    await this.props.stores.roomStore.getResultList(this.props.stores.permitStore.list);
   };
 
   handlePageChange = page => {

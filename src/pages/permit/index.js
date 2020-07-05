@@ -58,6 +58,12 @@ export default class PermitIndexPage extends Component {
     this.loadList();
   };
 
+  handleExport = () => {
+    window.open(
+      `/api/permit/export`
+    );
+  }
+
   renderQuotaColumn = (text, record) => {
     let list = [];
     record.quotas.forEach(quota => {
@@ -112,10 +118,13 @@ export default class PermitIndexPage extends Component {
                   defaultValue={parameter.issue}
                 >
                   <Select.Option key="all" value="">
-                    查看所有
+                    全部
                   </Select.Option>
                   <Select.Option key="false" value="false">
-                    仅看未发证
+                    未发证
+                  </Select.Option>
+                  <Select.Option key="true" value="true">
+                    已发证
                   </Select.Option>
                 </Select>
               </Col>
@@ -133,6 +142,9 @@ export default class PermitIndexPage extends Component {
           <Button onClick={this.handleRedirectToStatistics}>
             <Icon type="bar-chart" />
             查看发证情况
+          </Button>
+          <Button onClick={this.handleExport} icon="export">
+            导出表格
           </Button>
         </div>
         <Table

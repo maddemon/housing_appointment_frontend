@@ -14,7 +14,7 @@ const api = {
       return $.get("user/resetPassword", { id });
     },
     editPassword: (oldPassword, newPassword) => {
-      return $.post("user/changePassword", null, { oldPassword, newPassword });
+      return $.get("user/changePassword", { oldPassword, newPassword });
     }
   },
   house: {
@@ -35,8 +35,8 @@ const api = {
     }
   },
   room: {
-    resultList: batchId => {
-      return $.get("room/resultList", { batchId });
+    resultList: quotaIds => {
+      return $.post("room/resultList", null, { quotaIds });
     },
     list: houseId => {
       return $.get("room/list", { houseId });
@@ -46,6 +46,9 @@ const api = {
     },
     giveup: (batchId, quotaId) => {
       return $.get("room/giveup", { batchId, quotaId });
+    },
+    resetResult: quotaId => {
+      return $.get('room/resetResult', { quotaId })
     }
   },
   batch: {

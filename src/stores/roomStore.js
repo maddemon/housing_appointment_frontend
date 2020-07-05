@@ -11,9 +11,14 @@ export default class RoomStore extends StoreBase {
   @observable selectedRoom = null;
   @observable chooseResult = null;
 
-  @action getResultList(batchId) {
+  @action getResultList(enterList) {
+    var quotaIds = [];
+    enterList.forEach(permit => {
+      quotaIds = quotaIds.concat(permit.quotas.map(q => q.id))
+    }
+    )
     this.invokeApi(
-      () => api.room.resultList(batchId),
+      () => api.room.resultList(quotaIds),
       response => (this.resultList = response.data)
     );
   }
@@ -121,6 +126,15 @@ export default class RoomStore extends StoreBase {
         }
       });
     });
+    console.log(buildings)
     return (this.buildings = buildings);
+  }
+
+  @action resetResult(quotaId) {
+    this.chooseResult = false;
+    this.selectedHouse = null;
+    this.selectedRoom = null;
+    this.invokeApi(() => api.room.resetResult(quotaId), () => {
+    })
   }
 }
