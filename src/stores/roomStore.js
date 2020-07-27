@@ -7,6 +7,7 @@ export default class RoomStore extends StoreBase {
   @observable rooms = null;
   @observable resultList = [];
   @observable buildings = null;
+  @observable selectedBuildings = {};
   @observable selectedHouse = null;
   @observable selectedRoom = null;
   @observable chooseResult = null;
@@ -28,6 +29,7 @@ export default class RoomStore extends StoreBase {
   }
 
   @action clearAllSelected() {
+    this.selectedBuildings = {};
     this.selectedHouse = null;
     this.chooseResult = null;
     this.selectedRoom = null;
@@ -85,6 +87,10 @@ export default class RoomStore extends StoreBase {
     }
   }
 
+  @action selectBuilding(roomType, number) {
+    this.selectedBuildings[roomType] = number;
+  }
+
   @action selectHouse(house) {
     this.selectedHouse = house;
     if (house) {
@@ -107,8 +113,10 @@ export default class RoomStore extends StoreBase {
           this.selectRoom(terrace);
         }
       }
+      this.selectedBuildings[room.type] = room.profile.building || room.profile.area ;
     } else {
       this.selectedRoom = null;
+      this.selectedBuildings = {};
     }
   }
 
@@ -126,7 +134,6 @@ export default class RoomStore extends StoreBase {
         }
       });
     });
-    console.log(buildings)
     return (this.buildings = buildings);
   }
 

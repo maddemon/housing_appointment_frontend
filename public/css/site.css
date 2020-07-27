@@ -91,3 +91,9 @@ button.ant-btn.room h1 {
   color: red;
   font-weight: bold;
 }
+.ant-tag.ant-tag-has-color.btn-room {
+  margin-top: 1px;
+  line-height: 1rem;
+  margin-right: 1px;
+  font-size: 0.7rem;
+}

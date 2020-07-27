@@ -27,7 +27,7 @@ export default class BatchChooseResultPage extends Component {
   }
 
   render() {
-    const { model, result, loading } = this.props.stores.batchStore;
+    const { model, result } = this.props.stores.batchStore;
     if (!model) return null;
 
     return (
@@ -37,9 +37,9 @@ export default class BatchChooseResultPage extends Component {
             {model.name} {moment().format("ll")}选房结果
           </h1>
         </Layout.Header>
-        <Row style={{ margin: "2px" }}>
+        <Row style={{ margin: "1px" }}>
           {result.map((item, key) => (
-            <Tag color={item.colorFlag} key={key} style={{ marginTop: "2px" }}>
+            <Tag color={item.colorFlag} key={key} className="btn-room">
               {item.houseName}
               <br />
               {item.building} - {item.number}

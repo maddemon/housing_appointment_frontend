@@ -87,8 +87,6 @@ export default class ChoosePermitPage extends Component {
     if (!batch && !this.props.stores.batchStore.loading) {
       return <NonBatchControl />;
     }
-    const chooseDate = this.props.stores.chooseDateStore.model;
-
     return (
       <div>
         <PageHeader

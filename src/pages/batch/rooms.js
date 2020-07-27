@@ -67,6 +67,13 @@ export default class BatchChooseResult extends Component {
     );
   };
 
+  handleExportUserChooseResult = ()=>{
+    const batch = this.props.stores.batchStore.model || {};
+    window.open(
+      `/api/batch/ExportUserChooseResult?batchId=${batch.id}`
+    );
+  }
+
   getHouseId = () => {
     const list = this.props.stores.houseStore.list;
     return list && list.length > 0 ? list[0].id : 0;
@@ -94,6 +101,10 @@ export default class BatchChooseResult extends Component {
             identity && identity.role === "admin" ? (
               <Row>
                 <DatePicker onChange={this.handleChangeDate} />
+                <Button type="primary" onClick={this.handleExportUserChooseResult}>
+                  导出用户选房结果
+                </Button>
+                &nbsp;
                 <Button type="primary" onClick={() => this.handleExport(true)}>
                   导出已选
                 </Button>

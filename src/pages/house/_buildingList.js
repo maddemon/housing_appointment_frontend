@@ -6,34 +6,29 @@ import RoomList from "./_roomList";
 @inject("stores")
 @observer
 export default class BuildingList extends Component {
-  state = { building: null };
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({ building: null });
+  state = { key: '' }
+  handleSelectBuilding = (roomType, val) => {
+    this.props.stores.roomStore.selectBuilding(roomType, val);
   }
-
-  handleSelectBuilding = number => {
-    this.setState({ building: number });
-  };
 
   handleSearch = e => {
     this.setState({ key: e.target.value });
   };
 
   render() {
-    const { buildings, loading } = this.props.stores.roomStore;
+    const { buildings, loading, selectedBuildings } = this.props.stores.roomStore;
     const { roomType } = this.props;
     if (loading) return <Spin spinning={loading}></Spin>;
 
     const numbers = Object.keys(buildings[roomType] || {});
-    const selectedBuilding = this.state.building || numbers[0];
+    const selectedBuilding = selectedBuildings[roomType] || numbers[0];
     return (
       <>
         {roomType === "parking" ? "选择所属区" : "选择幢号"}：
         <Select
           style={{ width: 200, marginBottom: 5 }}
-          onSelect={this.handleSelectBuilding}
-          defaultValue={selectedBuilding.toString()}
+          onSelect={(val) => this.handleSelectBuilding(roomType, val)}
+          value={selectedBuilding}
         >
           {Object.keys(buildings[roomType] || {}).map(key => (
             <Select.Option key={key}>{key}</Select.Option>
